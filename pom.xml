@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>raf.aleksabuncic</groupId>
-    <artifactId>VetService</artifactId>
+    <artifactId>VetAppBackend</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
