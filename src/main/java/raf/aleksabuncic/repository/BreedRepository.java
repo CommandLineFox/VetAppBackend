@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import raf.aleksabuncic.domain.Breed;
 
 @Repository
-public interface BreedRepository extends JpaRepository<Breed, Integer> {
+public interface BreedRepository extends JpaRepository<Breed, Long> {
 }
