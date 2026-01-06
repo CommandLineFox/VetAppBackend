@@ -3,6 +3,7 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Owner;
 import raf.aleksabuncic.dto.OwnerDto;
 import raf.aleksabuncic.dto.OwnerCreateDto;
@@ -27,6 +28,7 @@ public class OwnerServiceImplementation implements OwnerService {
         return ownerMapper.ownerToOwnerDto(owner);
     }
 
+    @Transactional
     @Override
     public OwnerDto createOwner(OwnerCreateDto ownerCreateDto) {
         Owner owner = ownerMapper.ownerCreateDtoToOwner(ownerCreateDto);
@@ -39,6 +41,7 @@ public class OwnerServiceImplementation implements OwnerService {
         }
     }
 
+    @Transactional
     @Override
     public OwnerDto updateOwner(Long id, OwnerUpdateDto ownerUpdateDto) {
         Owner owner = ownerRepository.getOwnerById(id)
@@ -76,6 +79,7 @@ public class OwnerServiceImplementation implements OwnerService {
         }
     }
 
+    @Transactional
     @Override
     public void deleteOwner(Long id) {
         if (!ownerRepository.existsById(id)) {

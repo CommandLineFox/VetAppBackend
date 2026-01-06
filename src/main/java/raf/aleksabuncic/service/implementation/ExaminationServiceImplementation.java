@@ -3,6 +3,7 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Examination;
 import raf.aleksabuncic.domain.Patient;
 import raf.aleksabuncic.domain.Veterinarian;
@@ -33,6 +34,7 @@ public class ExaminationServiceImplementation implements ExaminationService {
         return examinationMapper.examinationToExaminationDto(examination);
     }
 
+    @Transactional
     @Override
     public ExaminationDto createExamination(ExaminationCreateDto examinationCreateDto) {
         Examination examination = examinationMapper.examinationCreateDtoToExamination(examinationCreateDto);
@@ -53,6 +55,7 @@ public class ExaminationServiceImplementation implements ExaminationService {
         }
     }
 
+    @Transactional
     @Override
     public ExaminationDto updateExamination(Long id, ExaminationUpdateDto examinationUpdateDto) {
         Examination examination = examinationRepository.getExaminationById(id)
@@ -110,6 +113,7 @@ public class ExaminationServiceImplementation implements ExaminationService {
         }
     }
 
+    @Transactional
     @Override
     public void deleteExamination(Long id) {
         if (!examinationRepository.existsById(id)) {

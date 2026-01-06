@@ -3,6 +3,7 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Breed;
 import raf.aleksabuncic.domain.Species;
 import raf.aleksabuncic.dto.BreedDto;
@@ -29,6 +30,7 @@ public class BreedServiceImplementation implements BreedService {
         return breedMapper.breedToBreedDto(breed);
     }
 
+    @Transactional
     @Override
     public BreedDto createBreed(BreedCreateDto breedCreateDto) {
         Breed breed = breedMapper.breedCreateDtoToBreed(breedCreateDto);
@@ -45,6 +47,7 @@ public class BreedServiceImplementation implements BreedService {
         }
     }
 
+    @Transactional
     @Override
     public BreedDto updateBreed(Long id, BreedUpdateDto breedUpdateDto) {
         Breed breed = breedRepository.getBreedById(id)
@@ -68,6 +71,7 @@ public class BreedServiceImplementation implements BreedService {
         }
     }
 
+    @Transactional
     @Override
     public void deleteBreed(Long id) {
         if (!breedRepository.existsById(id)) {

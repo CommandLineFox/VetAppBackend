@@ -3,6 +3,7 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Appointment;
 import raf.aleksabuncic.domain.Patient;
 import raf.aleksabuncic.domain.Veterinarian;
@@ -33,6 +34,7 @@ public class AppointmentServiceImplementation implements AppointmentService {
         return appointmentMapper.appointmentToAppointmentDto(appointment);
     }
 
+    @Transactional
     @Override
     public AppointmentDto createAppointment(AppointmentCreateDto appointmentCreateDto) {
         Appointment appointment = appointmentMapper.appointmentCreateDtoToAppointment(appointmentCreateDto);
@@ -54,6 +56,7 @@ public class AppointmentServiceImplementation implements AppointmentService {
         }
     }
 
+    @Transactional
     @Override
     public AppointmentDto updateAppointment(Long id, AppointmentUpdateDto appointmentUpdateDto) {
         Appointment appointment = appointmentRepository.getAppointmentById(id)
@@ -83,6 +86,7 @@ public class AppointmentServiceImplementation implements AppointmentService {
         }
     }
 
+    @Transactional
     @Override
     public void deleteAppointment(Long id) {
         if (!appointmentRepository.existsById(id)) {

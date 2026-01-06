@@ -3,6 +3,7 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Species;
 import raf.aleksabuncic.dto.SpeciesDto;
 import raf.aleksabuncic.dto.SpeciesCreateDto;
@@ -27,6 +28,7 @@ public class SpeciesServiceImplementation implements SpeciesService {
         return speciesMapper.speciesToSpeciesDto(species);
     }
 
+    @Transactional
     @Override
     public SpeciesDto createSpecies(SpeciesCreateDto speciesCreateDto) {
         Species species = speciesMapper.speciesCreateDtoToSpecies(speciesCreateDto);
@@ -39,6 +41,7 @@ public class SpeciesServiceImplementation implements SpeciesService {
         }
     }
 
+    @Transactional
     @Override
     public SpeciesDto updateSpecies(Long id, SpeciesUpdateDto speciesUpdateDto) {
         Species species = speciesRepository.getSpeciesById(id)
@@ -52,6 +55,7 @@ public class SpeciesServiceImplementation implements SpeciesService {
         return speciesMapper.speciesToSpeciesDto(species);
     }
 
+    @Transactional
     @Override
     public void deleteSpecies(Long id) {
         if (!speciesRepository.existsById(id)) {

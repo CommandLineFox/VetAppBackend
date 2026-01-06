@@ -32,7 +32,8 @@ public class SpeciesController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteSpecies(@PathVariable Long id) {
+    public ResponseEntity<SpeciesDto> deleteSpecies(@PathVariable Long id) {
         speciesService.deleteSpecies(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

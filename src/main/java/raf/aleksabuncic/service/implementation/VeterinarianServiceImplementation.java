@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Veterinarian;
 import raf.aleksabuncic.dto.VeterinarianDto;
 import raf.aleksabuncic.dto.VeterinarianCreateDto;
@@ -29,6 +30,7 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
         return veterinarianMapper.veterinarianToVeterinarianDto(veterinarian);
     }
 
+    @Transactional
     @Override
     public VeterinarianDto createVeterinarian(VeterinarianCreateDto veterinarianCreateDto) {
         Veterinarian veterinarian = veterinarianMapper.veterinarianCreateDtoToVeterinarian(veterinarianCreateDto);
@@ -43,6 +45,7 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
         }
     }
 
+    @Transactional
     @Override
     public VeterinarianDto updateVeterinarian(Long id, VeterinarianUpdateDto veterinarianUpdateDto) {
         Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(id)
@@ -73,6 +76,7 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
         }
     }
 
+    @Transactional
     @Override
     public void deleteVeterinarian(Long id) {
         if (!veterinarianRepository.existsById(id)) {

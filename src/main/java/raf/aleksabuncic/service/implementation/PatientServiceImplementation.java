@@ -3,6 +3,7 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Breed;
 import raf.aleksabuncic.domain.Owner;
 import raf.aleksabuncic.domain.Patient;
@@ -33,6 +34,7 @@ public class PatientServiceImplementation implements PatientService {
         return patientMapper.patientToPatientDto(patient);
     }
 
+    @Transactional
     @Override
     public PatientDto createPatient(PatientCreateDto patientCreateDto) {
         Patient patient = patientMapper.patientCreateDtoToPatient(patientCreateDto);
@@ -53,6 +55,7 @@ public class PatientServiceImplementation implements PatientService {
         }
     }
 
+    @Transactional
     @Override
     public PatientDto updatePatient(Long id, PatientUpdateDto patientUpdateDto) {
         Patient patient = patientRepository.getPatientById(id)
@@ -102,6 +105,7 @@ public class PatientServiceImplementation implements PatientService {
         }
     }
 
+    @Transactional
     @Override
     public void deletePatient(Long id) {
         if (!patientRepository.existsById(id)) {
