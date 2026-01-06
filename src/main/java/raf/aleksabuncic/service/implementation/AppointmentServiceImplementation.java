@@ -55,8 +55,9 @@ public class AppointmentServiceImplementation implements AppointmentService {
     }
 
     @Override
-    public AppointmentDto updateAppointment(AppointmentUpdateDto appointmentUpdateDto) {
-        Appointment appointment = appointmentMapper.appointmentCreateDtoToAppointment(appointmentUpdateDto);
+    public AppointmentDto updateAppointment(Long id, AppointmentUpdateDto appointmentUpdateDto) {
+        Appointment appointment = appointmentRepository.getAppointmentById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment not found for this id: " + id));
 
         if (appointmentUpdateDto.getDate() != null) {
             appointment.setDate(appointmentUpdateDto.getDate());

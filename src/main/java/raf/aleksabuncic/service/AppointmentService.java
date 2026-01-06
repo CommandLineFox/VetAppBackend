@@ -9,7 +9,7 @@ public interface AppointmentService {
 
     AppointmentDto createAppointment(AppointmentCreateDto appointmentCreateDto);
 
-    AppointmentDto updateAppointment(AppointmentUpdateDto appointmentUpdateDto);
+    AppointmentDto updateAppointment(Long id, AppointmentUpdateDto appointmentUpdateDto);
 
     void deleteAppointment(Long id);
 }

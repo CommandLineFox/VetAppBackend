@@ -9,7 +9,7 @@ public interface BreedService {
 
     BreedDto createBreed(BreedCreateDto breedCreateDto);
 
-    BreedDto updateBreed(BreedUpdateDto breedUpdateDto);
+    BreedDto updateBreed(Long id, BreedUpdateDto breedUpdateDto);
 
     void deleteBreed(Long id);
 }

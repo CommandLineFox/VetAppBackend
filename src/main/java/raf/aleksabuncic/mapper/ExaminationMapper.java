@@ -19,6 +19,8 @@ public class ExaminationMapper {
         examinationDto.setLaboratoryAnalysis(examination.getLaboratoryAnalysis());
         examinationDto.setSpecialistExamination(examination.getSpecialistExamination());
         examinationDto.setRemarks(examination.getRemarks());
+        examinationDto.setPatientId(examination.getPatient().getId());
+        examinationDto.setVeterinarianId(examination.getVeterinarian().getId());
 
         return examinationDto;
     }

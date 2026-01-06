@@ -9,7 +9,7 @@ public interface VeterinarianService {
 
     VeterinarianDto createVeterinarian(VeterinarianCreateDto veterinarianCreateDto);
 
-    VeterinarianDto updateVeterinarian(VeterinarianUpdateDto veterinarianUpdateDto);
+    VeterinarianDto updateVeterinarian(Long id, VeterinarianUpdateDto veterinarianUpdateDto);
 
     void deleteVeterinarian(Long id);
 }

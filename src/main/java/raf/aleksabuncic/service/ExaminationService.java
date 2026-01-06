@@ -9,7 +9,7 @@ public interface ExaminationService {
 
     ExaminationDto createExamination(ExaminationCreateDto examinationCreateDto);
 
-    ExaminationDto updateExamination(ExaminationUpdateDto examinationUpdateDto);
+    ExaminationDto updateExamination(Long id, ExaminationUpdateDto examinationUpdateDto);
 
     void deleteExamination(Long id);
 }

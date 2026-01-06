@@ -25,7 +25,6 @@ public class VeterinarianMapper {
         veterinarian.setFirstName(veterinarianCreateDto.getFirstName());
         veterinarian.setLastName(veterinarianCreateDto.getLastName());
         veterinarian.setLicenseNumber(veterinarianCreateDto.getLicenseNumber());
-        veterinarian.setPassword(veterinarianCreateDto.getPassword());
 
         return veterinarian;
     }

@@ -9,7 +9,7 @@ public interface OwnerService {
 
     OwnerDto createOwner(OwnerCreateDto ownerCreateDto);
 
-    OwnerDto updateOwner(OwnerUpdateDto ownerUpdateDto);
+    OwnerDto updateOwner(Long id, OwnerUpdateDto ownerUpdateDto);
 
     void deleteOwner(Long id);
 }

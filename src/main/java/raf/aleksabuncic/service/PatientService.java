@@ -9,7 +9,7 @@ public interface PatientService {
 
     PatientDto createPatient(PatientCreateDto patientCreateDto);
 
-    PatientDto updatePatient(PatientUpdateDto patientUpdateDto);
+    PatientDto updatePatient(Long id, PatientUpdateDto patientUpdateDto);
 
     void deletePatient(Long id);
 }
