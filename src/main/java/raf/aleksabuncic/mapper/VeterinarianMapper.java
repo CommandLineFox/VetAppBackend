@@ -2,7 +2,7 @@ package raf.aleksabuncic.mapper;
 
 import org.springframework.stereotype.Component;
 import raf.aleksabuncic.domain.Veterinarian;
-import raf.aleksabuncic.dto.VeterinarianRequestDto;
+import raf.aleksabuncic.dto.VeterinarianCreateDto;
 import raf.aleksabuncic.dto.VeterinarianDto;
 
 @Component
@@ -19,13 +19,13 @@ public class VeterinarianMapper {
         return veterinarianDto;
     }
 
-    public Veterinarian veterinarianRequestDtoToVeterinarian(VeterinarianRequestDto veterinarianRequestDto) {
+    public Veterinarian veterinarianCreateDtoToVeterinarian(VeterinarianCreateDto veterinarianCreateDto) {
         Veterinarian veterinarian = new Veterinarian();
 
-        veterinarian.setFirstName(veterinarianRequestDto.getFirstName());
-        veterinarian.setLastName(veterinarianRequestDto.getLastName());
-        veterinarian.setLicenseNumber(veterinarianRequestDto.getLicenseNumber());
-        veterinarian.setPassword(veterinarianRequestDto.getPassword());
+        veterinarian.setFirstName(veterinarianCreateDto.getFirstName());
+        veterinarian.setLastName(veterinarianCreateDto.getLastName());
+        veterinarian.setLicenseNumber(veterinarianCreateDto.getLicenseNumber());
+        veterinarian.setPassword(veterinarianCreateDto.getPassword());
 
         return veterinarian;
     }

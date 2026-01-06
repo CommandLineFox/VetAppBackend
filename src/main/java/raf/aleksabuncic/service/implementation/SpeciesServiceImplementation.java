@@ -5,7 +5,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import raf.aleksabuncic.domain.Species;
 import raf.aleksabuncic.dto.SpeciesDto;
-import raf.aleksabuncic.dto.SpeciesRequestDto;
+import raf.aleksabuncic.dto.SpeciesCreateDto;
+import raf.aleksabuncic.dto.SpeciesUpdateDto;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.mapper.SpeciesMapper;
@@ -27,24 +28,24 @@ public class SpeciesServiceImplementation implements SpeciesService {
     }
 
     @Override
-    public SpeciesDto createSpecies(SpeciesRequestDto speciesRequestDto) {
-        Species species = speciesMapper.speciesRequestDtoToSpecies(speciesRequestDto);
+    public SpeciesDto createSpecies(SpeciesCreateDto speciesCreateDto) {
+        Species species = speciesMapper.speciesCreateDtoToSpecies(speciesCreateDto);
 
         try {
             speciesRepository.save(species);
             return speciesMapper.speciesToSpeciesDto(speciesRepository.save(species));
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateResourceException("Species already exists for this name: " + speciesRequestDto.getName());
+            throw new DuplicateResourceException("Species already exists for this name: " + speciesCreateDto.getName());
         }
     }
 
     @Override
-    public SpeciesDto updateSpecies(Long id, SpeciesRequestDto speciesRequestDto) {
+    public SpeciesDto updateSpecies(Long id, SpeciesUpdateDto speciesUpdateDto) {
         Species species = speciesRepository.getSpeciesById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Species not found for this id: " + id));
 
-        if (speciesRequestDto.getName() != null) {
-            species.setName(speciesRequestDto.getName());
+        if (speciesUpdateDto.getName() != null) {
+            species.setName(speciesUpdateDto.getName());
         }
 
         speciesRepository.save(species);

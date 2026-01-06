@@ -2,7 +2,7 @@ package raf.aleksabuncic.mapper;
 
 import org.springframework.stereotype.Component;
 import raf.aleksabuncic.domain.Owner;
-import raf.aleksabuncic.dto.OwnerRequestDto;
+import raf.aleksabuncic.dto.OwnerCreateDto;
 import raf.aleksabuncic.dto.OwnerDto;
 
 @Component
@@ -21,15 +21,15 @@ public class OwnerMapper {
         return ownerDto;
     }
 
-    public Owner ownerRequestDtoToOwner(OwnerRequestDto ownerRequestDto) {
+    public Owner ownerCreateDtoToOwner(OwnerCreateDto ownerCreateDto) {
         Owner owner = new Owner();
 
-        owner.setFirstName(ownerRequestDto.getFirstName());
-        owner.setLastName(ownerRequestDto.getLastName());
-        owner.setAddress(ownerRequestDto.getAddress());
-        owner.setPhoneNumber(ownerRequestDto.getPhoneNumber());
-        owner.setEmail(ownerRequestDto.getEmail());
-        owner.setJmbg(ownerRequestDto.getJmbg());
+        owner.setFirstName(ownerCreateDto.getFirstName());
+        owner.setLastName(ownerCreateDto.getLastName());
+        owner.setAddress(ownerCreateDto.getAddress());
+        owner.setPhoneNumber(ownerCreateDto.getPhoneNumber());
+        owner.setEmail(ownerCreateDto.getEmail());
+        owner.setJmbg(ownerCreateDto.getJmbg());
 
         return owner;
     }

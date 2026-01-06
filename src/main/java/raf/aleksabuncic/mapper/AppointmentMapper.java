@@ -2,7 +2,7 @@ package raf.aleksabuncic.mapper;
 
 import org.springframework.stereotype.Component;
 import raf.aleksabuncic.domain.Appointment;
-import raf.aleksabuncic.dto.AppointmentRequestDto;
+import raf.aleksabuncic.dto.AppointmentCreateDto;
 import raf.aleksabuncic.dto.AppointmentDto;
 
 @Component
@@ -18,10 +18,10 @@ public class AppointmentMapper {
         return appointmentDto;
     }
 
-    public Appointment appointmentRequestDtoToAppointment(AppointmentRequestDto appointmentRequestDto) {
+    public Appointment appointmentCreateDtoToAppointment(AppointmentCreateDto appointmentCreateDto) {
         Appointment appointment = new Appointment();
 
-        appointment.setDate(appointmentRequestDto.getDate());
+        appointment.setDate(appointmentCreateDto.getDate());
 
         return appointment;
     }

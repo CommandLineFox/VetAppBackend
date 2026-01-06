@@ -2,7 +2,7 @@ package raf.aleksabuncic.mapper;
 
 import org.springframework.stereotype.Component;
 import raf.aleksabuncic.domain.Species;
-import raf.aleksabuncic.dto.SpeciesRequestDto;
+import raf.aleksabuncic.dto.SpeciesCreateDto;
 import raf.aleksabuncic.dto.SpeciesDto;
 
 @Component
@@ -16,10 +16,10 @@ public class SpeciesMapper {
         return speciesDto;
     }
 
-    public Species speciesRequestDtoToSpecies(SpeciesRequestDto speciesRequestDto) {
+    public Species speciesCreateDtoToSpecies(SpeciesCreateDto speciesCreateDto) {
         Species species = new Species();
 
-        species.setName(speciesRequestDto.getName());
+        species.setName(speciesCreateDto.getName());
 
         return species;
     }

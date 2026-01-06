@@ -1,11 +1,13 @@
 package raf.aleksabuncic.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import raf.aleksabuncic.dto.SpeciesDto;
-import raf.aleksabuncic.dto.SpeciesRequestDto;
+import raf.aleksabuncic.dto.SpeciesCreateDto;
+import raf.aleksabuncic.dto.SpeciesUpdateDto;
 import raf.aleksabuncic.service.SpeciesService;
 
 @RestController
@@ -20,13 +22,13 @@ public class SpeciesController {
     }
 
     @PostMapping
-    public ResponseEntity<SpeciesDto> createSpecies(@RequestBody SpeciesRequestDto speciesRequestDto) {
-        return new ResponseEntity<>(speciesService.createSpecies(speciesRequestDto), HttpStatus.CREATED);
+    public ResponseEntity<SpeciesDto> createSpecies(@Valid @RequestBody SpeciesCreateDto speciesCreateDto) {
+        return new ResponseEntity<>(speciesService.createSpecies(speciesCreateDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SpeciesDto> updateSpecies(@PathVariable Long id, @RequestBody SpeciesRequestDto speciesRequestDto) {
-        return new ResponseEntity<>(speciesService.updateSpecies(id, speciesRequestDto), HttpStatus.OK);
+    public ResponseEntity<SpeciesDto> updateSpecies(@PathVariable Long id, @Valid @RequestBody SpeciesUpdateDto speciesUpdateDto) {
+        return new ResponseEntity<>(speciesService.updateSpecies(id, speciesUpdateDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

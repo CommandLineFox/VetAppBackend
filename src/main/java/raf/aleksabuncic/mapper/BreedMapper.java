@@ -2,7 +2,7 @@ package raf.aleksabuncic.mapper;
 
 import org.springframework.stereotype.Component;
 import raf.aleksabuncic.domain.Breed;
-import raf.aleksabuncic.dto.BreedRequestDto;
+import raf.aleksabuncic.dto.BreedCreateDto;
 import raf.aleksabuncic.dto.BreedDto;
 
 @Component
@@ -17,10 +17,10 @@ public class BreedMapper {
         return breedDto;
     }
 
-    public Breed breedCRequestDtoToBreed(BreedRequestDto breedRequestDto) {
+    public Breed breedCreateDtoToBreed(BreedCreateDto breedCreateDto) {
         Breed breed = new Breed();
 
-        breed.setName(breedRequestDto.getName());
+        breed.setName(breedCreateDto.getName());
 
         return breed;
     }

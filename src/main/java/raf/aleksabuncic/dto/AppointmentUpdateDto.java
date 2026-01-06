@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class AppointmentRequestDto {
+public class AppointmentUpdateDto {
     private Date date;
     private Long patientId;
     private Long veterinarianId;

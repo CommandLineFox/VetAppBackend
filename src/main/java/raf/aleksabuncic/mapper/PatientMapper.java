@@ -2,7 +2,7 @@ package raf.aleksabuncic.mapper;
 
 import org.springframework.stereotype.Component;
 import raf.aleksabuncic.domain.Patient;
-import raf.aleksabuncic.dto.PatientRequestDto;
+import raf.aleksabuncic.dto.PatientCreateDto;
 import raf.aleksabuncic.dto.PatientDto;
 
 @Component
@@ -23,15 +23,15 @@ public class PatientMapper {
         return patientDto;
     }
 
-    public Patient patientRequestDtoToPatient(PatientRequestDto patientRequestDto) {
+    public Patient patientCreateDtoToPatient(PatientCreateDto patientCreateDto) {
         Patient patient = new Patient();
 
-        patient.setBirthDate(patientRequestDto.getBirthDate());
-        patient.setName(patientRequestDto.getName());
-        patient.setGender(patientRequestDto.getGender());
+        patient.setBirthDate(patientCreateDto.getBirthDate());
+        patient.setName(patientCreateDto.getName());
+        patient.setGender(patientCreateDto.getGender());
         patient.setPassportNumber(patient.getPassportNumber());
-        patient.setMicrochipNumber(patientRequestDto.getMicrochipNumber());
-        patient.setCartonNumber(patientRequestDto.getCartonNumber());
+        patient.setMicrochipNumber(patientCreateDto.getMicrochipNumber());
+        patient.setCartonNumber(patientCreateDto.getCartonNumber());
 
         return patient;
     }

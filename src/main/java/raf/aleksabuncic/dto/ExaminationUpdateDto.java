@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class ExaminationRequestDto {
+public class ExaminationUpdateDto {
     private Date date;
     private String anamnesis;
     private String clinicalPresentation;

@@ -2,7 +2,7 @@ package raf.aleksabuncic.mapper;
 
 import org.springframework.stereotype.Component;
 import raf.aleksabuncic.domain.Examination;
-import raf.aleksabuncic.dto.ExaminationRequestDto;
+import raf.aleksabuncic.dto.ExaminationCreateDto;
 import raf.aleksabuncic.dto.ExaminationDto;
 
 @Component
@@ -23,17 +23,17 @@ public class ExaminationMapper {
         return examinationDto;
     }
 
-    public Examination examinationCRequestDtoToExamination(ExaminationRequestDto examinationRequestDto) {
+    public Examination examinationCreateDtoToExamination(ExaminationCreateDto examinationCreateDto) {
         Examination examination = new Examination();
 
-        examination.setDate(examinationRequestDto.getDate());
-        examination.setAnamnesis(examinationRequestDto.getAnamnesis());
-        examination.setClinicalPresentation(examinationRequestDto.getClinicalPresentation());
-        examination.setDiagnosis(examinationRequestDto.getDiagnosis());
-        examination.setTreatment(examinationRequestDto.getTreatment());
-        examination.setLaboratoryAnalysis(examinationRequestDto.getLaboratoryAnalysis());
-        examination.setSpecialistExamination(examinationRequestDto.getSpecialistExamination());
-        examination.setRemarks(examinationRequestDto.getRemarks());
+        examination.setDate(examinationCreateDto.getDate());
+        examination.setAnamnesis(examinationCreateDto.getAnamnesis());
+        examination.setClinicalPresentation(examinationCreateDto.getClinicalPresentation());
+        examination.setDiagnosis(examinationCreateDto.getDiagnosis());
+        examination.setTreatment(examinationCreateDto.getTreatment());
+        examination.setLaboratoryAnalysis(examinationCreateDto.getLaboratoryAnalysis());
+        examination.setSpecialistExamination(examinationCreateDto.getSpecialistExamination());
+        examination.setRemarks(examinationCreateDto.getRemarks());
 
         return examination;
     }

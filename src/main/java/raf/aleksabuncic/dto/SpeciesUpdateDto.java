@@ -1,11 +1,12 @@
 package raf.aleksabuncic.dto;
 
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class BreedRequestDto {
+public class SpeciesUpdateDto {
+    @Size(max = 50)
     private String name;
-    private Long speciesId;
 }

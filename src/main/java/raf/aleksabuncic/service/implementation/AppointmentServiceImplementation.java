@@ -7,7 +7,8 @@ import raf.aleksabuncic.domain.Appointment;
 import raf.aleksabuncic.domain.Patient;
 import raf.aleksabuncic.domain.Veterinarian;
 import raf.aleksabuncic.dto.AppointmentDto;
-import raf.aleksabuncic.dto.AppointmentRequestDto;
+import raf.aleksabuncic.dto.AppointmentCreateDto;
+import raf.aleksabuncic.dto.AppointmentUpdateDto;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.mapper.AppointmentMapper;
@@ -33,15 +34,15 @@ public class AppointmentServiceImplementation implements AppointmentService {
     }
 
     @Override
-    public AppointmentDto createAppointment(AppointmentRequestDto appointmentRequestDto) {
-        Appointment appointment = appointmentMapper.appointmentRequestDtoToAppointment(appointmentRequestDto);
+    public AppointmentDto createAppointment(AppointmentCreateDto appointmentCreateDto) {
+        Appointment appointment = appointmentMapper.appointmentCreateDtoToAppointment(appointmentCreateDto);
 
-        Patient patient = patientRepository.getPatientById(appointmentRequestDto.getPatientId())
-                .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + appointmentRequestDto.getPatientId()));
+        Patient patient = patientRepository.getPatientById(appointmentCreateDto.getPatientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + appointmentCreateDto.getPatientId()));
         appointment.setPatient(patient);
 
-        Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(appointmentRequestDto.getVeterinarianId())
-                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + appointmentRequestDto.getVeterinarianId()));
+        Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(appointmentCreateDto.getVeterinarianId())
+                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + appointmentCreateDto.getVeterinarianId()));
         appointment.setVeterinarian(veterinarian);
 
 
@@ -49,27 +50,27 @@ public class AppointmentServiceImplementation implements AppointmentService {
             appointmentRepository.save(appointment);
             return appointmentMapper.appointmentToAppointmentDto(appointment);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateResourceException("Appointment already exists for this ID: " + appointmentRequestDto.getDate());
+            throw new DuplicateResourceException("Appointment already exists for this ID: " + appointmentCreateDto.getDate());
         }
     }
 
     @Override
-    public AppointmentDto updateAppointment(AppointmentRequestDto appointmentRequestDto) {
-        Appointment appointment = appointmentMapper.appointmentRequestDtoToAppointment(appointmentRequestDto);
+    public AppointmentDto updateAppointment(AppointmentUpdateDto appointmentUpdateDto) {
+        Appointment appointment = appointmentMapper.appointmentCreateDtoToAppointment(appointmentUpdateDto);
 
-        if (appointmentRequestDto.getDate() != null) {
-            appointment.setDate(appointmentRequestDto.getDate());
+        if (appointmentUpdateDto.getDate() != null) {
+            appointment.setDate(appointmentUpdateDto.getDate());
         }
 
-        if (appointmentRequestDto.getPatientId() != null) {
-            Patient patient = patientRepository.getPatientById(appointmentRequestDto.getPatientId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + appointmentRequestDto.getPatientId()));
+        if (appointmentUpdateDto.getPatientId() != null) {
+            Patient patient = patientRepository.getPatientById(appointmentUpdateDto.getPatientId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + appointmentUpdateDto.getPatientId()));
             appointment.setPatient(patient);
         }
 
-        if (appointmentRequestDto.getVeterinarianId() != null) {
-            Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(appointmentRequestDto.getVeterinarianId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + appointmentRequestDto.getVeterinarianId()));
+        if (appointmentUpdateDto.getVeterinarianId() != null) {
+            Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(appointmentUpdateDto.getVeterinarianId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + appointmentUpdateDto.getVeterinarianId()));
             appointment.setVeterinarian(veterinarian);
         }
 
@@ -77,7 +78,7 @@ public class AppointmentServiceImplementation implements AppointmentService {
             appointmentRepository.save(appointment);
             return appointmentMapper.appointmentToAppointmentDto(appointment);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateResourceException("No changes made to appointment: " + appointmentRequestDto.getDate());
+            throw new DuplicateResourceException("No changes made to appointment: " + appointmentUpdateDto.getDate());
         }
     }
 

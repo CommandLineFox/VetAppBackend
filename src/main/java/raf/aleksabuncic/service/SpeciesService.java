@@ -1,14 +1,15 @@
 package raf.aleksabuncic.service;
 
 import raf.aleksabuncic.dto.SpeciesDto;
-import raf.aleksabuncic.dto.SpeciesRequestDto;
+import raf.aleksabuncic.dto.SpeciesCreateDto;
+import raf.aleksabuncic.dto.SpeciesUpdateDto;
 
 public interface SpeciesService {
     SpeciesDto findSpeciesById(Long id);
 
-    SpeciesDto createSpecies(SpeciesRequestDto speciesRequestDto);
+    SpeciesDto createSpecies(SpeciesCreateDto speciesCreateDto);
 
-    SpeciesDto updateSpecies(Long id, SpeciesRequestDto speciesRequestDto);
+    SpeciesDto updateSpecies(Long id, SpeciesUpdateDto speciesUpdateDto);
 
     void deleteSpecies(Long id);
 }

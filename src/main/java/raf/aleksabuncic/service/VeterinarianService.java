@@ -1,14 +1,15 @@
 package raf.aleksabuncic.service;
 
 import raf.aleksabuncic.dto.VeterinarianDto;
-import raf.aleksabuncic.dto.VeterinarianRequestDto;
+import raf.aleksabuncic.dto.VeterinarianCreateDto;
+import raf.aleksabuncic.dto.VeterinarianUpdateDto;
 
 public interface VeterinarianService {
     VeterinarianDto findVeterinarianById(Long id);
 
-    VeterinarianDto createVeterinarian(VeterinarianRequestDto veterinarianRequestDto);
+    VeterinarianDto createVeterinarian(VeterinarianCreateDto veterinarianCreateDto);
 
-    VeterinarianDto updateVeterinarian(VeterinarianRequestDto veterinarianRequestDto);
+    VeterinarianDto updateVeterinarian(VeterinarianUpdateDto veterinarianUpdateDto);
 
     void deleteVeterinarian(Long id);
 }

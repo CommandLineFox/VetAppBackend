@@ -1,14 +1,15 @@
 package raf.aleksabuncic.service;
 
 import raf.aleksabuncic.dto.PatientDto;
-import raf.aleksabuncic.dto.PatientRequestDto;
+import raf.aleksabuncic.dto.PatientCreateDto;
+import raf.aleksabuncic.dto.PatientUpdateDto;
 
 public interface PatientService {
     PatientDto findPatientById(Long id);
 
-    PatientDto createPatient(PatientRequestDto patientRequestDto);
+    PatientDto createPatient(PatientCreateDto patientCreateDto);
 
-    PatientDto updatePatient(PatientRequestDto patientRequestDto);
+    PatientDto updatePatient(PatientUpdateDto patientUpdateDto);
 
     void deletePatient(Long id);
 }
