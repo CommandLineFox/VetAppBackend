@@ -1,7 +1,6 @@
 package raf.aleksabuncic.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +14,6 @@ public class Examination {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @Column(nullable = false)
     private Date date;
 
@@ -40,13 +38,11 @@ public class Examination {
     @Lob
     private String remarks;
 
-    @NotNull
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "FK_EXAMINATION_PATIENT"))
     private Patient patient;
 
-    @NotNull
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "FK_EXAMINATION_VETERINARIAN"))
     private Veterinarian veterinarian;
 }
