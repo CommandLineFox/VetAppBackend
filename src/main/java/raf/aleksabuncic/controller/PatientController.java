@@ -21,6 +21,11 @@ public class PatientController {
         return new ResponseEntity<>(patientService.findPatientById(id), HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<Iterable<PatientDto>> findAllPatients() {
+        return new ResponseEntity<>(patientService.findAllPatients(), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<PatientDto> createPatient(@Valid @RequestBody PatientCreateDto patientCreateDto) {
         return new ResponseEntity<>(patientService.createPatient(patientCreateDto), HttpStatus.CREATED);

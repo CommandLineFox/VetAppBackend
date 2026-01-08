@@ -10,18 +10,23 @@ import raf.aleksabuncic.dto.BreedDto;
 import raf.aleksabuncic.dto.BreedCreateDto;
 import raf.aleksabuncic.dto.BreedUpdateDto;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
+import raf.aleksabuncic.exception.UsedResourceException;
 import raf.aleksabuncic.mapper.BreedMapper;
 import raf.aleksabuncic.repository.BreedRepository;
 import raf.aleksabuncic.repository.SpeciesRepository;
 import raf.aleksabuncic.service.BreedService;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BreedServiceImplementation implements BreedService {
     private final BreedMapper breedMapper;
     private final BreedRepository breedRepository;
     private final SpeciesRepository speciesRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public BreedDto findBreedById(Long id) {
         Breed breed = breedRepository.getBreedById(id)
@@ -30,7 +35,15 @@ public class BreedServiceImplementation implements BreedService {
         return breedMapper.breedToBreedDto(breed);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
+    @Override
+    public List<BreedDto> findAllBreeds() {
+        return breedRepository.findAll()
+                .stream()
+                .map(breedMapper::breedToBreedDto)
+                .toList();
+    }
+
     @Override
     public BreedDto createBreed(BreedCreateDto breedCreateDto) {
         Breed breed = breedMapper.breedCreateDtoToBreed(breedCreateDto);
@@ -41,13 +54,12 @@ public class BreedServiceImplementation implements BreedService {
 
         try {
             breedRepository.save(breed);
-            return breedMapper.breedToBreedDto(breedRepository.save(breed));
+            return breedMapper.breedToBreedDto(breed);
         } catch (DataIntegrityViolationException e) {
             throw new ResourceNotFoundException("Breed already exists with this name: " + breed.getName());
         }
     }
 
-    @Transactional
     @Override
     public BreedDto updateBreed(Long id, BreedUpdateDto breedUpdateDto) {
         Breed breed = breedRepository.getBreedById(id)
@@ -63,21 +75,18 @@ public class BreedServiceImplementation implements BreedService {
             breed.setSpecies(species);
         }
 
-        try {
-            breedRepository.save(breed);
-            return breedMapper.breedToBreedDto(breedRepository.save(breed));
-        } catch (DataIntegrityViolationException e) {
-            throw new ResourceNotFoundException("Breed already exists with this name: " + breed.getName());
-        }
+        return breedMapper.breedToBreedDto(breed);
     }
 
-    @Transactional
     @Override
     public void deleteBreed(Long id) {
-        if (!breedRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Breed not found for this id: " + id);
-        }
+        Breed breed = breedRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Breed not found for this id: " + id));
 
-        breedRepository.deleteById(id);
+        try {
+            breedRepository.delete(breed);
+        } catch (DataIntegrityViolationException e) {
+            throw new UsedResourceException("Cannot delete breed with id: " + id + " because it is associated with other resources");
+        }
     }
 }

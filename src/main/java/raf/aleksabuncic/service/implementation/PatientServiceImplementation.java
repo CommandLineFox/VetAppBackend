@@ -12,20 +12,25 @@ import raf.aleksabuncic.dto.PatientCreateDto;
 import raf.aleksabuncic.dto.PatientUpdateDto;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
+import raf.aleksabuncic.exception.UsedResourceException;
 import raf.aleksabuncic.mapper.PatientMapper;
 import raf.aleksabuncic.repository.BreedRepository;
 import raf.aleksabuncic.repository.OwnerRepository;
 import raf.aleksabuncic.repository.PatientRepository;
 import raf.aleksabuncic.service.PatientService;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PatientServiceImplementation implements PatientService {
     private final PatientMapper patientMapper;
     private final PatientRepository patientRepository;
     private final BreedRepository breedRepository;
     private final OwnerRepository ownerRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public PatientDto findPatientById(Long id) {
         Patient patient = patientRepository.getPatientById(id)
@@ -34,7 +39,15 @@ public class PatientServiceImplementation implements PatientService {
         return patientMapper.patientToPatientDto(patient);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
+    @Override
+    public List<PatientDto> findAllPatients() {
+        return patientRepository.findAll()
+                .stream()
+                .map(patientMapper::patientToPatientDto)
+                .toList();
+    }
+
     @Override
     public PatientDto createPatient(PatientCreateDto patientCreateDto) {
         Patient patient = patientMapper.patientCreateDtoToPatient(patientCreateDto);
@@ -49,13 +62,12 @@ public class PatientServiceImplementation implements PatientService {
 
         try {
             patientRepository.save(patient);
-            return patientMapper.patientToPatientDto(patientRepository.save(patient));
+            return patientMapper.patientToPatientDto(patient);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateResourceException("Patient already exists for this ID: " + patient.getId());
         }
     }
 
-    @Transactional
     @Override
     public PatientDto updatePatient(Long id, PatientUpdateDto patientUpdateDto) {
         Patient patient = patientRepository.getPatientById(id)
@@ -97,21 +109,18 @@ public class PatientServiceImplementation implements PatientService {
             patient.setOwner(owner);
         }
 
-        try {
-            patientRepository.save(patient);
-            return patientMapper.patientToPatientDto(patient);
-        } catch (DataIntegrityViolationException e) {
-            throw new DuplicateResourceException("No changes made to patient");
-        }
+        return patientMapper.patientToPatientDto(patient);
     }
 
-    @Transactional
     @Override
     public void deletePatient(Long id) {
-        if (!patientRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Patient not found for this id: " + id);
-        }
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + id));
 
-        patientRepository.deleteById(id);
+        try {
+            patientRepository.delete(patient);
+        } catch (DataIntegrityViolationException e) {
+            throw new UsedResourceException("Cannot delete patient with id: " + id + " because it is associated with other resources");
+        }
     }
 }

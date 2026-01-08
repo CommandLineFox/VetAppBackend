@@ -21,6 +21,11 @@ public class SpeciesController {
         return new ResponseEntity<>(speciesService.findSpeciesById(id), HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<Iterable<SpeciesDto>> findAllSpecies() {
+        return new ResponseEntity<>(speciesService.findAllSpecies(), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<SpeciesDto> createSpecies(@Valid @RequestBody SpeciesCreateDto speciesCreateDto) {
         return new ResponseEntity<>(speciesService.createSpecies(speciesCreateDto), HttpStatus.CREATED);

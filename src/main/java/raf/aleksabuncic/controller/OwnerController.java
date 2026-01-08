@@ -21,6 +21,11 @@ public class OwnerController {
         return new ResponseEntity<>(ownerService.findOwnerById(id), HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<Iterable<OwnerDto>> findAllOwners() {
+        return new ResponseEntity<>(ownerService.findAllOwners(), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<OwnerDto> createOwner(@Valid @RequestBody OwnerCreateDto ownerCreateDto) {
         return new ResponseEntity<>(ownerService.createOwner(ownerCreateDto), HttpStatus.CREATED);

@@ -21,6 +21,11 @@ public class VeterinarianController {
         return new ResponseEntity<>(veterinarianService.findVeterinarianById(id), HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<Iterable<VeterinarianDto>> findAllVeterinarians() {
+        return new ResponseEntity<>(veterinarianService.findAllVeterinarians(), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<VeterinarianDto> createVeterinarian(@Valid @RequestBody VeterinarianCreateDto veterinarianCreateDto) {
         return new ResponseEntity<>(veterinarianService.createVeterinarian(veterinarianCreateDto), HttpStatus.CREATED);

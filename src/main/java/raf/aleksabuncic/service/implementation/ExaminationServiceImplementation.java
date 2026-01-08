@@ -12,20 +12,25 @@ import raf.aleksabuncic.dto.ExaminationCreateDto;
 import raf.aleksabuncic.dto.ExaminationUpdateDto;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
+import raf.aleksabuncic.exception.UsedResourceException;
 import raf.aleksabuncic.mapper.ExaminationMapper;
 import raf.aleksabuncic.repository.ExaminationRepository;
 import raf.aleksabuncic.repository.PatientRepository;
 import raf.aleksabuncic.repository.VeterinarianRepository;
 import raf.aleksabuncic.service.ExaminationService;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ExaminationServiceImplementation implements ExaminationService {
     private final ExaminationMapper examinationMapper;
     private final ExaminationRepository examinationRepository;
     private final PatientRepository patientRepository;
     private final VeterinarianRepository veterinarianRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public ExaminationDto findExaminationById(Long id) {
         Examination examination = examinationRepository.getExaminationById(id)
@@ -34,7 +39,15 @@ public class ExaminationServiceImplementation implements ExaminationService {
         return examinationMapper.examinationToExaminationDto(examination);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
+    @Override
+    public List<ExaminationDto> findAllExaminations() {
+        return examinationRepository.findAll()
+                .stream()
+                .map(examinationMapper::examinationToExaminationDto)
+                .toList();
+    }
+
     @Override
     public ExaminationDto createExamination(ExaminationCreateDto examinationCreateDto) {
         Examination examination = examinationMapper.examinationCreateDtoToExamination(examinationCreateDto);
@@ -55,7 +68,6 @@ public class ExaminationServiceImplementation implements ExaminationService {
         }
     }
 
-    @Transactional
     @Override
     public ExaminationDto updateExamination(Long id, ExaminationUpdateDto examinationUpdateDto) {
         Examination examination = examinationRepository.getExaminationById(id)
@@ -105,21 +117,18 @@ public class ExaminationServiceImplementation implements ExaminationService {
             examination.setVeterinarian(veterinarian);
         }
 
-        try {
-            examinationRepository.save(examination);
-            return examinationMapper.examinationToExaminationDto(examination);
-        } catch (DataIntegrityViolationException e) {
-            throw new DuplicateResourceException("No changes made to examination: " + examinationUpdateDto.getDate());
-        }
+        return examinationMapper.examinationToExaminationDto(examination);
     }
 
-    @Transactional
     @Override
     public void deleteExamination(Long id) {
-        if (!examinationRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Examination not found for this id: " + id);
-        }
+        Examination examination = examinationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Examination not found for this id: " + id));
 
-        examinationRepository.deleteById(id);
+        try {
+            examinationRepository.delete(examination);
+        } catch (DataIntegrityViolationException e) {
+            throw new UsedResourceException("Cannot delete examination with id: " + id + " because it is associated with other resources");
+        }
     }
 }

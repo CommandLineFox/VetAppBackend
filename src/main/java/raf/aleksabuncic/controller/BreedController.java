@@ -21,6 +21,11 @@ public class BreedController {
         return new ResponseEntity<>(breedService.findBreedById(id), HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<Iterable<BreedDto>> findAllBreeds() {
+        return new ResponseEntity<>(breedService.findAllBreeds(), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<BreedDto> createBreed(@Valid @RequestBody BreedCreateDto breedCreateDto) {
         return new ResponseEntity<>(breedService.createBreed(breedCreateDto), HttpStatus.CREATED);

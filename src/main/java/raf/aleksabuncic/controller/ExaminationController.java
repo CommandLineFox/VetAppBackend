@@ -21,6 +21,11 @@ public class ExaminationController {
         return new ResponseEntity<>(examinationService.findExaminationById(id), HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<Iterable<ExaminationDto>> findAllExaminations() {
+        return new ResponseEntity<>(examinationService.findAllExaminations(), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<ExaminationDto> createExamination(@Valid @RequestBody ExaminationCreateDto examinationCreateDto) {
         return new ResponseEntity<>(examinationService.createExamination(examinationCreateDto), HttpStatus.CREATED);

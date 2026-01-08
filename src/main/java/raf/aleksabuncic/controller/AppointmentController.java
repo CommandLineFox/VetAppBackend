@@ -21,6 +21,11 @@ public class AppointmentController {
         return new ResponseEntity<>(appointmentService.findAppointmentById(id), HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<Iterable<AppointmentDto>> findAllAppointments() {
+        return new ResponseEntity<>(appointmentService.findAllAppointments(), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<AppointmentDto> createAppointment(@Valid @RequestBody AppointmentCreateDto appointmentCreateDto) {
         return new ResponseEntity<>(appointmentService.createAppointment(appointmentCreateDto), HttpStatus.CREATED);
