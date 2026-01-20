@@ -3,9 +3,11 @@ package raf.aleksabuncic.dto;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class VeterinarianCreateDto {
     @NotBlank
     @Size(max = 30)
@@ -20,6 +22,7 @@ public class VeterinarianCreateDto {
 
     @NotBlank
     @Size(min = 8)
+    @ToString.Exclude
     private String password;
 
     @PositiveOrZero

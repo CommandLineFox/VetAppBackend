@@ -1,6 +1,7 @@
 package raf.aleksabuncic.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class VeterinarianServiceImplementation implements VeterinarianService {
     private final VeterinarianMapper veterinarianMapper;
     private final VeterinarianRepository veterinarianRepository;
@@ -29,6 +31,8 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
     @Transactional(readOnly = true)
     @Override
     public VeterinarianDto findVeterinarianById(Long id) {
+        log.info("Finding veterinarian by id: {}", id);
+
         Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + id));
 
@@ -38,6 +42,8 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
     @Transactional(readOnly = true)
     @Override
     public List<VeterinarianDto> findAllVeterinarians() {
+        log.info("Finding all veterinarians");
+
         return veterinarianRepository.findAll()
                 .stream()
                 .map(veterinarianMapper::veterinarianToVeterinarianDto)
@@ -46,12 +52,15 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
 
     @Override
     public VeterinarianDto createVeterinarian(VeterinarianCreateDto veterinarianCreateDto) {
+        log.info("Creating veterinarian: {}", veterinarianCreateDto);
+
         Veterinarian veterinarian = veterinarianMapper.veterinarianCreateDtoToVeterinarian(veterinarianCreateDto);
 
         veterinarian.setPassword(passwordEncoder.encode(veterinarianCreateDto.getPassword()));
 
         try {
             veterinarianRepository.save(veterinarian);
+            log.info("Veterinarian created: {}", veterinarianCreateDto);
             return veterinarianMapper.veterinarianToVeterinarianDto(veterinarian);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateResourceException("Veterinarian already exists for this license number: " + veterinarianCreateDto.getLicenseNumber());
@@ -60,6 +69,8 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
 
     @Override
     public VeterinarianDto updateVeterinarian(Long id, VeterinarianUpdateDto veterinarianUpdateDto) {
+        log.info("Updating veterinarian: {}", veterinarianUpdateDto);
+
         Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + id));
 
@@ -80,21 +91,20 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
             veterinarian.setPassword(passwordEncoder.encode(veterinarianUpdateDto.getPassword()));
         }
 
-        try {
-            veterinarianRepository.save(veterinarian);
-            return veterinarianMapper.veterinarianToVeterinarianDto(veterinarian);
-        } catch (DataIntegrityViolationException e) {
-            throw new DuplicateResourceException("No changes made to veterinarian: " + veterinarianUpdateDto.getLicenseNumber());
-        }
+        log.info("Veterinarian updated: {}", veterinarianUpdateDto);
+        return veterinarianMapper.veterinarianToVeterinarianDto(veterinarian);
     }
 
     @Override
     public void deleteVeterinarian(Long id) {
+        log.info("Deleting veterinarian with id: {}", id);
+
         Veterinarian veterinarian = veterinarianRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + id));
 
         try {
             veterinarianRepository.delete(veterinarian);
+            log.info("Veterinarian deleted: {}", veterinarian);
         } catch (DataIntegrityViolationException e) {
             throw new UsedResourceException("Cannot delete veterinarian with id: " + id + " because it is associated with other resources");
         }

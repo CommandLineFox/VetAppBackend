@@ -1,6 +1,7 @@
 package raf.aleksabuncic.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class SpeciesServiceImplementation implements SpeciesService {
     private final SpeciesMapper speciesMapper;
     private final SpeciesRepository speciesRepository;
@@ -27,6 +29,8 @@ public class SpeciesServiceImplementation implements SpeciesService {
     @Transactional(readOnly = true)
     @Override
     public SpeciesDto findSpeciesById(Long id) {
+        log.info("Finding species by id: {}", id);
+
         Species species = speciesRepository.getSpeciesById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Species not found for this id: " + id));
 
@@ -36,6 +40,8 @@ public class SpeciesServiceImplementation implements SpeciesService {
     @Transactional(readOnly = true)
     @Override
     public List<SpeciesDto> findAllSpecies() {
+        log.info("Finding all species");
+
         return speciesRepository.findAll()
                 .stream()
                 .map(speciesMapper::speciesToSpeciesDto)
@@ -44,6 +50,8 @@ public class SpeciesServiceImplementation implements SpeciesService {
 
     @Override
     public SpeciesDto createSpecies(SpeciesCreateDto speciesCreateDto) {
+        log.info("Creating species: {}", speciesCreateDto);
+
         Species species = speciesMapper.speciesCreateDtoToSpecies(speciesCreateDto);
 
         try {
@@ -56,6 +64,8 @@ public class SpeciesServiceImplementation implements SpeciesService {
 
     @Override
     public SpeciesDto updateSpecies(Long id, SpeciesUpdateDto speciesUpdateDto) {
+        log.info("Updating species: {}", speciesUpdateDto);
+
         Species species = speciesRepository.getSpeciesById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Species not found for this id: " + id));
 
@@ -63,16 +73,20 @@ public class SpeciesServiceImplementation implements SpeciesService {
             species.setName(speciesUpdateDto.getName());
         }
 
+        log.info("Species updated: {}", species);
         return speciesMapper.speciesToSpeciesDto(species);
     }
 
     @Override
     public void deleteSpecies(Long id) {
+        log.info("Deleting species with id: {}", id);
+
         Species species = speciesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Species not found for this id: " + id));
 
         try {
             speciesRepository.delete(species);
+            log.info("Species deleted: {}", species);
         } catch (DataIntegrityViolationException e) {
             throw new UsedResourceException("Cannot delete species with id: " + id + " because it is associated with other resources");
         }

@@ -1,6 +1,7 @@
 package raf.aleksabuncic.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class BreedServiceImplementation implements BreedService {
     private final BreedMapper breedMapper;
     private final BreedRepository breedRepository;
@@ -29,6 +31,8 @@ public class BreedServiceImplementation implements BreedService {
     @Transactional(readOnly = true)
     @Override
     public BreedDto findBreedById(Long id) {
+        log.info("Finding breed by id: {}", id);
+
         Breed breed = breedRepository.getBreedById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Breed not found for this id: " + id));
 
@@ -38,6 +42,8 @@ public class BreedServiceImplementation implements BreedService {
     @Transactional(readOnly = true)
     @Override
     public List<BreedDto> findAllBreeds() {
+        log.info("Finding all breeds");
+
         return breedRepository.findAll()
                 .stream()
                 .map(breedMapper::breedToBreedDto)
@@ -46,6 +52,8 @@ public class BreedServiceImplementation implements BreedService {
 
     @Override
     public BreedDto createBreed(BreedCreateDto breedCreateDto) {
+        log.info("Creating breed: {}", breedCreateDto);
+
         Breed breed = breedMapper.breedCreateDtoToBreed(breedCreateDto);
 
         Species species = speciesRepository.getSpeciesById(breedCreateDto.getSpeciesId())
@@ -54,6 +62,7 @@ public class BreedServiceImplementation implements BreedService {
 
         try {
             breedRepository.save(breed);
+            log.info("Breed created: {}", breed);
             return breedMapper.breedToBreedDto(breed);
         } catch (DataIntegrityViolationException e) {
             throw new ResourceNotFoundException("Breed already exists with this name: " + breed.getName());
@@ -62,6 +71,8 @@ public class BreedServiceImplementation implements BreedService {
 
     @Override
     public BreedDto updateBreed(Long id, BreedUpdateDto breedUpdateDto) {
+        log.info("Updating breed: {}", breedUpdateDto);
+
         Breed breed = breedRepository.getBreedById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Breed not found for this id: " + id));
 
@@ -75,16 +86,20 @@ public class BreedServiceImplementation implements BreedService {
             breed.setSpecies(species);
         }
 
+        log.info("Breed updated: {}", breed);
         return breedMapper.breedToBreedDto(breed);
     }
 
     @Override
     public void deleteBreed(Long id) {
+        log.info("Deleting breed with id: {}", id);
+
         Breed breed = breedRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Breed not found for this id: " + id));
 
         try {
             breedRepository.delete(breed);
+            log.info("Breed deleted: {}", breed);
         } catch (DataIntegrityViolationException e) {
             throw new UsedResourceException("Cannot delete breed with id: " + id + " because it is associated with other resources");
         }

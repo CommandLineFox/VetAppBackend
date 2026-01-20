@@ -1,6 +1,7 @@
 package raf.aleksabuncic.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ExaminationServiceImplementation implements ExaminationService {
     private final ExaminationMapper examinationMapper;
     private final ExaminationRepository examinationRepository;
@@ -33,6 +35,8 @@ public class ExaminationServiceImplementation implements ExaminationService {
     @Transactional(readOnly = true)
     @Override
     public ExaminationDto findExaminationById(Long id) {
+        log.info("Finding examination by id: {}", id);
+
         Examination examination = examinationRepository.getExaminationById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Examination not found for this id: " + id));
 
@@ -42,6 +46,8 @@ public class ExaminationServiceImplementation implements ExaminationService {
     @Transactional(readOnly = true)
     @Override
     public List<ExaminationDto> findAllExaminations() {
+        log.info("Finding all examinations");
+
         return examinationRepository.findAll()
                 .stream()
                 .map(examinationMapper::examinationToExaminationDto)
@@ -50,6 +56,8 @@ public class ExaminationServiceImplementation implements ExaminationService {
 
     @Override
     public ExaminationDto createExamination(ExaminationCreateDto examinationCreateDto) {
+        log.info("Creating examination: {}", examinationCreateDto);
+
         Examination examination = examinationMapper.examinationCreateDtoToExamination(examinationCreateDto);
 
         Patient patient = patientRepository.getPatientById(examinationCreateDto.getPatientId())
@@ -62,6 +70,7 @@ public class ExaminationServiceImplementation implements ExaminationService {
 
         try {
             examinationRepository.save(examination);
+            log.info("Examination created: {}", examination);
             return examinationMapper.examinationToExaminationDto(examination);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateResourceException("Examination already exists for this ID: " + examination.getId());
@@ -70,6 +79,8 @@ public class ExaminationServiceImplementation implements ExaminationService {
 
     @Override
     public ExaminationDto updateExamination(Long id, ExaminationUpdateDto examinationUpdateDto) {
+        log.info("Updating examination: {}", examinationUpdateDto);
+
         Examination examination = examinationRepository.getExaminationById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Examination not found for this id: " + id));
 
@@ -117,16 +128,20 @@ public class ExaminationServiceImplementation implements ExaminationService {
             examination.setVeterinarian(veterinarian);
         }
 
+        log.info("Examination updated: {}", examination);
         return examinationMapper.examinationToExaminationDto(examination);
     }
 
     @Override
     public void deleteExamination(Long id) {
+        log.info("Deleting examination with id: {}", id);
+
         Examination examination = examinationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Examination not found for this id: " + id));
 
         try {
             examinationRepository.delete(examination);
+            log.info("Examination deleted: {}", examination);
         } catch (DataIntegrityViolationException e) {
             throw new UsedResourceException("Cannot delete examination with id: " + id + " because it is associated with other resources");
         }
