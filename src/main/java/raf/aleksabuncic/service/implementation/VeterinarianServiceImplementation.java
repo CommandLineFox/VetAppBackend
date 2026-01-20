@@ -11,17 +11,22 @@ import raf.aleksabuncic.dto.VeterinarianCreateDto;
 import raf.aleksabuncic.dto.VeterinarianUpdateDto;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
+import raf.aleksabuncic.exception.UsedResourceException;
 import raf.aleksabuncic.mapper.VeterinarianMapper;
 import raf.aleksabuncic.repository.VeterinarianRepository;
 import raf.aleksabuncic.service.VeterinarianService;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class VeterinarianServiceImplementation implements VeterinarianService {
     private final VeterinarianMapper veterinarianMapper;
     private final VeterinarianRepository veterinarianRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional(readOnly = true)
     @Override
     public VeterinarianDto findVeterinarianById(Long id) {
         Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(id)
@@ -30,7 +35,15 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
         return veterinarianMapper.veterinarianToVeterinarianDto(veterinarian);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
+    @Override
+    public List<VeterinarianDto> findAllVeterinarians() {
+        return veterinarianRepository.findAll()
+                .stream()
+                .map(veterinarianMapper::veterinarianToVeterinarianDto)
+                .toList();
+    }
+
     @Override
     public VeterinarianDto createVeterinarian(VeterinarianCreateDto veterinarianCreateDto) {
         Veterinarian veterinarian = veterinarianMapper.veterinarianCreateDtoToVeterinarian(veterinarianCreateDto);
@@ -45,7 +58,6 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
         }
     }
 
-    @Transactional
     @Override
     public VeterinarianDto updateVeterinarian(Long id, VeterinarianUpdateDto veterinarianUpdateDto) {
         Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(id)
@@ -76,13 +88,15 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
         }
     }
 
-    @Transactional
     @Override
     public void deleteVeterinarian(Long id) {
-        if (!veterinarianRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Veterinarian not found for this id: " + id);
-        }
+        Veterinarian veterinarian = veterinarianRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + id));
 
-        veterinarianRepository.deleteById(id);
+        try {
+            veterinarianRepository.delete(veterinarian);
+        } catch (DataIntegrityViolationException e) {
+            throw new UsedResourceException("Cannot delete veterinarian with id: " + id + " because it is associated with other resources");
+        }
     }
 }

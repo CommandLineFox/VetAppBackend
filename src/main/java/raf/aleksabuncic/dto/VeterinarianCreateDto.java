@@ -1,8 +1,6 @@
 package raf.aleksabuncic.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,10 +15,13 @@ public class VeterinarianCreateDto {
     @Size(max = 30)
     private String lastName;
 
-    @NotNull
+    @Positive
     private Integer licenseNumber;
 
     @NotBlank
     @Size(min = 8)
     private String password;
+
+    @PositiveOrZero
+    private Long permissions;
 }

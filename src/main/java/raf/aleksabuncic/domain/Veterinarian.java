@@ -23,4 +23,7 @@ public class Veterinarian {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    private Long permissions;
 }

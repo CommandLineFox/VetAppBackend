@@ -12,20 +12,25 @@ import raf.aleksabuncic.dto.AppointmentCreateDto;
 import raf.aleksabuncic.dto.AppointmentUpdateDto;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
+import raf.aleksabuncic.exception.UsedResourceException;
 import raf.aleksabuncic.mapper.AppointmentMapper;
 import raf.aleksabuncic.repository.AppointmentRepository;
 import raf.aleksabuncic.repository.PatientRepository;
 import raf.aleksabuncic.repository.VeterinarianRepository;
 import raf.aleksabuncic.service.AppointmentService;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AppointmentServiceImplementation implements AppointmentService {
     private final AppointmentMapper appointmentMapper;
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final VeterinarianRepository veterinarianRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public AppointmentDto findAppointmentById(Long id) {
         Appointment appointment = appointmentRepository.getAppointmentById(id)
@@ -34,7 +39,15 @@ public class AppointmentServiceImplementation implements AppointmentService {
         return appointmentMapper.appointmentToAppointmentDto(appointment);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
+    @Override
+    public List<AppointmentDto> findAllAppointments() {
+        return appointmentRepository.findAll()
+                .stream()
+                .map(appointmentMapper::appointmentToAppointmentDto)
+                .toList();
+    }
+
     @Override
     public AppointmentDto createAppointment(AppointmentCreateDto appointmentCreateDto) {
         Appointment appointment = appointmentMapper.appointmentCreateDtoToAppointment(appointmentCreateDto);
@@ -56,7 +69,6 @@ public class AppointmentServiceImplementation implements AppointmentService {
         }
     }
 
-    @Transactional
     @Override
     public AppointmentDto updateAppointment(Long id, AppointmentUpdateDto appointmentUpdateDto) {
         Appointment appointment = appointmentRepository.getAppointmentById(id)
@@ -78,21 +90,18 @@ public class AppointmentServiceImplementation implements AppointmentService {
             appointment.setVeterinarian(veterinarian);
         }
 
-        try {
-            appointmentRepository.save(appointment);
-            return appointmentMapper.appointmentToAppointmentDto(appointment);
-        } catch (DataIntegrityViolationException e) {
-            throw new DuplicateResourceException("No changes made to appointment: " + appointmentUpdateDto.getDate());
-        }
+        return appointmentMapper.appointmentToAppointmentDto(appointment);
     }
 
-    @Transactional
     @Override
     public void deleteAppointment(Long id) {
-        if (!appointmentRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Appointment not found for this id: " + id);
-        }
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment not found for this id: " + id));
 
-        appointmentRepository.deleteById(id);
+        try {
+            appointmentRepository.delete(appointment);
+        } catch (DataIntegrityViolationException e) {
+            throw new UsedResourceException("Cannot delete appointment with id: " + id + " because it is associated with other resources");
+        }
     }
 }
