@@ -61,7 +61,6 @@ public class JwtUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("permissions",
                 PermissionUtils.toStringPermissions(veterinarian.getPermissions()));
-        claims.put("licenseNumber", veterinarian.getId());
 
         return Jwts.builder()
                 .setClaims(claims)
