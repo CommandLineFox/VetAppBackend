@@ -1,6 +1,7 @@
 package raf.aleksabuncic.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class AppointmentServiceImplementation implements AppointmentService {
     private final AppointmentMapper appointmentMapper;
     private final AppointmentRepository appointmentRepository;
@@ -33,6 +35,8 @@ public class AppointmentServiceImplementation implements AppointmentService {
     @Transactional(readOnly = true)
     @Override
     public AppointmentDto findAppointmentById(Long id) {
+        log.info("Finding appointment by id: {}", id);
+
         Appointment appointment = appointmentRepository.getAppointmentById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found for this id: " + id));
 
@@ -42,6 +46,8 @@ public class AppointmentServiceImplementation implements AppointmentService {
     @Transactional(readOnly = true)
     @Override
     public List<AppointmentDto> findAllAppointments() {
+        log.info("Finding all appointments");
+
         return appointmentRepository.findAll()
                 .stream()
                 .map(appointmentMapper::appointmentToAppointmentDto)
@@ -50,6 +56,8 @@ public class AppointmentServiceImplementation implements AppointmentService {
 
     @Override
     public AppointmentDto createAppointment(AppointmentCreateDto appointmentCreateDto) {
+        log.info("Creating appointment: {}", appointmentCreateDto);
+
         Appointment appointment = appointmentMapper.appointmentCreateDtoToAppointment(appointmentCreateDto);
 
         Patient patient = patientRepository.getPatientById(appointmentCreateDto.getPatientId())
@@ -63,6 +71,7 @@ public class AppointmentServiceImplementation implements AppointmentService {
 
         try {
             appointmentRepository.save(appointment);
+            log.info("Appointment created: {}", appointment);
             return appointmentMapper.appointmentToAppointmentDto(appointment);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateResourceException("Appointment already exists for this ID: " + appointmentCreateDto.getDate());
@@ -71,6 +80,8 @@ public class AppointmentServiceImplementation implements AppointmentService {
 
     @Override
     public AppointmentDto updateAppointment(Long id, AppointmentUpdateDto appointmentUpdateDto) {
+        log.info("Updating appointment: {}", appointmentUpdateDto);
+
         Appointment appointment = appointmentRepository.getAppointmentById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found for this id: " + id));
 
@@ -90,16 +101,20 @@ public class AppointmentServiceImplementation implements AppointmentService {
             appointment.setVeterinarian(veterinarian);
         }
 
+        log.info("Appointment updated: {}", appointment);
         return appointmentMapper.appointmentToAppointmentDto(appointment);
     }
 
     @Override
     public void deleteAppointment(Long id) {
+        log.info("Deleting appointment with id: {}", id);
+
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found for this id: " + id));
 
         try {
             appointmentRepository.delete(appointment);
+            log.info("Appointment deleted: {}", appointment);
         } catch (DataIntegrityViolationException e) {
             throw new UsedResourceException("Cannot delete appointment with id: " + id + " because it is associated with other resources");
         }

@@ -3,10 +3,12 @@ package raf.aleksabuncic.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
+@ToString
 public class Veterinarian {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +24,7 @@ public class Veterinarian {
     private Integer licenseNumber;
 
     @Column(nullable = false)
+    @ToString.Exclude
     private String password;
 
     @Column(nullable = false)

@@ -1,6 +1,7 @@
 package raf.aleksabuncic.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class PatientServiceImplementation implements PatientService {
     private final PatientMapper patientMapper;
     private final PatientRepository patientRepository;
@@ -33,6 +35,8 @@ public class PatientServiceImplementation implements PatientService {
     @Transactional(readOnly = true)
     @Override
     public PatientDto findPatientById(Long id) {
+        log.info("Finding patient by id: {}", id);
+
         Patient patient = patientRepository.getPatientById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + id));
 
@@ -42,6 +46,8 @@ public class PatientServiceImplementation implements PatientService {
     @Transactional(readOnly = true)
     @Override
     public List<PatientDto> findAllPatients() {
+        log.info("Finding all patients");
+
         return patientRepository.findAll()
                 .stream()
                 .map(patientMapper::patientToPatientDto)
@@ -50,6 +56,8 @@ public class PatientServiceImplementation implements PatientService {
 
     @Override
     public PatientDto createPatient(PatientCreateDto patientCreateDto) {
+        log.info("Creating patient: {}", patientCreateDto);
+
         Patient patient = patientMapper.patientCreateDtoToPatient(patientCreateDto);
 
         Breed breed = breedRepository.getBreedById(patientCreateDto.getBreedId())
@@ -70,6 +78,8 @@ public class PatientServiceImplementation implements PatientService {
 
     @Override
     public PatientDto updatePatient(Long id, PatientUpdateDto patientUpdateDto) {
+        log.info("Updating patient: {}", patientUpdateDto);
+
         Patient patient = patientRepository.getPatientById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + id));
 
@@ -109,16 +119,19 @@ public class PatientServiceImplementation implements PatientService {
             patient.setOwner(owner);
         }
 
+        log.info("Patient updated: {}", patient);
         return patientMapper.patientToPatientDto(patient);
     }
 
     @Override
     public void deletePatient(Long id) {
+        log.info("Deleting patient with id: {}", id);
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + id));
 
         try {
             patientRepository.delete(patient);
+            log.info("Patient deleted: {}", patient);
         } catch (DataIntegrityViolationException e) {
             throw new UsedResourceException("Cannot delete patient with id: " + id + " because it is associated with other resources");
         }

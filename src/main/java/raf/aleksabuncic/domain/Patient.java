@@ -3,12 +3,14 @@ package raf.aleksabuncic.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Date;
 
 @Entity
 @Getter
 @Setter
+@ToString
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,9 +36,11 @@ public class Patient {
 
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "FK_PATIENT_OWNER"))
+    @ToString.Exclude
     private Owner owner;
 
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "FK_PATIENT_BREED"))
+    @ToString.Exclude
     private Breed breed;
 }
