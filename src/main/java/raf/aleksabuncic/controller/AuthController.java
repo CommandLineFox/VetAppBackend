@@ -1,5 +1,6 @@
 package raf.aleksabuncic.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import raf.aleksabuncic.service.AuthService;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Auth API", description = "API for managing authentication")
 public class AuthController {
     private final AuthService authService;
 

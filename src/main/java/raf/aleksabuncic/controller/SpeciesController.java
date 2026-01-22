@@ -1,5 +1,6 @@
 package raf.aleksabuncic.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import raf.aleksabuncic.service.SpeciesService;
 @RestController
 @RequestMapping("/species")
 @RequiredArgsConstructor
+@Tag(name = "Species API", description = "API for managing species")
 public class SpeciesController {
     private final SpeciesService speciesService;
 

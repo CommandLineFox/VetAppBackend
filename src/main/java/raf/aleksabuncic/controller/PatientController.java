@@ -1,5 +1,6 @@
 package raf.aleksabuncic.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import raf.aleksabuncic.service.PatientService;
 @RestController
 @RequestMapping("/patient")
 @RequiredArgsConstructor
+@Tag(name = "Patient API", description = "API for managing patients")
 public class PatientController {
     private final PatientService patientService;
 

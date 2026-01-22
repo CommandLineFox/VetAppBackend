@@ -20,30 +20,37 @@ public class Examination {
     private Date date;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     @ToString.Exclude
     private String anamnesis;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     @ToString.Exclude
     private String clinicalPresentation;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     @ToString.Exclude
     private String diagnosis;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     @ToString.Exclude
     private String treatment;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     @ToString.Exclude
     private String laboratoryAnalysis;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     @ToString.Exclude
     private String specialistExamination;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     @ToString.Exclude
     private String remarks;
 

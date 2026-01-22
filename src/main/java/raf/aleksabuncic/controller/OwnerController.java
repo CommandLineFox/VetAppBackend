@@ -1,5 +1,6 @@
 package raf.aleksabuncic.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import raf.aleksabuncic.service.OwnerService;
 @RestController
 @RequestMapping("/owner")
 @RequiredArgsConstructor
+@Tag(name = "Owner API", description = "API for managing owners")
 public class OwnerController {
     private final OwnerService ownerService;
 
