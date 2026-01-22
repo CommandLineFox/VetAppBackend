@@ -29,7 +29,7 @@ public class PatientMapper {
         patient.setBirthDate(patientCreateDto.getBirthDate());
         patient.setName(patientCreateDto.getName());
         patient.setGender(patientCreateDto.getGender());
-        patient.setPassportNumber(patient.getPassportNumber());
+        patient.setPassportNumber(patientCreateDto.getPassportNumber());
         patient.setMicrochipNumber(patientCreateDto.getMicrochipNumber());
         patient.setCartonNumber(patientCreateDto.getCartonNumber());
 

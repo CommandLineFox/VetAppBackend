@@ -28,5 +28,6 @@ public class Veterinarian {
     private String password;
 
     @Column(nullable = false)
+    @ToString.Exclude
     private Long permissions;
 }

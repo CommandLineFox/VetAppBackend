@@ -33,7 +33,7 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
     public VeterinarianDto findVeterinarianById(Long id) {
         log.info("Finding veterinarian by id: {}", id);
 
-        Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(id)
+        Veterinarian veterinarian = veterinarianRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + id));
 
         return veterinarianMapper.veterinarianToVeterinarianDto(veterinarian);
@@ -71,7 +71,7 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
     public VeterinarianDto updateVeterinarian(Long id, VeterinarianUpdateDto veterinarianUpdateDto) {
         log.info("Updating veterinarian: {}", veterinarianUpdateDto);
 
-        Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(id)
+        Veterinarian veterinarian = veterinarianRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + id));
 
 
@@ -89,6 +89,10 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
 
         if (veterinarianUpdateDto.getPassword() != null) {
             veterinarian.setPassword(passwordEncoder.encode(veterinarianUpdateDto.getPassword()));
+        }
+
+        if (veterinarianUpdateDto.getPermissions() != null) {
+            veterinarian.setPermissions(veterinarianUpdateDto.getPermissions());
         }
 
         log.info("Veterinarian updated: {}", veterinarianUpdateDto);

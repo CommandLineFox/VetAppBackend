@@ -6,12 +6,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import raf.aleksabuncic.dto.AuthorizationRequestDto;
 import raf.aleksabuncic.dto.AuthorizationResponseDto;
 import raf.aleksabuncic.exception.BadUsernameOrPasswordException;
-import raf.aleksabuncic.security.CustomuserDetailsService;
 import raf.aleksabuncic.security.JwtUtil;
 import raf.aleksabuncic.service.AuthService;
 

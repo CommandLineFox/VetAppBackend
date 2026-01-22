@@ -37,7 +37,7 @@ public class AppointmentServiceImplementation implements AppointmentService {
     public AppointmentDto findAppointmentById(Long id) {
         log.info("Finding appointment by id: {}", id);
 
-        Appointment appointment = appointmentRepository.getAppointmentById(id)
+        Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found for this id: " + id));
 
         return appointmentMapper.appointmentToAppointmentDto(appointment);
@@ -60,11 +60,11 @@ public class AppointmentServiceImplementation implements AppointmentService {
 
         Appointment appointment = appointmentMapper.appointmentCreateDtoToAppointment(appointmentCreateDto);
 
-        Patient patient = patientRepository.getPatientById(appointmentCreateDto.getPatientId())
+        Patient patient = patientRepository.findById(appointmentCreateDto.getPatientId())
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + appointmentCreateDto.getPatientId()));
         appointment.setPatient(patient);
 
-        Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(appointmentCreateDto.getVeterinarianId())
+        Veterinarian veterinarian = veterinarianRepository.findById(appointmentCreateDto.getVeterinarianId())
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + appointmentCreateDto.getVeterinarianId()));
         appointment.setVeterinarian(veterinarian);
 
@@ -82,7 +82,7 @@ public class AppointmentServiceImplementation implements AppointmentService {
     public AppointmentDto updateAppointment(Long id, AppointmentUpdateDto appointmentUpdateDto) {
         log.info("Updating appointment: {}", appointmentUpdateDto);
 
-        Appointment appointment = appointmentRepository.getAppointmentById(id)
+        Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found for this id: " + id));
 
         if (appointmentUpdateDto.getDate() != null) {
@@ -90,13 +90,13 @@ public class AppointmentServiceImplementation implements AppointmentService {
         }
 
         if (appointmentUpdateDto.getPatientId() != null) {
-            Patient patient = patientRepository.getPatientById(appointmentUpdateDto.getPatientId())
+            Patient patient = patientRepository.findById(appointmentUpdateDto.getPatientId())
                     .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + appointmentUpdateDto.getPatientId()));
             appointment.setPatient(patient);
         }
 
         if (appointmentUpdateDto.getVeterinarianId() != null) {
-            Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(appointmentUpdateDto.getVeterinarianId())
+            Veterinarian veterinarian = veterinarianRepository.findById(appointmentUpdateDto.getVeterinarianId())
                     .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + appointmentUpdateDto.getVeterinarianId()));
             appointment.setVeterinarian(veterinarian);
         }

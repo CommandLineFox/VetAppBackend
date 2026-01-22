@@ -31,7 +31,7 @@ public class SpeciesServiceImplementation implements SpeciesService {
     public SpeciesDto findSpeciesById(Long id) {
         log.info("Finding species by id: {}", id);
 
-        Species species = speciesRepository.getSpeciesById(id)
+        Species species = speciesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Species not found for this id: " + id));
 
         return speciesMapper.speciesToSpeciesDto(species);
@@ -66,7 +66,7 @@ public class SpeciesServiceImplementation implements SpeciesService {
     public SpeciesDto updateSpecies(Long id, SpeciesUpdateDto speciesUpdateDto) {
         log.info("Updating species: {}", speciesUpdateDto);
 
-        Species species = speciesRepository.getSpeciesById(id)
+        Species species = speciesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Species not found for this id: " + id));
 
         if (speciesUpdateDto.getName() != null) {
