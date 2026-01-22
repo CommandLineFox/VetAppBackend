@@ -1,5 +1,6 @@
 package raf.aleksabuncic.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import raf.aleksabuncic.service.AppointmentService;
 @RestController
 @RequestMapping("/appointment")
 @RequiredArgsConstructor
+@Tag(name = "Appointment API", description = "API for managing appointments")
 public class AppointmentController {
     private final AppointmentService appointmentService;
 
