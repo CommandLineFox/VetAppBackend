@@ -33,7 +33,7 @@ public class BreedServiceImplementation implements BreedService {
     public BreedDto findBreedById(Long id) {
         log.info("Finding breed by id: {}", id);
 
-        Breed breed = breedRepository.getBreedById(id)
+        Breed breed = breedRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Breed not found for this id: " + id));
 
         return breedMapper.breedToBreedDto(breed);
@@ -56,7 +56,7 @@ public class BreedServiceImplementation implements BreedService {
 
         Breed breed = breedMapper.breedCreateDtoToBreed(breedCreateDto);
 
-        Species species = speciesRepository.getSpeciesById(breedCreateDto.getSpeciesId())
+        Species species = speciesRepository.findById(breedCreateDto.getSpeciesId())
                 .orElseThrow(() -> new ResourceNotFoundException("Species not found for this id: " + breedCreateDto.getSpeciesId()));
         breed.setSpecies(species);
 
@@ -73,7 +73,7 @@ public class BreedServiceImplementation implements BreedService {
     public BreedDto updateBreed(Long id, BreedUpdateDto breedUpdateDto) {
         log.info("Updating breed: {}", breedUpdateDto);
 
-        Breed breed = breedRepository.getBreedById(id)
+        Breed breed = breedRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Breed not found for this id: " + id));
 
         if (breedUpdateDto.getName() != null) {
@@ -81,7 +81,7 @@ public class BreedServiceImplementation implements BreedService {
         }
 
         if (breedUpdateDto.getSpeciesId() != null) {
-            Species species = speciesRepository.getSpeciesById(breedUpdateDto.getSpeciesId())
+            Species species = speciesRepository.findById(breedUpdateDto.getSpeciesId())
                     .orElseThrow(() -> new ResourceNotFoundException("Species not found for this id: " + breedUpdateDto.getSpeciesId()));
             breed.setSpecies(species);
         }

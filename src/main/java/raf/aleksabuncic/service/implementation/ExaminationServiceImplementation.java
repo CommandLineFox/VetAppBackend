@@ -37,7 +37,7 @@ public class ExaminationServiceImplementation implements ExaminationService {
     public ExaminationDto findExaminationById(Long id) {
         log.info("Finding examination by id: {}", id);
 
-        Examination examination = examinationRepository.getExaminationById(id)
+        Examination examination = examinationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Examination not found for this id: " + id));
 
         return examinationMapper.examinationToExaminationDto(examination);
@@ -60,11 +60,11 @@ public class ExaminationServiceImplementation implements ExaminationService {
 
         Examination examination = examinationMapper.examinationCreateDtoToExamination(examinationCreateDto);
 
-        Patient patient = patientRepository.getPatientById(examinationCreateDto.getPatientId())
+        Patient patient = patientRepository.findById(examinationCreateDto.getPatientId())
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + examinationCreateDto.getPatientId()));
         examination.setPatient(patient);
 
-        Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(examinationCreateDto.getVeterinarianId())
+        Veterinarian veterinarian = veterinarianRepository.findById(examinationCreateDto.getVeterinarianId())
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + examinationCreateDto.getVeterinarianId()));
         examination.setVeterinarian(veterinarian);
 
@@ -81,7 +81,7 @@ public class ExaminationServiceImplementation implements ExaminationService {
     public ExaminationDto updateExamination(Long id, ExaminationUpdateDto examinationUpdateDto) {
         log.info("Updating examination: {}", examinationUpdateDto);
 
-        Examination examination = examinationRepository.getExaminationById(id)
+        Examination examination = examinationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Examination not found for this id: " + id));
 
         if (examinationUpdateDto.getDate() != null) {
@@ -117,13 +117,13 @@ public class ExaminationServiceImplementation implements ExaminationService {
         }
 
         if (examinationUpdateDto.getPatientId() != null) {
-            Patient patient = patientRepository.getPatientById(examinationUpdateDto.getPatientId())
+            Patient patient = patientRepository.findById(examinationUpdateDto.getPatientId())
                     .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + examinationUpdateDto.getPatientId()));
             examination.setPatient(patient);
         }
 
         if (examinationUpdateDto.getVeterinarianId() != null) {
-            Veterinarian veterinarian = veterinarianRepository.getVeterinarianById(examinationUpdateDto.getVeterinarianId())
+            Veterinarian veterinarian = veterinarianRepository.findById(examinationUpdateDto.getVeterinarianId())
                     .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + examinationUpdateDto.getVeterinarianId()));
             examination.setVeterinarian(veterinarian);
         }

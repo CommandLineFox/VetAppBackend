@@ -18,4 +18,6 @@ public class VeterinarianDto {
 
     @ToString.Exclude
     private String password;
+
+    private Long permissions;
 }

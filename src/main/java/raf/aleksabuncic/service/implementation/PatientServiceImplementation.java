@@ -37,7 +37,7 @@ public class PatientServiceImplementation implements PatientService {
     public PatientDto findPatientById(Long id) {
         log.info("Finding patient by id: {}", id);
 
-        Patient patient = patientRepository.getPatientById(id)
+        Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + id));
 
         return patientMapper.patientToPatientDto(patient);
@@ -60,11 +60,11 @@ public class PatientServiceImplementation implements PatientService {
 
         Patient patient = patientMapper.patientCreateDtoToPatient(patientCreateDto);
 
-        Breed breed = breedRepository.getBreedById(patientCreateDto.getBreedId())
+        Breed breed = breedRepository.findById(patientCreateDto.getBreedId())
                 .orElseThrow(() -> new ResourceNotFoundException("Breed not found for this id: " + patientCreateDto.getBreedId()));
         patient.setBreed(breed);
 
-        Owner owner = ownerRepository.getOwnerById(patientCreateDto.getOwnerId())
+        Owner owner = ownerRepository.findById(patientCreateDto.getOwnerId())
                 .orElseThrow(() -> new ResourceNotFoundException("Owner not found for this id: " + patientCreateDto.getOwnerId()));
         patient.setOwner(owner);
 
@@ -80,7 +80,7 @@ public class PatientServiceImplementation implements PatientService {
     public PatientDto updatePatient(Long id, PatientUpdateDto patientUpdateDto) {
         log.info("Updating patient: {}", patientUpdateDto);
 
-        Patient patient = patientRepository.getPatientById(id)
+        Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + id));
 
         if (patientUpdateDto.getBirthDate() != null) {
@@ -108,13 +108,13 @@ public class PatientServiceImplementation implements PatientService {
         }
 
         if (patientUpdateDto.getBreedId() != null) {
-            Breed breed = breedRepository.getBreedById(patientUpdateDto.getBreedId())
+            Breed breed = breedRepository.findById(patientUpdateDto.getBreedId())
                     .orElseThrow(() -> new ResourceNotFoundException("Breed not found for this id: " + patientUpdateDto.getBreedId()));
             patient.setBreed(breed);
         }
 
         if (patientUpdateDto.getOwnerId() != null) {
-            Owner owner = ownerRepository.getOwnerById(patientUpdateDto.getOwnerId())
+            Owner owner = ownerRepository.findById(patientUpdateDto.getOwnerId())
                     .orElseThrow(() -> new ResourceNotFoundException("Owner not found for this id: " + patientUpdateDto.getOwnerId()));
             patient.setOwner(owner);
         }

@@ -11,13 +11,13 @@ import lombok.ToString;
 @Setter
 @ToString
 public class OwnerUpdateDto {
-    @Size(min = 30)
+    @Size(max = 30)
     private String firstName;
 
-    @Size(min = 30)
+    @Size(max = 30)
     private String lastName;
 
-    @Size(min = 100)
+    @Size(max = 100)
     @ToString.Exclude
     private String address;
 

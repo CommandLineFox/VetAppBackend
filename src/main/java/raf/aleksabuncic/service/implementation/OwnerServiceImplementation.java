@@ -31,7 +31,7 @@ public class OwnerServiceImplementation implements OwnerService {
     public OwnerDto findOwnerById(Long id) {
         log.info("Finding owner by id: {}", id);
 
-        Owner owner = ownerRepository.getOwnerById(id)
+        Owner owner = ownerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Owner not found for this id: " + id));
 
         return ownerMapper.ownerToOwnerDto(owner);
@@ -67,7 +67,7 @@ public class OwnerServiceImplementation implements OwnerService {
     public OwnerDto updateOwner(Long id, OwnerUpdateDto ownerUpdateDto) {
         log.info("Updating owner: {}", ownerUpdateDto);
 
-        Owner owner = ownerRepository.getOwnerById(id)
+        Owner owner = ownerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Owner not found for this id: " + id));
 
         if (ownerUpdateDto.getFirstName() != null) {

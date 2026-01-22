@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface OwnerRepository extends JpaRepository<Owner, Long> {
-    Optional<Owner> getOwnerById(Long id);
+    Optional<Owner> findByJmbg(String jmbg);
 }
