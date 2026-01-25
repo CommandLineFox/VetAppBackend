@@ -16,6 +16,7 @@ import raf.aleksabuncic.service.BreedService;
 @RequestMapping("/breed")
 @RequiredArgsConstructor
 @Tag(name = "Breed API", description = "API for managing breeds")
+@CrossOrigin(origins = "http://localhost:3000")
 public class BreedController {
     private final BreedService breedService;
 

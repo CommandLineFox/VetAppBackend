@@ -16,6 +16,7 @@ import raf.aleksabuncic.service.PatientService;
 @RequestMapping("/patient")
 @RequiredArgsConstructor
 @Tag(name = "Patient API", description = "API for managing patients")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PatientController {
     private final PatientService patientService;
 

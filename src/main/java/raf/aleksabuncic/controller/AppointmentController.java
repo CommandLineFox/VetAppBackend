@@ -16,6 +16,7 @@ import raf.aleksabuncic.service.AppointmentService;
 @RequestMapping("/appointment")
 @RequiredArgsConstructor
 @Tag(name = "Appointment API", description = "API for managing appointments")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AppointmentController {
     private final AppointmentService appointmentService;
 

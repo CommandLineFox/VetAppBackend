@@ -16,6 +16,7 @@ import raf.aleksabuncic.service.VeterinarianService;
 @RequestMapping("/veterinarian")
 @RequiredArgsConstructor
 @Tag(name = "Veterinarian API", description = "API for managing veterinarians")
+@CrossOrigin(origins = "http://localhost:3000")
 public class VeterinarianController {
     private final VeterinarianService veterinarianService;
 

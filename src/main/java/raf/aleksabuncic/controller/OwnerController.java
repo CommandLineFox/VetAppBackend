@@ -16,6 +16,7 @@ import raf.aleksabuncic.service.OwnerService;
 @RequestMapping("/owner")
 @RequiredArgsConstructor
 @Tag(name = "Owner API", description = "API for managing owners")
+@CrossOrigin(origins = "http://localhost:3000")
 public class OwnerController {
     private final OwnerService ownerService;
 
