@@ -16,6 +16,7 @@ import raf.aleksabuncic.service.SpeciesService;
 @RequestMapping("/species")
 @RequiredArgsConstructor
 @Tag(name = "Species API", description = "API for managing species")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SpeciesController {
     private final SpeciesService speciesService;
 

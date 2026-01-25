@@ -16,6 +16,7 @@ import raf.aleksabuncic.service.ExaminationService;
 @RequestMapping("/examination")
 @RequiredArgsConstructor
 @Tag(name = "Examination API", description = "API for managing examinations")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ExaminationController {
     private final ExaminationService examinationService;
 

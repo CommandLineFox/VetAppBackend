@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 import raf.aleksabuncic.dto.AuthorizationRequestDto;
 import raf.aleksabuncic.dto.AuthorizationResponseDto;
@@ -29,7 +30,7 @@ public class AuthServiceImplementation implements AuthService {
                     new UsernamePasswordAuthenticationToken(
                             authorizationRequestDto.getLicenseNumber().toString(),
                             authorizationRequestDto.getPassword()));
-        } catch (BadCredentialsException e) {
+        } catch (AuthenticationException e) {
             throw new BadUsernameOrPasswordException("Invalid license number or password");
         }
 
