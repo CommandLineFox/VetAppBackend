@@ -47,12 +47,10 @@ jobs:
 
       - name: Build and Start Stack
         run: |
-          # Podižemo prvo backend (baza + app)
           cd backend
           docker compose build --build-arg BUILDKIT_INLINE_CACHE=1
           docker compose up -d
           
-          # Podižemo frontend (Nginx)
           cd ../frontend
           docker compose build --build-arg BUILDKIT_INLINE_CACHE=1
           docker compose up -d
