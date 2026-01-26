@@ -25,3 +25,8 @@ services:
 
 volumes:
   pgdata:
+
+networks:
+  vet-network:
+    name: vet-network
+    driver: bridge
