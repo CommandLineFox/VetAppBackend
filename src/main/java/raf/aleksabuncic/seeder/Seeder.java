@@ -10,7 +10,6 @@ import raf.aleksabuncic.domain.Veterinarian;
 import raf.aleksabuncic.repository.VeterinarianRepository;
 
 @Component
-@Profile("!test")
 @RequiredArgsConstructor
 @Slf4j
 public class Seeder implements CommandLineRunner {
@@ -19,7 +18,6 @@ public class Seeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        veterinarianRepository.deleteAll();
         if (veterinarianRepository.count() == 0) {
             Veterinarian vet1 = new Veterinarian();
             vet1.setLicenseNumber(1);

@@ -51,17 +51,17 @@ public class VeterinarianServiceIntegrationTest {
     void setUp() throws Exception {
         veterinarianRepository.deleteAll();
 
-        Veterinarian admin = new Veterinarian();
+        Veterinarian admin = veterinarianRepository.findByLicenseNumber(1).orElseGet(Veterinarian::new);
         admin.setFirstName("System");
         admin.setLastName("Administrator");
         admin.setLicenseNumber(1);
-        admin.setPassword(passwordEncoder.encode("Testing"));
+        admin.setPassword(passwordEncoder.encode("testing1"));
         admin.setPermissions(536870911L);
         veterinarianRepository.save(admin);
 
         Map<String, String> loginRequest = new HashMap<>();
         loginRequest.put("licenseNumber", "1");
-        loginRequest.put("password", "Testing");
+        loginRequest.put("password", "testing1");
 
         String response = mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
