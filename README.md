@@ -17,7 +17,7 @@ This project is a backend system developed for a veterinary clinic management ap
 * **Database Management**: Relational data modeling using PostgreSQL with Hibernate as the ORM provider.
 * **Testing Environment**: Dedicated integration testing suite using an in-memory H2 database with PostgreSQL compatibility mode.
 
-## Tech Stack
+## Technologies
 | Layer             | Technology                             |
 |:------------------|:---------------------------------------|
 | **Language**      | Java 17                                |
@@ -46,6 +46,8 @@ This project is a backend system developed for a veterinary clinic management ap
 
 ### Building and Running 
 
+This assumes that you are already running a PostgreSQL database instance.
+
 1. Clone the repository:
 
 ```bash
@@ -66,6 +68,7 @@ mvn spring-boot:run
 ## Running with Docker (Optional)
 
 The application can also be started using Docker for easier setup and environment consistency.
+It comes with a postgres database preconfigured.
 
 ### Prerequisites
 - Docker
