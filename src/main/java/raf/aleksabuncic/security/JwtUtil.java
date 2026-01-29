@@ -71,6 +71,20 @@ public class JwtUtil {
                 .compact();
     }
 
+    public String generateToken(Veterinarian veterinarian) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("permissions",
+                PermissionUtils.toStringPermissions(veterinarian.getPermissions()));
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(veterinarian.getLicenseNumber().toString())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+                .compact();
+    }
+
     public boolean validateToken(String token, UserDetails user) {
         return (user.getUsername().equals(extractLicenseNumber(token)) && !isTokenExpired(token));
     }

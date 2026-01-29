@@ -21,10 +21,15 @@ public class VeterinarianCreateDto {
     private Integer licenseNumber;
 
     @NotBlank
+    @Email
+    private String email;
+
+    @NotBlank
     @Size(min = 8)
     @ToString.Exclude
     private String password;
 
     @PositiveOrZero
+    @ToString.Exclude
     private Long permissions;
 }

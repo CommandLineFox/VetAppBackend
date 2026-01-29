@@ -70,6 +70,7 @@ public class PatientServiceIntegrationTest {
         admin.setFirstName("System");
         admin.setLastName("Administrator");
         admin.setLicenseNumber(1);
+        admin.setEmail("admin@gmail.com");
         admin.setPassword(passwordEncoder.encode("testing1"));
         admin.setPermissions(536870911L);
         veterinarianRepository.save(admin);
