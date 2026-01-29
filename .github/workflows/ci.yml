@@ -73,6 +73,10 @@ jobs:
           REACT_APP_API_URL: ${{ secrets.API_URL }}
           REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
 
+      - name: Check Backend Logs
+        run: cd backend && docker compose logs vet_backend_app
+
+
       - name: Wait for Health
         run: |
           timeout 120s bash -c 'until curl -f http://localhost:8080/api/health; do echo "Wait BE..."; sleep 5; done'
