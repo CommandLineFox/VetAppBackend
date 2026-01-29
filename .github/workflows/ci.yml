@@ -73,9 +73,6 @@ jobs:
           docker compose build --build-arg BUILDKIT_INLINE_CACHE=1
           docker compose up -d
 
-      - name: Check Backend Logs
-        run: cd backend && docker compose logs app
-
       - name: Wait for Health
         run: |
           timeout 120s bash -c 'until curl -f http://localhost:8080/api/health; do echo "Wait BE..."; sleep 5; done'
