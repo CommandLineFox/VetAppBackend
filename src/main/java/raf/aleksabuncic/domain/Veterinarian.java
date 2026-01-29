@@ -23,6 +23,9 @@ public class Veterinarian {
     @Column(nullable = false, unique = true)
     private Integer licenseNumber;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
     @Column(nullable = false)
     @ToString.Exclude
     private String password;

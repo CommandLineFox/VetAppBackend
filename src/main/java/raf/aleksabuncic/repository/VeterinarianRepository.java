@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface VeterinarianRepository extends JpaRepository<Veterinarian, Long> {
     Optional<Veterinarian> findByLicenseNumber(Integer licenseNumber);
+
+    Optional<Veterinarian> findByEmail(String email);
 }

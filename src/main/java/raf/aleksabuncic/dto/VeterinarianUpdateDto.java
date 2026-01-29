@@ -1,8 +1,6 @@
 package raf.aleksabuncic.dto;
 
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -20,10 +18,14 @@ public class VeterinarianUpdateDto {
     @Positive
     private Integer licenseNumber;
 
+    @Email
+    private String email;
+
     @Size(min = 8)
     @ToString.Exclude
     private String password;
 
     @PositiveOrZero
+    @ToString.Exclude
     private Long permissions;
 }

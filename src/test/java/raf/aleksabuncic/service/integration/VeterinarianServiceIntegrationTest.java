@@ -55,6 +55,7 @@ public class VeterinarianServiceIntegrationTest {
         admin.setFirstName("System");
         admin.setLastName("Administrator");
         admin.setLicenseNumber(1);
+        admin.setEmail("admin@gmail.com");
         admin.setPassword(passwordEncoder.encode("testing1"));
         admin.setPermissions(536870911L);
         veterinarianRepository.save(admin);
@@ -80,6 +81,7 @@ public class VeterinarianServiceIntegrationTest {
         veterinarianCreateDto.setFirstName("Test");
         veterinarianCreateDto.setLastName("Testing");
         veterinarianCreateDto.setLicenseNumber(2);
+        veterinarianCreateDto.setEmail("tester@gmail.com");
         veterinarianCreateDto.setPassword("Testing1");
         veterinarianCreateDto.setPermissions(1L);
 
@@ -103,6 +105,7 @@ public class VeterinarianServiceIntegrationTest {
         veterinarian.setFirstName("Test");
         veterinarian.setLastName("Testing");
         veterinarian.setLicenseNumber(2);
+        veterinarian.setEmail("tester@gmail.com");
         veterinarian.setPassword(passwordEncoder.encode("Testing1"));
         veterinarian.setPermissions(1L);
         veterinarianRepository.save(veterinarian);
@@ -112,6 +115,7 @@ public class VeterinarianServiceIntegrationTest {
         veterinarianUpdateDto.setLastName("Testing1");
         veterinarianUpdateDto.setPassword("Testing2");
         veterinarianUpdateDto.setLicenseNumber(2);
+        veterinarianUpdateDto.setEmail("tester2@gmail.com");
         veterinarianUpdateDto.setPermissions(2L);
 
         mockMvc.perform(put("/veterinarian/" + veterinarian.getId())
@@ -135,6 +139,7 @@ public class VeterinarianServiceIntegrationTest {
         veterinarian.setFirstName("Test");
         veterinarian.setLastName("Testing");
         veterinarian.setLicenseNumber(2);
+        veterinarian.setEmail("tester@gmail.com");
         veterinarian.setPassword(passwordEncoder.encode("Testing1"));
         veterinarian.setPermissions(1L);
         veterinarianRepository.save(veterinarian);

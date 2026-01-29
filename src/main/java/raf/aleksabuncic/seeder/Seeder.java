@@ -18,11 +18,13 @@ public class Seeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        veterinarianRepository.deleteAll();
         if (veterinarianRepository.count() == 0) {
             Veterinarian vet1 = new Veterinarian();
             vet1.setLicenseNumber(1);
             vet1.setFirstName("Admin");
             vet1.setLastName("Access");
+            vet1.setEmail("test@gmail.com");
             vet1.setPassword(passwordEncoder.encode("testing1"));
             vet1.setPermissions(536870911L);
 
