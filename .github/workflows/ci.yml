@@ -86,9 +86,3 @@ jobs:
           install: true
         env:
           CYPRESS_BASE_URL: http://localhost:3000
-
-      - name: View Backend Logs
-        run: |
-          echo "--- Spring Boot Backend Logs ---"
-          cd backend
-          docker compose logs app
