@@ -36,6 +36,15 @@ jobs:
   cypress-e2e-tests:
     runs-on: ubuntu-latest
     needs: backend-tests
+    env:
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      SPRING_DATASOURCE_URL: ${{ secrets.DB_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      REACT_APP_API_URL: ${{ secrets.API_URL }}
+      REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
     steps:
       - name: Checkout Frontend
         uses: actions/checkout@v4
@@ -63,19 +72,6 @@ jobs:
           cd ../frontend
           docker compose build --build-arg BUILDKIT_INLINE_CACHE=1
           docker compose up -d
-        env:
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          SPRING_DATASOURCE_URL: ${{ secrets.DB_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          REACT_APP_API_URL: ${{ secrets.API_URL }}
-          REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-
-      - name: Check Backend Logs
-        run: cd backend && docker compose logs vet_backend_app
-
 
       - name: Wait for Health
         run: |
