@@ -1,10 +1,11 @@
 package raf.aleksabuncic.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -12,7 +13,8 @@ import java.util.Date;
 public class ExaminationDto {
     private Long id;
 
-    private Date date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime date;
 
     @ToString.Exclude
     private String anamnesis;

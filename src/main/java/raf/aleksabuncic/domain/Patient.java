@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -20,7 +20,7 @@ public class Patient {
     private String name;
 
     @Column(nullable = false)
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Column(nullable = false, length = 1)
     private String gender;
@@ -31,7 +31,7 @@ public class Patient {
     @Column(nullable = false, unique = true, length = 15)
     private String microchipNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Integer cartonNumber;
 
     @ManyToOne(optional = false)

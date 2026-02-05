@@ -12,6 +12,7 @@ public class AppointmentMapper {
 
         appointmentDto.setId(appointment.getId());
         appointmentDto.setDate(appointment.getDate());
+        appointmentDto.setDescription(appointment.getDescription());
         appointmentDto.setPatientId(appointment.getPatient().getId());
         appointmentDto.setVeterinarianId(appointment.getVeterinarian().getId());
 
@@ -21,6 +22,7 @@ public class AppointmentMapper {
     public Appointment appointmentCreateDtoToAppointment(AppointmentCreateDto appointmentCreateDto) {
         Appointment appointment = new Appointment();
 
+        appointment.setDescription(appointmentCreateDto.getDescription());
         appointment.setDate(appointmentCreateDto.getDate());
 
         return appointment;

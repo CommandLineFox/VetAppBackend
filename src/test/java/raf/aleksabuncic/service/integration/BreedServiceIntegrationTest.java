@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Breed;
 import raf.aleksabuncic.domain.Species;
 import raf.aleksabuncic.domain.Veterinarian;
+import raf.aleksabuncic.dto.BreedCreateDto;
 import raf.aleksabuncic.dto.BreedUpdateDto;
 import raf.aleksabuncic.repository.BreedRepository;
 import raf.aleksabuncic.repository.SpeciesRepository;
@@ -93,18 +94,55 @@ public class BreedServiceIntegrationTest {
         Optional<Species> species = speciesRepository.findByName("Test Species");
         assertTrue(species.isPresent());
 
-        Map<String, String> breedRequest = new HashMap<>();
-        breedRequest.put("name", "Test Breed");
-        breedRequest.put("speciesId", species.get().getId().toString());
+        BreedCreateDto breedCreateDto = new BreedCreateDto();
+        breedCreateDto.setName("Test Breed");
+        breedCreateDto.setSpeciesId(species.get().getId());
 
         mockMvc.perform(post("/breed")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + token)
-                        .content(objectMapper.writeValueAsString(breedRequest)))
+                        .content(objectMapper.writeValueAsString(breedCreateDto)))
                 .andExpect(status().isCreated());
 
         Optional<Breed> breed = breedRepository.findByName("Test Breed");
         assertTrue(breed.isPresent());
+    }
+
+    @Test
+    void createBreedWithExistingName() throws Exception {
+        Optional<Species> species = speciesRepository.findByName("Test Species");
+        assertTrue(species.isPresent());
+
+        Breed breed = new Breed();
+        breed.setName("Test breed");
+        breed.setSpecies(species.get());
+        breedRepository.save(breed);
+
+        BreedCreateDto breedCreateDto = new BreedCreateDto();
+        breedCreateDto.setName("Test breed");
+        breedCreateDto.setSpeciesId(species.get().getId());
+
+        mockMvc.perform(post("/breed")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(breedCreateDto)))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void createBreedWithEmptyName() throws Exception {
+        Optional<Species> species = speciesRepository.findByName("Test Species");
+        assertTrue(species.isPresent());
+
+        BreedCreateDto breedCreateDto = new BreedCreateDto();
+        breedCreateDto.setName("");
+        breedCreateDto.setSpeciesId(species.get().getId());
+
+        mockMvc.perform(post("/breed")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(breedCreateDto)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -135,6 +173,60 @@ public class BreedServiceIntegrationTest {
 
         Optional<Breed> updatedBreed = breedRepository.findByName("Updated Test breed");
         assertTrue(updatedBreed.isPresent());
+    }
+
+    @Test
+    void updateBreedWithExistingName() throws Exception {
+        Optional<Species> species = speciesRepository.findByName("Test Species");
+        assertTrue(species.isPresent());
+
+        Species updatedSpecies = new Species();
+        updatedSpecies.setName("Test Updated Species");
+        speciesRepository.save(updatedSpecies);
+
+        Breed breed = new Breed();
+        breed.setName("Test breed");
+        breed.setSpecies(species.get());
+        breedRepository.save(breed);
+
+        Breed breed2 = new Breed();
+        breed2.setName("Test breed 2");
+        breed2.setSpecies(species.get());
+        breedRepository.save(breed2);
+
+        BreedUpdateDto breedUpdateDto = new BreedUpdateDto();
+        breedUpdateDto.setName("Test breed 2");
+        breedUpdateDto.setSpeciesId(updatedSpecies.getId());
+
+        mockMvc.perform(put("/breed/" + breed.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(breedUpdateDto)))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void updateBreedWithEmptyName() throws Exception {
+        Optional<Species> species = speciesRepository.findByName("Test Species");
+        assertTrue(species.isPresent());
+
+        Species updatedSpecies = new Species();
+        updatedSpecies.setName("Test Updated Species");
+        speciesRepository.save(updatedSpecies);
+
+        Breed breed = new Breed();
+        breed.setName("Test breed");
+        breed.setSpecies(species.get());
+        breedRepository.save(breed);
+
+        BreedUpdateDto breedUpdateDto = new BreedUpdateDto();
+        breedUpdateDto.setName("");
+
+        mockMvc.perform(put("/breed/" + breed.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(breedUpdateDto)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

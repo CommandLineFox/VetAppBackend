@@ -85,51 +85,96 @@ public class ExaminationServiceImplementation implements ExaminationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Examination not found for this id: " + id));
 
         if (examinationUpdateDto.getDate() != null) {
+            if (examination.getDate().equals(examinationUpdateDto.getDate())) {
+                throw new DuplicateResourceException("Examination date cannot be the same as the existing one");
+            }
+
             examination.setDate(examinationUpdateDto.getDate());
         }
 
         if (examinationUpdateDto.getAnamnesis() != null) {
+            if (examination.getAnamnesis().equals(examinationUpdateDto.getAnamnesis())) {
+                throw new DuplicateResourceException("Examination anamnesis cannot be the same as the existing one");
+            }
+
             examination.setAnamnesis(examinationUpdateDto.getAnamnesis());
         }
 
         if (examinationUpdateDto.getClinicalPresentation() != null) {
+            if (examination.getClinicalPresentation().equals(examinationUpdateDto.getClinicalPresentation())) {
+                throw new DuplicateResourceException("Examination clinical presentation cannot be the same as the existing one");
+            }
+
             examination.setClinicalPresentation(examinationUpdateDto.getClinicalPresentation());
         }
 
         if (examinationUpdateDto.getDiagnosis() != null) {
+            if (examination.getDiagnosis().equals(examinationUpdateDto.getDiagnosis())) {
+                throw new DuplicateResourceException("Examination diagnosis cannot be the same as the existing one");
+            }
+
             examination.setDiagnosis(examinationUpdateDto.getDiagnosis());
         }
 
         if (examinationUpdateDto.getTreatment() != null) {
+            if (examination.getTreatment().equals(examinationUpdateDto.getTreatment())) {
+                throw new DuplicateResourceException("Examination treatment cannot be the same as the existing one");
+            }
+
             examination.setTreatment(examinationUpdateDto.getTreatment());
         }
 
         if (examinationUpdateDto.getLaboratoryAnalysis() != null) {
+            if (examination.getLaboratoryAnalysis().equals(examinationUpdateDto.getLaboratoryAnalysis())) {
+                throw new DuplicateResourceException("Examination laboratory analysis cannot be the same as the existing one");
+            }
+
             examination.setLaboratoryAnalysis(examinationUpdateDto.getLaboratoryAnalysis());
         }
 
         if (examinationUpdateDto.getSpecialistExamination() != null) {
+            if (examination.getSpecialistExamination().equals(examinationUpdateDto.getSpecialistExamination())) {
+                throw new DuplicateResourceException("Examination specialist examination cannot be the same as the existing one");
+            }
+
             examination.setSpecialistExamination(examinationUpdateDto.getSpecialistExamination());
         }
 
         if (examinationUpdateDto.getRemarks() != null) {
+            if (examination.getRemarks().equals(examinationUpdateDto.getRemarks())) {
+                throw new DuplicateResourceException("Examination remarks cannot be the same as the existing one");
+            }
+
             examination.setRemarks(examinationUpdateDto.getRemarks());
         }
 
         if (examinationUpdateDto.getPatientId() != null) {
+            if (examination.getPatient().getId().equals(examinationUpdateDto.getPatientId())) {
+                throw new DuplicateResourceException("Examination patient cannot be the same as the existing one");
+            }
+
             Patient patient = patientRepository.findById(examinationUpdateDto.getPatientId())
                     .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + examinationUpdateDto.getPatientId()));
             examination.setPatient(patient);
         }
 
         if (examinationUpdateDto.getVeterinarianId() != null) {
+            if (examination.getVeterinarian().getId().equals(examinationUpdateDto.getVeterinarianId())) {
+                throw new DuplicateResourceException("Examination veterinarian cannot be the same as the existing one");
+            }
+
             Veterinarian veterinarian = veterinarianRepository.findById(examinationUpdateDto.getVeterinarianId())
                     .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + examinationUpdateDto.getVeterinarianId()));
             examination.setVeterinarian(veterinarian);
         }
 
-        log.info("Examination updated: {}", examination);
-        return examinationMapper.examinationToExaminationDto(examination);
+        try {
+            examinationRepository.save(examination);
+            log.info("Examination updated: {}", examination);
+            return examinationMapper.examinationToExaminationDto(examination);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateResourceException("There was a problem updating the examination");
+        }
     }
 
     @Override

@@ -17,6 +17,7 @@ import raf.aleksabuncic.dto.PatientCreateDto;
 import raf.aleksabuncic.dto.PatientUpdateDto;
 import raf.aleksabuncic.repository.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -119,7 +120,7 @@ public class PatientServiceIntegrationTest {
         PatientCreateDto patientCreateDto = new PatientCreateDto();
         patientCreateDto.setName("Test Patient");
         patientCreateDto.setGender("M");
-        patientCreateDto.setBirthDate(new Date());
+        patientCreateDto.setBirthDate(LocalDate.now());
         patientCreateDto.setPassportNumber("RS12345678");
         patientCreateDto.setMicrochipNumber("123456789123456");
         patientCreateDto.setCartonNumber(1);
@@ -141,6 +142,67 @@ public class PatientServiceIntegrationTest {
 
         Optional<Patient> patient = patientRepository.findByName(patientCreateDto.getName());
         assertTrue(patient.isPresent());
+    }
+
+    @Test
+    void createPatientWithEmptyName() throws Exception {
+        Optional<Breed> breed = breedRepository.findByName("Test Breed");
+        assertTrue(breed.isPresent());
+
+        Optional<Owner> owner = ownerRepository.findByJmbg("1602002000001");
+        assertTrue(owner.isPresent());
+
+        PatientCreateDto patientCreateDto = new PatientCreateDto();
+        patientCreateDto.setName("");
+        patientCreateDto.setGender("M");
+        patientCreateDto.setBirthDate(LocalDate.now());
+        patientCreateDto.setPassportNumber("RS12345678");
+        patientCreateDto.setMicrochipNumber("123456789123456");
+        patientCreateDto.setCartonNumber(1);
+        patientCreateDto.setBreedId(breed.get().getId());
+        patientCreateDto.setOwnerId(owner.get().getId());
+
+        mockMvc.perform(post("/patient")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(patientCreateDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createPatientWithExistingPassportNumber() throws Exception {
+        Optional<Breed> breed = breedRepository.findByName("Test Breed");
+        assertTrue(breed.isPresent());
+
+        Optional<Owner> owner = ownerRepository.findByJmbg("1602002000001");
+        assertTrue(owner.isPresent());
+
+        Patient patient = new Patient();
+        patient.setName("Test Patient");
+        patient.setGender("M");
+        patient.setBirthDate(LocalDate.now());
+        patient.setPassportNumber("RS12345678");
+        patient.setMicrochipNumber("123456789123456");
+        patient.setCartonNumber(1);
+        patient.setBreed(breed.get());
+        patient.setOwner(owner.get());
+        patientRepository.save(patient);
+
+        PatientCreateDto patientCreateDto = new PatientCreateDto();
+        patientCreateDto.setName("Test Patient 2");
+        patientCreateDto.setGender("M");
+        patientCreateDto.setBirthDate(LocalDate.now());
+        patientCreateDto.setPassportNumber("RS12345678");
+        patientCreateDto.setMicrochipNumber("223456789123456");
+        patientCreateDto.setCartonNumber(2);
+        patientCreateDto.setBreedId(breed.get().getId());
+        patientCreateDto.setOwnerId(owner.get().getId());
+
+        mockMvc.perform(post("/patient")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(patientCreateDto)))
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -168,7 +230,7 @@ public class PatientServiceIntegrationTest {
         Patient patient = new Patient();
         patient.setName("Test Patient");
         patient.setGender("M");
-        patient.setBirthDate(new Date());
+        patient.setBirthDate(LocalDate.now());
         patient.setPassportNumber("RS12345678");
         patient.setMicrochipNumber("123456789123456");
         patient.setCartonNumber(1);
@@ -179,7 +241,7 @@ public class PatientServiceIntegrationTest {
         PatientUpdateDto patientUpdateDto = new PatientUpdateDto();
         patientUpdateDto.setName("Test Patient Updated");
         patientUpdateDto.setGender("F");
-        patientUpdateDto.setBirthDate(new Date());
+        patientUpdateDto.setBirthDate(LocalDate.now().minusYears(18));
         patientUpdateDto.setPassportNumber("RS12345719");
         patientUpdateDto.setMicrochipNumber("111111111111111");
         patientUpdateDto.setCartonNumber(2);
@@ -204,6 +266,118 @@ public class PatientServiceIntegrationTest {
     }
 
     @Test
+    void updatePatientWithEmptyName() throws Exception {
+        Optional<Breed> breed = breedRepository.findByName("Test Breed");
+        assertTrue(breed.isPresent());
+
+        Breed updatedBreed = new Breed();
+        updatedBreed.setName("Updated Test Breed");
+        updatedBreed.setSpecies(breed.get().getSpecies());
+        breedRepository.save(updatedBreed);
+
+        Optional<Owner> owner = ownerRepository.findByJmbg("1602002000001");
+        assertTrue(owner.isPresent());
+
+        Owner updatedOwner = new Owner();
+        updatedOwner.setFirstName("Test2");
+        updatedOwner.setLastName("Testing2");
+        updatedOwner.setAddress("Far far far away");
+        updatedOwner.setEmail("testing2@gmail.com");
+        updatedOwner.setPhoneNumber("063333334");
+        updatedOwner.setJmbg("1602002000002");
+        ownerRepository.save(updatedOwner);
+
+        Patient patient = new Patient();
+        patient.setName("Test Patient");
+        patient.setGender("M");
+        patient.setBirthDate(LocalDate.now());
+        patient.setPassportNumber("RS12345678");
+        patient.setMicrochipNumber("123456789123456");
+        patient.setCartonNumber(1);
+        patient.setBreed(breed.get());
+        patient.setOwner(owner.get());
+        patientRepository.save(patient);
+
+        PatientUpdateDto patientUpdateDto = new PatientUpdateDto();
+        patientUpdateDto.setName("");
+        patientUpdateDto.setGender("F");
+        patientUpdateDto.setBirthDate(LocalDate.now().minusYears(18));
+        patientUpdateDto.setPassportNumber("RS12345719");
+        patientUpdateDto.setMicrochipNumber("111111111111111");
+        patientUpdateDto.setCartonNumber(2);
+        patientUpdateDto.setBreedId(updatedBreed.getId());
+        patientUpdateDto.setOwnerId(updatedOwner.getId());
+
+        mockMvc.perform(put("/patient/" + patient.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(patientUpdateDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updatePatientWithExistingPassportNumber() throws Exception {
+        Optional<Breed> breed = breedRepository.findByName("Test Breed");
+        assertTrue(breed.isPresent());
+
+        Breed updatedBreed = new Breed();
+        updatedBreed.setName("Updated Test Breed");
+        updatedBreed.setSpecies(breed.get().getSpecies());
+        breedRepository.save(updatedBreed);
+
+        Optional<Owner> owner = ownerRepository.findByJmbg("1602002000001");
+        assertTrue(owner.isPresent());
+
+        Owner updatedOwner = new Owner();
+        updatedOwner.setFirstName("Test2");
+        updatedOwner.setLastName("Testing2");
+        updatedOwner.setAddress("Far far far away");
+        updatedOwner.setEmail("testing2@gmail.com");
+        updatedOwner.setPhoneNumber("063333334");
+        updatedOwner.setJmbg("1602002000002");
+        ownerRepository.save(updatedOwner);
+
+        Patient patient = new Patient();
+        patient.setName("Test Patient");
+        patient.setGender("M");
+        patient.setBirthDate(LocalDate.now());
+        patient.setPassportNumber("RS12345678");
+        patient.setMicrochipNumber("123456789123456");
+        patient.setCartonNumber(1);
+        patient.setBreed(breed.get());
+        patient.setOwner(owner.get());
+        patientRepository.save(patient);
+
+
+        Patient patient2 = new Patient();
+        patient2.setName("Test Patient 2");
+        patient2.setGender("M");
+        patient2.setBirthDate(LocalDate.now());
+        patient2.setPassportNumber("RS12345671");
+        patient2.setMicrochipNumber("123456789123454");
+        patient2.setCartonNumber(2);
+        patient2.setBreed(breed.get());
+        patient2.setOwner(owner.get());
+        patientRepository.save(patient2);
+
+        PatientUpdateDto patientUpdateDto = new PatientUpdateDto();
+        patientUpdateDto.setName("Test Patient Updated");
+        patientUpdateDto.setGender("F");
+        patientUpdateDto.setBirthDate(LocalDate.now().minusYears(18));
+        patientUpdateDto.setPassportNumber("RS12345671");
+        patientUpdateDto.setMicrochipNumber("111111111111111");
+        patientUpdateDto.setCartonNumber(2);
+        patientUpdateDto.setBreedId(updatedBreed.getId());
+        patientUpdateDto.setOwnerId(updatedOwner.getId());
+
+        mockMvc.perform(put("/patient/" + patient.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(patientUpdateDto)))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
     void deletePatient() throws Exception {
         Optional<Breed> breed = breedRepository.findByName("Test Breed");
         assertTrue(breed.isPresent());
@@ -214,7 +388,7 @@ public class PatientServiceIntegrationTest {
         Patient patient = new Patient();
         patient.setName("Test Patient");
         patient.setGender("M");
-        patient.setBirthDate(new Date());
+        patient.setBirthDate(LocalDate.now());
         patient.setPassportNumber("RS12345678");
         patient.setMicrochipNumber("123456789123456");
         patient.setCartonNumber(1);

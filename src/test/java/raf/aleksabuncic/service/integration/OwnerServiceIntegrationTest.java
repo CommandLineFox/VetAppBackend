@@ -101,6 +101,49 @@ public class OwnerServiceIntegrationTest {
     }
 
     @Test
+    void createOwnerWithExistingJmbg() throws Exception {
+        Owner owner = new Owner();
+        owner.setFirstName("Test");
+        owner.setLastName("Testing");
+        owner.setAddress("Far far away");
+        owner.setEmail("testing@gmail.com");
+        owner.setPhoneNumber("063333333");
+        owner.setJmbg("1602002000001");
+        ownerRepository.save(owner);
+
+        OwnerCreateDto ownerCreateDto = new OwnerCreateDto();
+        ownerCreateDto.setFirstName("Test 2");
+        ownerCreateDto.setLastName("Testing 2");
+        ownerCreateDto.setAddress("Further away");
+        ownerCreateDto.setEmail("testing2@gmail.com");
+        ownerCreateDto.setPhoneNumber("064444444");
+        ownerCreateDto.setJmbg("1602002000001");
+
+        mockMvc.perform(post("/owner")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(ownerCreateDto)))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void createOwnerWithEmptyJmbg() throws Exception {
+        OwnerCreateDto ownerCreateDto = new OwnerCreateDto();
+        ownerCreateDto.setFirstName("Test");
+        ownerCreateDto.setLastName("Testing");
+        ownerCreateDto.setAddress("Far far away");
+        ownerCreateDto.setEmail("testing@gmail.com");
+        ownerCreateDto.setPhoneNumber("063333333");
+        ownerCreateDto.setJmbg("");
+
+        mockMvc.perform(post("/owner")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(ownerCreateDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void updateOwner() throws Exception {
         Owner owner = new Owner();
         owner.setFirstName("Test");
@@ -133,6 +176,62 @@ public class OwnerServiceIntegrationTest {
 
         Optional<Owner> updatedOwner = ownerRepository.findById(owner.getId());
         assertTrue(updatedOwner.isPresent());
+    }
+
+    @Test
+    void updateOwnerWithExistingJmbg() throws Exception {
+        Owner owner = new Owner();
+        owner.setFirstName("Test");
+        owner.setLastName("Testing");
+        owner.setAddress("Far far away");
+        owner.setEmail("testing@gmail.com");
+        owner.setPhoneNumber("063333333");
+        owner.setJmbg("1602002000001");
+        ownerRepository.save(owner);
+
+        Owner owner2 = new Owner();
+        owner2.setFirstName("Test 2");
+        owner2.setLastName("Testing 2");
+        owner2.setAddress("Further away");
+        owner2.setEmail("testing2@gmail.com");
+        owner2.setPhoneNumber("064444444");
+        owner2.setJmbg("1602002000002");
+        ownerRepository.save(owner2);
+
+        OwnerUpdateDto ownerUpdateDto = new OwnerUpdateDto();
+        ownerUpdateDto.setJmbg("1602002000002");
+
+        mockMvc.perform(put("/owner/" + owner.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(ownerUpdateDto)))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void updateOwnerWithEmptyJmbg() throws Exception {
+        Owner owner = new Owner();
+        owner.setFirstName("Test");
+        owner.setLastName("Testing");
+        owner.setAddress("Far far away");
+        owner.setEmail("testing@gmail.com");
+        owner.setPhoneNumber("063333333");
+        owner.setJmbg("1602002000001");
+        ownerRepository.save(owner);
+
+        OwnerUpdateDto ownerUpdateDto = new OwnerUpdateDto();
+        ownerUpdateDto.setFirstName("Test1");
+        ownerUpdateDto.setLastName("Testing1");
+        ownerUpdateDto.setAddress("Further away");
+        ownerUpdateDto.setEmail("testing2@gmail.com");
+        ownerUpdateDto.setPhoneNumber("063333334");
+        ownerUpdateDto.setJmbg("");
+
+        mockMvc.perform(put("/owner/" + owner.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(ownerUpdateDto)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

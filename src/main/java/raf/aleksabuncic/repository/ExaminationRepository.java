@@ -6,10 +6,11 @@ import raf.aleksabuncic.domain.Examination;
 import raf.aleksabuncic.domain.Patient;
 import raf.aleksabuncic.domain.Veterinarian;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
 @Repository
 public interface ExaminationRepository extends JpaRepository<Examination, Long> {
-    Optional<Examination> findByDateAndPatientAndVeterinarian(Date date, Patient patient, Veterinarian veterinarian);
+    Optional<Examination> findByDateAndPatientAndVeterinarian(LocalDateTime date, Patient patient, Veterinarian veterinarian);
 }

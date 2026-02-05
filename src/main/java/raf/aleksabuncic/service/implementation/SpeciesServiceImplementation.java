@@ -9,6 +9,7 @@ import raf.aleksabuncic.domain.Species;
 import raf.aleksabuncic.dto.SpeciesDto;
 import raf.aleksabuncic.dto.SpeciesCreateDto;
 import raf.aleksabuncic.dto.SpeciesUpdateDto;
+import raf.aleksabuncic.exception.BadRequestException;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.exception.UsedResourceException;
@@ -17,6 +18,7 @@ import raf.aleksabuncic.repository.SpeciesRepository;
 import raf.aleksabuncic.service.SpeciesService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +54,11 @@ public class SpeciesServiceImplementation implements SpeciesService {
     public SpeciesDto createSpecies(SpeciesCreateDto speciesCreateDto) {
         log.info("Creating species: {}", speciesCreateDto);
 
+        boolean existingSpecies = speciesRepository.existsByName(speciesCreateDto.getName());
+        if (existingSpecies) {
+            throw new DuplicateResourceException("Species already exists for this name: " + speciesCreateDto.getName());
+        }
+
         Species species = speciesMapper.speciesCreateDtoToSpecies(speciesCreateDto);
 
         try {
@@ -66,10 +73,20 @@ public class SpeciesServiceImplementation implements SpeciesService {
     public SpeciesDto updateSpecies(Long id, SpeciesUpdateDto speciesUpdateDto) {
         log.info("Updating species: {}", speciesUpdateDto);
 
+        boolean existingSpecies = speciesRepository.existsByName(speciesUpdateDto.getName());
+
         Species species = speciesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Species not found for this id: " + id));
 
         if (speciesUpdateDto.getName() != null) {
+            if (species.getName().equals(speciesUpdateDto.getName())) {
+                throw new DuplicateResourceException("Species name cannot be the same as the old one");
+            }
+
+            if (existingSpecies) {
+                throw new DuplicateResourceException("Species already exists for this name: " + speciesUpdateDto.getName());
+            }
+
             species.setName(speciesUpdateDto.getName());
         }
 

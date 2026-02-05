@@ -17,6 +17,8 @@ import raf.aleksabuncic.dto.ExaminationCreateDto;
 import raf.aleksabuncic.dto.ExaminationUpdateDto;
 import raf.aleksabuncic.repository.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -113,7 +115,7 @@ public class ExaminationServiceIntegrationTest {
         Patient patient = new Patient();
         patient.setName("Test Patient");
         patient.setGender("M");
-        patient.setBirthDate(new Date());
+        patient.setBirthDate(LocalDate.now());
         patient.setPassportNumber("RS12345678");
         patient.setMicrochipNumber("123456789123456");
         patient.setCartonNumber(1);
@@ -131,7 +133,7 @@ public class ExaminationServiceIntegrationTest {
         Optional<Veterinarian> veterinarian = veterinarianRepository.findByLicenseNumber(1);
         assertTrue(veterinarian.isPresent());
 
-        Date date = new Date();
+        LocalDateTime date = LocalDateTime.now().withNano(0);
 
         ExaminationCreateDto examinationCreateDto = new ExaminationCreateDto();
         examinationCreateDto.setDate(date);
@@ -179,7 +181,7 @@ public class ExaminationServiceIntegrationTest {
         Patient updatedPatient = new Patient();
         updatedPatient.setName("Test Patient Updated");
         updatedPatient.setGender("F");
-        updatedPatient.setBirthDate(new Date());
+        updatedPatient.setBirthDate(LocalDate.now().minusYears(18));
         updatedPatient.setPassportNumber("RS12345672");
         updatedPatient.setMicrochipNumber("111111111111111");
         updatedPatient.setCartonNumber(2);
@@ -200,7 +202,7 @@ public class ExaminationServiceIntegrationTest {
         veterinarianRepository.save(updatedVeterinarian);
 
         Examination examination = new Examination();
-        examination.setDate(new Date());
+        examination.setDate(LocalDateTime.now().withNano(0).minusDays(1));
         examination.setDiagnosis("Test Diagnosis");
         examination.setTreatment("Test Treatment");
         examination.setLaboratoryAnalysis("Test Laboratory Analysis");
@@ -208,11 +210,11 @@ public class ExaminationServiceIntegrationTest {
         examination.setAnamnesis("Test Anamnesis");
         examination.setClinicalPresentation("Test Clinical Presentation");
         examination.setRemarks("Test Remarks");
-        examination.setPatient(updatedPatient);
-        examination.setVeterinarian(updatedVeterinarian);
+        examination.setPatient(patient.get());
+        examination.setVeterinarian(veterinarian.get());
         examinationRepository.save(examination);
 
-        Date updatedDate = new Date();
+        LocalDateTime updatedDate = LocalDateTime.now().withNano(0);
 
         ExaminationUpdateDto examinationUpdateDto = new ExaminationUpdateDto();
         examinationUpdateDto.setDiagnosis("Test Diagnosis Updated");
@@ -259,9 +261,8 @@ public class ExaminationServiceIntegrationTest {
         Optional<Veterinarian> veterinarian = veterinarianRepository.findByLicenseNumber(1);
         assertTrue(veterinarian.isPresent());
 
-
         Examination examination = new Examination();
-        examination.setDate(new Date());
+        examination.setDate(LocalDateTime.now().withNano(0));
         examination.setDiagnosis("Test Diagnosis");
         examination.setTreatment("Test Treatment");
         examination.setLaboratoryAnalysis("Test Laboratory Analysis");

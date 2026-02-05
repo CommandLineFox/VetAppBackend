@@ -1,21 +1,27 @@
 package raf.aleksabuncic.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @ToString
 public class PatientUpdateDto {
     @Size(max = 30)
+    @Pattern(regexp = ".*\\S.*")
     private String name;
 
-    private Date birthDate;
+    @PastOrPresent
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate birthDate;
 
     @Pattern(regexp = "^([MF])$")
     private String gender;
@@ -26,6 +32,7 @@ public class PatientUpdateDto {
     @Pattern(regexp = "^\\d{8,15}$")
     private String microchipNumber;
 
+    @Positive
     private Integer cartonNumber;
     private Long ownerId;
     private Long breedId;

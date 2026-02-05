@@ -11,9 +11,5 @@ import java.util.Optional;
 public interface PatientRepository extends JpaRepository<Patient, Long> {
     Optional<Patient> findByName(String name);
 
-    Optional<Patient> findByPassportNumber(String passportNumber);
-
-    Optional<Patient> findByMicrochipNumber(String microchipNumber);
-
-    Optional<Patient> findByOwner(Owner owner);
+    boolean existsByPassportNumberOrMicrochipNumberOrCartonNumber(String passportNumber, String microchipNumber, Integer cartonNumber);
 }

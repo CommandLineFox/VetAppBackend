@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -17,7 +17,7 @@ public class Examination {
     private Long id;
 
     @Column(nullable = false)
-    private Date date;
+    private LocalDateTime date;
 
     @Lob
     @Column(columnDefinition = "TEXT")
