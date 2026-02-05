@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface OwnerRepository extends JpaRepository<Owner, Long> {
     Optional<Owner> findByJmbg(String jmbg);
+
+    boolean existsByJmbgOrEmailOrPhoneNumber(String jmbg, String email, String phoneNumber);
 }

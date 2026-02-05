@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -17,7 +17,10 @@ public class Appointment {
     private Long id;
 
     @Column(nullable = false)
-    private Date date;
+    private LocalDateTime date;
+
+    @Column(nullable = false)
+    private String description;
 
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "FK_APPOINTMENT_VETERINARIAN"))

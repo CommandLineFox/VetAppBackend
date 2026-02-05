@@ -11,12 +11,15 @@ import lombok.ToString;
 @Setter
 @ToString
 public class OwnerUpdateDto {
+    @Pattern(regexp = ".*\\S.*")
     @Size(max = 30)
     private String firstName;
 
+    @Pattern(regexp = ".*\\S.*")
     @Size(max = 30)
     private String lastName;
 
+    @Pattern(regexp = ".*\\S.*")
     @Size(max = 100)
     @ToString.Exclude
     private String address;

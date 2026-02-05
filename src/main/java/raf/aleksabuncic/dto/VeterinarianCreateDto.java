@@ -17,6 +17,7 @@ public class VeterinarianCreateDto {
     @Size(max = 30)
     private String lastName;
 
+    @NotNull
     @Positive
     private Integer licenseNumber;
 
@@ -29,6 +30,7 @@ public class VeterinarianCreateDto {
     @ToString.Exclude
     private String password;
 
+    @NotNull
     @PositiveOrZero
     @ToString.Exclude
     private Long permissions;

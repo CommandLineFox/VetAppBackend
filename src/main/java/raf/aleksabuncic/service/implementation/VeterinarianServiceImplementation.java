@@ -54,6 +54,11 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
     public VeterinarianDto createVeterinarian(VeterinarianCreateDto veterinarianCreateDto) {
         log.info("Creating veterinarian: {}", veterinarianCreateDto);
 
+        boolean existingVeterinarian = veterinarianRepository.existsByLicenseNumber(veterinarianCreateDto.getLicenseNumber());
+        if (existingVeterinarian) {
+            throw new DuplicateResourceException("Veterinarian already exists for this license number: " + veterinarianCreateDto.getLicenseNumber());
+        }
+
         Veterinarian veterinarian = veterinarianMapper.veterinarianCreateDtoToVeterinarian(veterinarianCreateDto);
 
         veterinarian.setPassword(passwordEncoder.encode(veterinarianCreateDto.getPassword()));
@@ -71,19 +76,35 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
     public VeterinarianDto updateVeterinarian(Long id, VeterinarianUpdateDto veterinarianUpdateDto) {
         log.info("Updating veterinarian: {}", veterinarianUpdateDto);
 
+        boolean existingVeterinarian = veterinarianRepository.existsByLicenseNumber(veterinarianUpdateDto.getLicenseNumber());
+
         Veterinarian veterinarian = veterinarianRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + id));
 
-
         if (veterinarianUpdateDto.getFirstName() != null) {
+            if (veterinarian.getFirstName().equals(veterinarianUpdateDto.getFirstName())) {
+                throw new DuplicateResourceException("Veterinarian first name cannot be the same as the old one");
+            }
             veterinarian.setFirstName(veterinarianUpdateDto.getFirstName());
         }
 
         if (veterinarianUpdateDto.getLastName() != null) {
+            if (veterinarian.getLastName().equals(veterinarianUpdateDto.getLastName())) {
+                throw new DuplicateResourceException("Veterinarian last name cannot be the same as the old one");
+            }
+
             veterinarian.setLastName(veterinarianUpdateDto.getLastName());
         }
 
         if (veterinarianUpdateDto.getLicenseNumber() != null) {
+            if (existingVeterinarian) {
+                throw new DuplicateResourceException("Veterinarian already exists with this license number");
+            }
+
+            if (veterinarian.getLicenseNumber().equals(veterinarianUpdateDto.getLicenseNumber())) {
+                throw new DuplicateResourceException("Veterinarian license number cannot be the same as the old one");
+            }
+
             veterinarian.setLicenseNumber(veterinarianUpdateDto.getLicenseNumber());
         }
 
@@ -92,6 +113,10 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
         }
 
         if (veterinarianUpdateDto.getPermissions() != null) {
+            if (veterinarian.getPermissions().equals(veterinarianUpdateDto.getPermissions())) {
+                throw new DuplicateResourceException("Veterinarian permissions cannot be the same as the old one");
+            }
+
             veterinarian.setPermissions(veterinarianUpdateDto.getPermissions());
         }
 

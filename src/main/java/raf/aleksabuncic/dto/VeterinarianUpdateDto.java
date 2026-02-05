@@ -10,9 +10,11 @@ import lombok.ToString;
 @ToString
 public class VeterinarianUpdateDto {
     @Size(max = 30)
+    @Pattern(regexp = ".*\\S.*")
     private String firstName;
 
     @Size(max = 30)
+    @Pattern(regexp = ".*\\S.*")
     private String lastName;
 
     @Positive

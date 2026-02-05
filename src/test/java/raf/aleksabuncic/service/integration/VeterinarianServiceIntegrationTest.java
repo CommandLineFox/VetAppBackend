@@ -100,6 +100,49 @@ public class VeterinarianServiceIntegrationTest {
     }
 
     @Test
+    void createVeterinarianWithEmptyName() throws Exception {
+        VeterinarianCreateDto veterinarianCreateDto = new VeterinarianCreateDto();
+        veterinarianCreateDto.setFirstName("");
+        veterinarianCreateDto.setLastName("Testing");
+        veterinarianCreateDto.setLicenseNumber(2);
+        veterinarianCreateDto.setEmail("tester@gmail.com");
+        veterinarianCreateDto.setPassword("Testing1");
+        veterinarianCreateDto.setPermissions(1L);
+
+        mockMvc.perform(post("/veterinarian")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(veterinarianCreateDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createVeterinarianWithExistingLicenseNumber() throws Exception {
+        Veterinarian veterinarian = new Veterinarian();
+        veterinarian.setFirstName("Test");
+        veterinarian.setLastName("Testing");
+        veterinarian.setLicenseNumber(2);
+        veterinarian.setEmail("tester@gmail.com");
+        veterinarian.setPassword(passwordEncoder.encode("Testing1"));
+        veterinarian.setPermissions(1L);
+        veterinarianRepository.save(veterinarian);
+
+        VeterinarianCreateDto veterinarianCreateDto = new VeterinarianCreateDto();
+        veterinarianCreateDto.setFirstName("Test");
+        veterinarianCreateDto.setLastName("Testing");
+        veterinarianCreateDto.setLicenseNumber(2);
+        veterinarianCreateDto.setEmail("tester2@gmail.com");
+        veterinarianCreateDto.setPassword("Testing1");
+        veterinarianCreateDto.setPermissions(1L);
+
+        mockMvc.perform(post("/veterinarian")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(veterinarianCreateDto)))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
     void updateVeterinarian() throws Exception {
         Veterinarian veterinarian = new Veterinarian();
         veterinarian.setFirstName("Test");
@@ -114,7 +157,7 @@ public class VeterinarianServiceIntegrationTest {
         veterinarianUpdateDto.setFirstName("Test1");
         veterinarianUpdateDto.setLastName("Testing1");
         veterinarianUpdateDto.setPassword("Testing2");
-        veterinarianUpdateDto.setLicenseNumber(2);
+        veterinarianUpdateDto.setLicenseNumber(3);
         veterinarianUpdateDto.setEmail("tester2@gmail.com");
         veterinarianUpdateDto.setPermissions(2L);
 
@@ -131,6 +174,67 @@ public class VeterinarianServiceIntegrationTest {
         Optional<Veterinarian> updatedVeterinarian = veterinarianRepository.findById(veterinarian.getId());
         assertTrue(updatedVeterinarian.isPresent());
         assertEquals(updatedVeterinarian.get().getPermissions(), veterinarianUpdateDto.getPermissions());
+    }
+
+    @Test
+    void updateVeterinarianWithEmptyName() throws Exception {
+        Veterinarian veterinarian = new Veterinarian();
+        veterinarian.setFirstName("Test");
+        veterinarian.setLastName("Testing");
+        veterinarian.setLicenseNumber(2);
+        veterinarian.setEmail("tester@gmail.com");
+        veterinarian.setPassword(passwordEncoder.encode("Testing1"));
+        veterinarian.setPermissions(1L);
+        veterinarianRepository.save(veterinarian);
+
+        VeterinarianUpdateDto veterinarianUpdateDto = new VeterinarianUpdateDto();
+        veterinarianUpdateDto.setFirstName("");
+        veterinarianUpdateDto.setLastName("Testing1");
+        veterinarianUpdateDto.setPassword("Testing2");
+        veterinarianUpdateDto.setLicenseNumber(2);
+        veterinarianUpdateDto.setEmail("tester2@gmail.com");
+        veterinarianUpdateDto.setPermissions(2L);
+
+        mockMvc.perform(put("/veterinarian/" + veterinarian.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(veterinarianUpdateDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateVeterinarianWithExistingLicenseNumber() throws Exception {
+        Veterinarian veterinarian = new Veterinarian();
+        veterinarian.setFirstName("Test");
+        veterinarian.setLastName("Testing");
+        veterinarian.setLicenseNumber(2);
+        veterinarian.setEmail("tester@gmail.com");
+        veterinarian.setPassword(passwordEncoder.encode("Testing1"));
+        veterinarian.setPermissions(1L);
+        veterinarianRepository.save(veterinarian);
+
+        Veterinarian veterinarian2 = new Veterinarian();
+        veterinarian2.setFirstName("Test");
+        veterinarian2.setLastName("Testing");
+        veterinarian2.setLicenseNumber(3);
+        veterinarian2.setEmail("tester3@gmail.com");
+        veterinarian2.setPassword(passwordEncoder.encode("Testing1"));
+        veterinarian2.setPermissions(1L);
+        veterinarianRepository.save(veterinarian2);
+
+        VeterinarianUpdateDto veterinarianUpdateDto = new VeterinarianUpdateDto();
+        veterinarianUpdateDto.setFirstName("Test");
+        veterinarianUpdateDto.setLastName("Testing1");
+        veterinarianUpdateDto.setPassword("Testing2");
+        veterinarianUpdateDto.setLicenseNumber(3);
+        veterinarianUpdateDto.setEmail("tester2@gmail.com");
+        veterinarianUpdateDto.setPermissions(2L);
+
+        mockMvc.perform(put("/veterinarian/" + veterinarian.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(veterinarianUpdateDto)))
+                .andExpect(status().isConflict());
     }
 
     @Test

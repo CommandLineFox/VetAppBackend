@@ -17,6 +17,8 @@ import raf.aleksabuncic.dto.AppointmentCreateDto;
 import raf.aleksabuncic.dto.AppointmentUpdateDto;
 import raf.aleksabuncic.repository.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -113,7 +115,7 @@ public class AppointmentServiceIntegrationTest {
         Patient patient = new Patient();
         patient.setName("Test Patient");
         patient.setGender("M");
-        patient.setBirthDate(new Date());
+        patient.setBirthDate(LocalDate.now());
         patient.setPassportNumber("RS12345678");
         patient.setMicrochipNumber("123456789123456");
         patient.setCartonNumber(1);
@@ -130,10 +132,11 @@ public class AppointmentServiceIntegrationTest {
         Optional<Veterinarian> veterinarian = veterinarianRepository.findByLicenseNumber(1);
         assertTrue(veterinarian.isPresent());
 
-        Date date = new Date();
+        LocalDateTime date = LocalDateTime.now().withNano(0);
 
         AppointmentCreateDto appointmentCreateDto = new AppointmentCreateDto();
         appointmentCreateDto.setDate(date);
+        appointmentCreateDto.setDescription("Test Appointment");
         appointmentCreateDto.setPatientId(patient.get().getId());
         appointmentCreateDto.setVeterinarianId(veterinarian.get().getId());
 
@@ -150,6 +153,29 @@ public class AppointmentServiceIntegrationTest {
     }
 
     @Test
+    void createAppointmentWithEmptyDescription() throws Exception {
+        Optional<Patient> patient = patientRepository.findByName("Test Patient");
+        assertTrue(patient.isPresent());
+
+        Optional<Veterinarian> veterinarian = veterinarianRepository.findByLicenseNumber(1);
+        assertTrue(veterinarian.isPresent());
+
+        LocalDateTime date = LocalDateTime.now().withNano(0);
+
+        AppointmentCreateDto appointmentCreateDto = new AppointmentCreateDto();
+        appointmentCreateDto.setDate(date);
+        appointmentCreateDto.setDescription("");
+        appointmentCreateDto.setPatientId(patient.get().getId());
+        appointmentCreateDto.setVeterinarianId(veterinarian.get().getId());
+
+        mockMvc.perform(post("/appointment")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(appointmentCreateDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void updateAppointment() throws Exception {
         Optional<Patient> patient = patientRepository.findByName("Test Patient");
         assertTrue(patient.isPresent());
@@ -163,7 +189,7 @@ public class AppointmentServiceIntegrationTest {
         Patient updatedPatient = new Patient();
         updatedPatient.setName("Test Patient Updated");
         updatedPatient.setGender("F");
-        updatedPatient.setBirthDate(new Date());
+        updatedPatient.setBirthDate(LocalDate.now().minusYears(18));
         updatedPatient.setPassportNumber("RS12345672");
         updatedPatient.setMicrochipNumber("111111111111111");
         updatedPatient.setCartonNumber(2);
@@ -184,15 +210,17 @@ public class AppointmentServiceIntegrationTest {
         veterinarianRepository.save(updatedVeterinarian);
 
         Appointment appointment = new Appointment();
-        appointment.setDate(new Date());
+        appointment.setDate(LocalDateTime.now().withNano(0));
+        appointment.setDescription("Test Appointment");
         appointment.setPatient(patient.get());
         appointment.setVeterinarian(veterinarian.get());
         appointmentRepository.save(appointment);
 
-        Date updatedDate = new Date();
+        LocalDateTime updatedDate = LocalDateTime.now().withNano(0).plusDays(1);
 
         AppointmentUpdateDto appointmentUpdateDto = new AppointmentUpdateDto();
         appointmentUpdateDto.setDate(updatedDate);
+        appointmentUpdateDto.setDescription("Test Appointment Updated");
         appointmentUpdateDto.setPatientId(updatedPatient.getId());
         appointmentUpdateDto.setVeterinarianId(updatedVeterinarian.getId());
 
@@ -206,6 +234,32 @@ public class AppointmentServiceIntegrationTest {
 
         Optional<Appointment> updatedAppointment = appointmentRepository.findByDateAndPatientAndVeterinarian(updatedDate, updatedPatient, updatedVeterinarian);
         assertTrue(updatedAppointment.isPresent());
+    }
+
+    @Test
+    void updateAppointmentWithEmptyDescription() throws Exception {
+        Optional<Patient> patient = patientRepository.findByName("Test Patient");
+        assertTrue(patient.isPresent());
+
+        Optional<Veterinarian> veterinarian = veterinarianRepository.findByLicenseNumber(1);
+        assertTrue(veterinarian.isPresent());
+
+        Appointment appointment = new Appointment();
+        appointment.setDate(LocalDateTime.now().withNano(0));
+        appointment.setDescription("Test Appointment");
+        appointment.setPatient(patient.get());
+        appointment.setVeterinarian(veterinarian.get());
+        appointmentRepository.save(appointment);
+
+        AppointmentUpdateDto appointmentUpdateDto = new AppointmentUpdateDto();
+        appointmentUpdateDto.setDate(LocalDateTime.now().withNano(0).plusDays(1));
+        appointmentUpdateDto.setDescription("");
+
+        mockMvc.perform(put("/appointment/" + appointment.getId())
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(appointmentUpdateDto)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -223,7 +277,8 @@ public class AppointmentServiceIntegrationTest {
         assertTrue(veterinarian.isPresent());
 
         Appointment appointment = new Appointment();
-        appointment.setDate(new Date());
+        appointment.setDate(LocalDateTime.now().withNano(0));
+        appointment.setDescription("Test Appointment");
         appointment.setPatient(patient.get());
         appointment.setVeterinarian(veterinarian.get());
         appointmentRepository.save(appointment);

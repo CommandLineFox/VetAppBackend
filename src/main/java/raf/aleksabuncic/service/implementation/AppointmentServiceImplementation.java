@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Appointment;
 import raf.aleksabuncic.domain.Patient;
 import raf.aleksabuncic.domain.Veterinarian;
-import raf.aleksabuncic.dto.AppointmentDto;
 import raf.aleksabuncic.dto.AppointmentCreateDto;
+import raf.aleksabuncic.dto.AppointmentDto;
 import raf.aleksabuncic.dto.AppointmentUpdateDto;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
@@ -68,7 +68,6 @@ public class AppointmentServiceImplementation implements AppointmentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + appointmentCreateDto.getVeterinarianId()));
         appointment.setVeterinarian(veterinarian);
 
-
         try {
             appointmentRepository.save(appointment);
             log.info("Appointment created: {}", appointment);
@@ -86,23 +85,47 @@ public class AppointmentServiceImplementation implements AppointmentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found for this id: " + id));
 
         if (appointmentUpdateDto.getDate() != null) {
+            if (appointment.getDate().equals(appointmentUpdateDto.getDate())) {
+                throw new DuplicateResourceException("Appointment date cannot be the same as the existing one");
+            }
+
             appointment.setDate(appointmentUpdateDto.getDate());
         }
 
+        if (appointmentUpdateDto.getDescription() != null) {
+            if (appointment.getDescription().equals(appointmentUpdateDto.getDescription())) {
+                throw new DuplicateResourceException("Appointment description cannot be the same as the existing one");
+            }
+            appointment.setDescription(appointmentUpdateDto.getDescription());
+        }
+
         if (appointmentUpdateDto.getPatientId() != null) {
+            if (appointment.getPatient().getId().equals(appointmentUpdateDto.getPatientId())) {
+                throw new DuplicateResourceException("Appointment patient cannot be the same as the existing one");
+            }
+
             Patient patient = patientRepository.findById(appointmentUpdateDto.getPatientId())
                     .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + appointmentUpdateDto.getPatientId()));
             appointment.setPatient(patient);
         }
 
         if (appointmentUpdateDto.getVeterinarianId() != null) {
+            if (appointment.getVeterinarian().getId().equals(appointmentUpdateDto.getVeterinarianId())) {
+                throw new DuplicateResourceException("Appointment veterinarian cannot be the same as the existing one");
+            }
+
             Veterinarian veterinarian = veterinarianRepository.findById(appointmentUpdateDto.getVeterinarianId())
                     .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + appointmentUpdateDto.getVeterinarianId()));
             appointment.setVeterinarian(veterinarian);
         }
 
-        log.info("Appointment updated: {}", appointment);
-        return appointmentMapper.appointmentToAppointmentDto(appointment);
+        try {
+            appointmentRepository.save(appointment);
+            log.info("Appointment updated: {}", appointment);
+            return appointmentMapper.appointmentToAppointmentDto(appointment);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateResourceException("There was a problem updating the appointment");
+        }
     }
 
     @Override

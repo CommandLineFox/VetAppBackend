@@ -97,6 +97,33 @@ public class SpeciesServiceIntegrationTest {
     }
 
     @Test
+    void createSpeciesWithExistingName() throws Exception {
+        Species species = new Species();
+        species.setName("Test Species");
+        speciesRepository.save(species);
+
+        SpeciesCreateDto speciesCreateDto = new SpeciesCreateDto();
+        speciesCreateDto.setName("Test Species");
+
+        mockMvc.perform(post("/species")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(speciesCreateDto)))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void createSpeciesWithEmptyName() throws Exception {
+        SpeciesCreateDto speciesCreateDto = new SpeciesCreateDto();
+
+        mockMvc.perform(post("/species")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(speciesCreateDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void updateSpecies() throws Exception {
         Species species = new Species();
         species.setName("Test Species");
@@ -115,6 +142,42 @@ public class SpeciesServiceIntegrationTest {
         Optional<Species> updatedSpecies = speciesRepository.findById(species.getId());
         assertTrue(updatedSpecies.isPresent());
         assertEquals(updatedSpecies.get().getName(), speciesUpdateDto.getName());
+    }
+
+    @Test
+    void updateSpeciesWithExistingName() throws Exception {
+        Species species = new Species();
+        species.setName("Test Species");
+        speciesRepository.save(species);
+
+        Species species2 = new Species();
+        species2.setName("Test Species 2");
+        speciesRepository.save(species2);
+
+        SpeciesUpdateDto speciesUpdateDto = new SpeciesUpdateDto();
+        speciesUpdateDto.setName("Test Species 2");
+
+        mockMvc.perform(put("/species/" + species.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(speciesUpdateDto)))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void updateSpeciesWithEmptyName() throws Exception {
+        Species species = new Species();
+        species.setName("Test Species");
+        speciesRepository.save(species);
+
+        SpeciesUpdateDto speciesUpdateDto = new SpeciesUpdateDto();
+        speciesUpdateDto.setName("");
+
+        mockMvc.perform(put("/species/" + species.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(speciesUpdateDto)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
