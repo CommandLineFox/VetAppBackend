@@ -9,7 +9,6 @@ import raf.aleksabuncic.domain.Species;
 import raf.aleksabuncic.dto.SpeciesDto;
 import raf.aleksabuncic.dto.SpeciesCreateDto;
 import raf.aleksabuncic.dto.SpeciesUpdateDto;
-import raf.aleksabuncic.exception.BadRequestException;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.exception.UsedResourceException;
@@ -18,7 +17,6 @@ import raf.aleksabuncic.repository.SpeciesRepository;
 import raf.aleksabuncic.service.SpeciesService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +61,7 @@ public class SpeciesServiceImplementation implements SpeciesService {
 
         try {
             speciesRepository.save(species);
+            log.info("Species created: {}", species);
             return speciesMapper.speciesToSpeciesDto(species);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateResourceException("Species already exists for this name: " + speciesCreateDto.getName());
