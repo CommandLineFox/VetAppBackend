@@ -57,8 +57,8 @@ public class BreedServiceIntegrationTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        speciesRepository.deleteAll();
         breedRepository.deleteAll();
+        speciesRepository.deleteAll();
         veterinarianRepository.deleteAll();
 
         Veterinarian admin = veterinarianRepository.findByLicenseNumber(1).orElseGet(Veterinarian::new);
