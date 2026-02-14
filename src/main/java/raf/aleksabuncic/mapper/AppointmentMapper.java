@@ -1,30 +1,24 @@
 package raf.aleksabuncic.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.*;
 import raf.aleksabuncic.domain.Appointment;
 import raf.aleksabuncic.dto.AppointmentCreateDto;
 import raf.aleksabuncic.dto.AppointmentDto;
+import raf.aleksabuncic.dto.AppointmentUpdateDto;
 
-@Component
-public class AppointmentMapper {
-    public AppointmentDto appointmentToAppointmentDto(Appointment appointment) {
-        AppointmentDto appointmentDto = new AppointmentDto();
+@Mapper(componentModel = "spring")
+public interface AppointmentMapper {
+    @Mapping(source = "patient.id", target = "patientId")
+    @Mapping(source = "veterinarian.id", target = "veterinarianId")
+    AppointmentDto appointmentToAppointmentDto(Appointment appointment);
 
-        appointmentDto.setId(appointment.getId());
-        appointmentDto.setDate(appointment.getDate());
-        appointmentDto.setDescription(appointment.getDescription());
-        appointmentDto.setPatientId(appointment.getPatient().getId());
-        appointmentDto.setVeterinarianId(appointment.getVeterinarian().getId());
+    @Mapping(source = "patientId", target = "patient.id")
+    @Mapping(source = "veterinarianId", target = "veterinarian.id")
+    Appointment appointmentCreateDtoToAppointment(AppointmentCreateDto appointmentCreateDto);
 
-        return appointmentDto;
-    }
-
-    public Appointment appointmentCreateDtoToAppointment(AppointmentCreateDto appointmentCreateDto) {
-        Appointment appointment = new Appointment();
-
-        appointment.setDescription(appointmentCreateDto.getDescription());
-        appointment.setDate(appointmentCreateDto.getDate());
-
-        return appointment;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "patient", ignore = true)
+    @Mapping(target = "veterinarian", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void appointmentUpdateDtoToAppointment(AppointmentUpdateDto appointmentUpdateDto, @MappingTarget Appointment appointment);
 }

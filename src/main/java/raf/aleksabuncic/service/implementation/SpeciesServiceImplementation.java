@@ -3,12 +3,15 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Species;
+import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.dto.SpeciesDto;
 import raf.aleksabuncic.dto.SpeciesCreateDto;
 import raf.aleksabuncic.dto.SpeciesUpdateDto;
+import raf.aleksabuncic.exception.BadRequestException;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.exception.UsedResourceException;
@@ -37,15 +40,39 @@ public class SpeciesServiceImplementation implements SpeciesService {
         return speciesMapper.speciesToSpeciesDto(species);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<SpeciesDto> findAllSpecies() {
+    private List<SpeciesDto> findAllSpecies() {
         log.info("Finding all species");
 
         return speciesRepository.findAll()
                 .stream()
                 .map(speciesMapper::speciesToSpeciesDto)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Iterable<SpeciesDto> findAllSpecies(PaginationDto paginationDto) {
+        if (paginationDto == null) {
+            return findAllSpecies();
+        }
+
+        Integer page = paginationDto.getPage();
+        Integer size = paginationDto.getSize();
+
+        if (page == null && size == null) {
+            return findAllSpecies();
+        }
+
+        if (page == null || size == null) {
+            throw new BadRequestException("Page and size must be provided together");
+        }
+
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+
+        log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
+
+        return speciesRepository.findAll(pageable)
+                .map(speciesMapper::speciesToSpeciesDto);
     }
 
     @Override
@@ -85,12 +112,17 @@ public class SpeciesServiceImplementation implements SpeciesService {
             if (existingSpecies) {
                 throw new DuplicateResourceException("Species already exists for this name: " + speciesUpdateDto.getName());
             }
-
-            species.setName(speciesUpdateDto.getName());
         }
 
-        log.info("Species updated: {}", species);
-        return speciesMapper.speciesToSpeciesDto(species);
+        speciesMapper.speciesUpdateDtoToSpecies(speciesUpdateDto, species);
+
+        try {
+            speciesRepository.save(species);
+            log.info("Species updated: {}", species);
+            return speciesMapper.speciesToSpeciesDto(species);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateResourceException("There was a problem updating the species");
+        }
     }
 
     @Override

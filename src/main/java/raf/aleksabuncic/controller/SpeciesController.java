@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.dto.SpeciesDto;
 import raf.aleksabuncic.dto.SpeciesCreateDto;
 import raf.aleksabuncic.dto.SpeciesUpdateDto;
@@ -28,8 +29,8 @@ public class SpeciesController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('SPECIES_LIST')")
-    public ResponseEntity<Iterable<SpeciesDto>> findAllSpecies() {
-        return new ResponseEntity<>(speciesService.findAllSpecies(), HttpStatus.OK);
+    public ResponseEntity<Iterable<SpeciesDto>> findAllSpecies(@Valid @ModelAttribute PaginationDto paginationDto) {
+        return new ResponseEntity<>(speciesService.findAllSpecies(paginationDto), HttpStatus.OK);
     }
 
     @PostMapping

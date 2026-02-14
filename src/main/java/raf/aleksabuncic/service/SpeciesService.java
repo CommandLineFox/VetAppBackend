@@ -1,5 +1,7 @@
 package raf.aleksabuncic.service;
 
+import org.springframework.data.domain.Slice;
+import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.dto.SpeciesDto;
 import raf.aleksabuncic.dto.SpeciesCreateDto;
 import raf.aleksabuncic.dto.SpeciesUpdateDto;
@@ -16,11 +18,12 @@ public interface SpeciesService {
     SpeciesDto findSpeciesById(Long id);
 
     /**
-     * Find all species
+     * Find all species with pagination
      *
-     * @return List of SpeciesDto
+     * @param paginationDto Pagination object
+     * @return Slice of SpeciesDto
      */
-    List<SpeciesDto> findAllSpecies();
+    Iterable<SpeciesDto> findAllSpecies(PaginationDto paginationDto);
 
     /**
      * Create new species

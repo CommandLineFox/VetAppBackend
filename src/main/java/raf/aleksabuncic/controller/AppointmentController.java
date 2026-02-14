@@ -3,6 +3,7 @@ package raf.aleksabuncic.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import raf.aleksabuncic.dto.AppointmentCreateDto;
 import raf.aleksabuncic.dto.AppointmentDto;
 import raf.aleksabuncic.dto.AppointmentUpdateDto;
+import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.service.AppointmentService;
 
 @RestController
@@ -28,8 +30,8 @@ public class AppointmentController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('APPOINTMENT_LIST')")
-    public ResponseEntity<Iterable<AppointmentDto>> findAllAppointments() {
-        return new ResponseEntity<>(appointmentService.findAllAppointments(), HttpStatus.OK);
+    public ResponseEntity<Iterable<AppointmentDto>> findAllAppointments(@Valid @ModelAttribute PaginationDto paginationDto) {
+        return new ResponseEntity<>(appointmentService.findAllAppointments(paginationDto), HttpStatus.OK);
     }
 
     @PostMapping

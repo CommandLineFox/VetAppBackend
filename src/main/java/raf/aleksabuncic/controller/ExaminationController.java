@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import raf.aleksabuncic.dto.ExaminationCreateDto;
 import raf.aleksabuncic.dto.ExaminationDto;
 import raf.aleksabuncic.dto.ExaminationUpdateDto;
+import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.service.ExaminationService;
 
 @RestController
@@ -28,8 +29,8 @@ public class ExaminationController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('EXAMINATION_LIST')")
-    public ResponseEntity<Iterable<ExaminationDto>> findAllExaminations() {
-        return new ResponseEntity<>(examinationService.findAllExaminations(), HttpStatus.OK);
+    public ResponseEntity<Iterable<ExaminationDto>> findAllExaminations(@Valid @ModelAttribute PaginationDto paginationDto) {
+        return new ResponseEntity<>(examinationService.findAllExaminations(paginationDto), HttpStatus.OK);
     }
 
     @PostMapping

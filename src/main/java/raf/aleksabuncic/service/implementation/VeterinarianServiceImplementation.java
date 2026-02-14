@@ -3,13 +3,16 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Veterinarian;
+import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.dto.VeterinarianDto;
 import raf.aleksabuncic.dto.VeterinarianCreateDto;
 import raf.aleksabuncic.dto.VeterinarianUpdateDto;
+import raf.aleksabuncic.exception.BadRequestException;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.exception.UsedResourceException;
@@ -39,15 +42,36 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
         return veterinarianMapper.veterinarianToVeterinarianDto(veterinarian);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<VeterinarianDto> findAllVeterinarians() {
-        log.info("Finding all veterinarians");
-
+    private List<VeterinarianDto> findAllVeterinarians() {
         return veterinarianRepository.findAll()
                 .stream()
                 .map(veterinarianMapper::veterinarianToVeterinarianDto)
                 .toList();
+    }
+
+    @Override
+    public Iterable<VeterinarianDto> findAllVeterinarians(PaginationDto paginationDto) {
+        if (paginationDto == null) {
+            return findAllVeterinarians();
+        }
+
+        Integer page = paginationDto.getPage();
+        Integer size = paginationDto.getSize();
+
+        if (page == null && size == null) {
+            return findAllVeterinarians();
+        }
+
+        if (page == null || size == null) {
+            throw new BadRequestException("Page and size must be provided together");
+        }
+
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+
+        log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
+
+        return veterinarianRepository.findAll(pageable)
+                .map(veterinarianMapper::veterinarianToVeterinarianDto);
     }
 
     @Override
@@ -81,19 +105,12 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
         Veterinarian veterinarian = veterinarianRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + id));
 
-        if (veterinarianUpdateDto.getFirstName() != null) {
-            if (veterinarian.getFirstName().equals(veterinarianUpdateDto.getFirstName())) {
-                throw new DuplicateResourceException("Veterinarian first name cannot be the same as the old one");
-            }
-            veterinarian.setFirstName(veterinarianUpdateDto.getFirstName());
+        if (veterinarianUpdateDto.getFirstName() != null && veterinarian.getFirstName().equals(veterinarianUpdateDto.getFirstName())) {
+            throw new DuplicateResourceException("Veterinarian first name cannot be the same as the old one");
         }
 
-        if (veterinarianUpdateDto.getLastName() != null) {
-            if (veterinarian.getLastName().equals(veterinarianUpdateDto.getLastName())) {
-                throw new DuplicateResourceException("Veterinarian last name cannot be the same as the old one");
-            }
-
-            veterinarian.setLastName(veterinarianUpdateDto.getLastName());
+        if (veterinarianUpdateDto.getLastName() != null && veterinarian.getLastName().equals(veterinarianUpdateDto.getLastName())) {
+            throw new DuplicateResourceException("Veterinarian last name cannot be the same as the old one");
         }
 
         if (veterinarianUpdateDto.getLicenseNumber() != null) {
@@ -104,24 +121,25 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
             if (veterinarian.getLicenseNumber().equals(veterinarianUpdateDto.getLicenseNumber())) {
                 throw new DuplicateResourceException("Veterinarian license number cannot be the same as the old one");
             }
+        }
 
-            veterinarian.setLicenseNumber(veterinarianUpdateDto.getLicenseNumber());
+        if (veterinarianUpdateDto.getPermissions() != null && veterinarian.getPermissions().equals(veterinarianUpdateDto.getPermissions())) {
+            throw new DuplicateResourceException("Veterinarian permissions cannot be the same as the old one");
         }
 
         if (veterinarianUpdateDto.getPassword() != null) {
             veterinarian.setPassword(passwordEncoder.encode(veterinarianUpdateDto.getPassword()));
         }
 
-        if (veterinarianUpdateDto.getPermissions() != null) {
-            if (veterinarian.getPermissions().equals(veterinarianUpdateDto.getPermissions())) {
-                throw new DuplicateResourceException("Veterinarian permissions cannot be the same as the old one");
-            }
+        veterinarianMapper.veterinarianUpdateDtoToVeterinarian(veterinarianUpdateDto, veterinarian);
 
-            veterinarian.setPermissions(veterinarianUpdateDto.getPermissions());
+        try {
+            veterinarianRepository.save(veterinarian);
+            log.info("Veterinarian updated: {}", veterinarian);
+            return veterinarianMapper.veterinarianToVeterinarianDto(veterinarian);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateResourceException("There was a problem updating the veterinarian");
         }
-
-        log.info("Veterinarian updated: {}", veterinarianUpdateDto);
-        return veterinarianMapper.veterinarianToVeterinarianDto(veterinarian);
     }
 
     @Override

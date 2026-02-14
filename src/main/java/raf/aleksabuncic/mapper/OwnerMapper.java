@@ -1,36 +1,18 @@
 package raf.aleksabuncic.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.*;
 import raf.aleksabuncic.domain.Owner;
 import raf.aleksabuncic.dto.OwnerCreateDto;
 import raf.aleksabuncic.dto.OwnerDto;
+import raf.aleksabuncic.dto.OwnerUpdateDto;
 
-@Component
-public class OwnerMapper {
-    public OwnerDto ownerToOwnerDto(Owner owner) {
-        OwnerDto ownerDto = new OwnerDto();
+@Mapper(componentModel = "spring")
+public interface OwnerMapper {
+    OwnerDto ownerToOwnerDto(Owner owner);
 
-        ownerDto.setId(owner.getId());
-        ownerDto.setFirstName(owner.getFirstName());
-        ownerDto.setLastName(owner.getLastName());
-        ownerDto.setAddress(owner.getAddress());
-        ownerDto.setPhoneNumber(owner.getPhoneNumber());
-        ownerDto.setEmail(owner.getEmail());
-        ownerDto.setJmbg(owner.getJmbg());
+    Owner ownerCreateDtoToOwner(OwnerCreateDto ownerCreateDto);
 
-        return ownerDto;
-    }
-
-    public Owner ownerCreateDtoToOwner(OwnerCreateDto ownerCreateDto) {
-        Owner owner = new Owner();
-
-        owner.setFirstName(ownerCreateDto.getFirstName());
-        owner.setLastName(ownerCreateDto.getLastName());
-        owner.setAddress(ownerCreateDto.getAddress());
-        owner.setPhoneNumber(ownerCreateDto.getPhoneNumber());
-        owner.setEmail(ownerCreateDto.getEmail());
-        owner.setJmbg(ownerCreateDto.getJmbg());
-
-        return owner;
-    }
+    @Mapping(target = "id", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void ownerUpdateDtoToOwner(OwnerUpdateDto ownerUpdateDto, @MappingTarget Owner owner);
 }

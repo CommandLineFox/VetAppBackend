@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.dto.VeterinarianCreateDto;
 import raf.aleksabuncic.dto.VeterinarianDto;
 import raf.aleksabuncic.dto.VeterinarianUpdateDto;
@@ -28,8 +29,8 @@ public class VeterinarianController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('VETERINARIAN_LIST')")
-    public ResponseEntity<Iterable<VeterinarianDto>> findAllVeterinarians() {
-        return new ResponseEntity<>(veterinarianService.findAllVeterinarians(), HttpStatus.OK);
+    public ResponseEntity<Iterable<VeterinarianDto>> findAllVeterinarians(@Valid @ModelAttribute PaginationDto paginationDto) {
+        return new ResponseEntity<>(veterinarianService.findAllVeterinarians(paginationDto), HttpStatus.OK);
     }
 
     @PostMapping

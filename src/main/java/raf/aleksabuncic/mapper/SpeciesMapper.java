@@ -1,37 +1,18 @@
 package raf.aleksabuncic.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.*;
 import raf.aleksabuncic.domain.Species;
 import raf.aleksabuncic.dto.SpeciesCreateDto;
 import raf.aleksabuncic.dto.SpeciesDto;
 import raf.aleksabuncic.dto.SpeciesUpdateDto;
 
-@Component
-public class SpeciesMapper {
-    public SpeciesDto speciesToSpeciesDto(Species species) {
-        SpeciesDto speciesDto = new SpeciesDto();
+@Mapper(componentModel = "spring")
+public interface SpeciesMapper {
+    SpeciesDto speciesToSpeciesDto(Species species);
 
-        speciesDto.setId(species.getId());
-        speciesDto.setName(species.getName());
+    Species speciesCreateDtoToSpecies(SpeciesCreateDto speciesCreateDto);
 
-        return speciesDto;
-    }
-
-    public Species speciesCreateDtoToSpecies(SpeciesCreateDto speciesCreateDto) {
-        Species species = new Species();
-
-        species.setName(speciesCreateDto.getName());
-
-        return species;
-    }
-
-    public Species speciesUpdateDtoToSpecies(SpeciesUpdateDto speciesUpdateDto) {
-        Species species = new Species();
-
-        if (speciesUpdateDto.getName() != null) {
-            species.setName(speciesUpdateDto.getName());
-        }
-
-        return species;
-    }
+    @Mapping(target = "id", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void speciesUpdateDtoToSpecies(SpeciesUpdateDto speciesUpdateDto, @MappingTarget Species species);
 }

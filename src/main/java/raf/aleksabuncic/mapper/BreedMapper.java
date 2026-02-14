@@ -1,27 +1,21 @@
 package raf.aleksabuncic.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.*;
 import raf.aleksabuncic.domain.Breed;
 import raf.aleksabuncic.dto.BreedCreateDto;
 import raf.aleksabuncic.dto.BreedDto;
+import raf.aleksabuncic.dto.BreedUpdateDto;
 
-@Component
-public class BreedMapper {
-    public BreedDto breedToBreedDto(Breed breed) {
-        BreedDto breedDto = new BreedDto();
+@Mapper(componentModel = "spring")
+public interface BreedMapper {
+    @Mapping(source = "species.id", target = "speciesId")
+    BreedDto breedToBreedDto(Breed breed);
 
-        breedDto.setId(breed.getId());
-        breedDto.setName(breed.getName());
-        breedDto.setSpeciesId(breed.getSpecies().getId());
+    @Mapping(source = "speciesId", target = "species.id")
+    Breed breedCreateDtoToBreed(BreedCreateDto breedCreateDto);
 
-        return breedDto;
-    }
-
-    public Breed breedCreateDtoToBreed(BreedCreateDto breedCreateDto) {
-        Breed breed = new Breed();
-
-        breed.setName(breedCreateDto.getName());
-
-        return breed;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "species", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void breedUpdateDtoToBreed(BreedUpdateDto breedUpdateDto, @MappingTarget Breed breed);
 }
