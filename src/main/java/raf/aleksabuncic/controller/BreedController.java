@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import raf.aleksabuncic.dto.BreedCreateDto;
 import raf.aleksabuncic.dto.BreedDto;
 import raf.aleksabuncic.dto.BreedUpdateDto;
+import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.service.BreedService;
 
 @RestController
@@ -28,8 +29,8 @@ public class BreedController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('BREED_LIST')")
-    public ResponseEntity<Iterable<BreedDto>> findAllBreeds() {
-        return new ResponseEntity<>(breedService.findAllBreeds(), HttpStatus.OK);
+    public ResponseEntity<Iterable<BreedDto>> findAllBreeds(@Valid @ModelAttribute PaginationDto paginationDto) {
+        return new ResponseEntity<>(breedService.findAllBreeds(paginationDto), HttpStatus.OK);
     }
 
     @PostMapping

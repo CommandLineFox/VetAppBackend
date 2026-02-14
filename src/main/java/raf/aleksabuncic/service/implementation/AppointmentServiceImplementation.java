@@ -3,6 +3,9 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Appointment;
@@ -11,6 +14,8 @@ import raf.aleksabuncic.domain.Veterinarian;
 import raf.aleksabuncic.dto.AppointmentCreateDto;
 import raf.aleksabuncic.dto.AppointmentDto;
 import raf.aleksabuncic.dto.AppointmentUpdateDto;
+import raf.aleksabuncic.dto.PaginationDto;
+import raf.aleksabuncic.exception.BadRequestException;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.exception.UsedResourceException;
@@ -43,15 +48,37 @@ public class AppointmentServiceImplementation implements AppointmentService {
         return appointmentMapper.appointmentToAppointmentDto(appointment);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<AppointmentDto> findAllAppointments() {
-        log.info("Finding all appointments");
-
+    private List<AppointmentDto> findAllAppointments() {
         return appointmentRepository.findAll()
                 .stream()
                 .map(appointmentMapper::appointmentToAppointmentDto)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Iterable<AppointmentDto> findAllAppointments(PaginationDto paginationDto) {
+        if (paginationDto == null) {
+            return findAllAppointments();
+        }
+
+        Integer page = paginationDto.getPage();
+        Integer size = paginationDto.getSize();
+
+        if (page == null && size == null) {
+            return findAllAppointments();
+        }
+
+        if (page == null || size == null) {
+            throw new BadRequestException("Page and size must be provided together");
+        }
+
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+
+        log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
+
+        return appointmentRepository.findAll(pageable)
+                .map(appointmentMapper::appointmentToAppointmentDto);
     }
 
     @Override
@@ -84,19 +111,12 @@ public class AppointmentServiceImplementation implements AppointmentService {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found for this id: " + id));
 
-        if (appointmentUpdateDto.getDate() != null) {
-            if (appointment.getDate().equals(appointmentUpdateDto.getDate())) {
-                throw new DuplicateResourceException("Appointment date cannot be the same as the existing one");
-            }
-
-            appointment.setDate(appointmentUpdateDto.getDate());
+        if (appointmentUpdateDto.getDate() != null && appointment.getDate().equals(appointmentUpdateDto.getDate())) {
+            throw new DuplicateResourceException("Appointment date cannot be the same as the existing one");
         }
 
-        if (appointmentUpdateDto.getDescription() != null) {
-            if (appointment.getDescription().equals(appointmentUpdateDto.getDescription())) {
-                throw new DuplicateResourceException("Appointment description cannot be the same as the existing one");
-            }
-            appointment.setDescription(appointmentUpdateDto.getDescription());
+        if (appointmentUpdateDto.getDescription() != null && appointment.getDescription().equals(appointmentUpdateDto.getDescription())) {
+            throw new DuplicateResourceException("Appointment description cannot be the same as the existing one");
         }
 
         if (appointmentUpdateDto.getPatientId() != null) {
@@ -118,6 +138,8 @@ public class AppointmentServiceImplementation implements AppointmentService {
                     .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + appointmentUpdateDto.getVeterinarianId()));
             appointment.setVeterinarian(veterinarian);
         }
+
+        appointmentMapper.appointmentUpdateDtoToAppointment(appointmentUpdateDto, appointment);
 
         try {
             appointmentRepository.save(appointment);

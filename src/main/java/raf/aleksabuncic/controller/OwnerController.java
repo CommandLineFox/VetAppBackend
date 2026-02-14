@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import raf.aleksabuncic.dto.OwnerCreateDto;
 import raf.aleksabuncic.dto.OwnerDto;
 import raf.aleksabuncic.dto.OwnerUpdateDto;
+import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.service.OwnerService;
 
 @RestController
@@ -28,8 +29,8 @@ public class OwnerController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('OWNER_LIST')")
-    public ResponseEntity<Iterable<OwnerDto>> findAllOwners() {
-        return new ResponseEntity<>(ownerService.findAllOwners(), HttpStatus.OK);
+    public ResponseEntity<Iterable<OwnerDto>> findAllOwners(@Valid @ModelAttribute PaginationDto paginationDto) {
+        return new ResponseEntity<>(ownerService.findAllOwners(paginationDto), HttpStatus.OK);
     }
 
     @PostMapping

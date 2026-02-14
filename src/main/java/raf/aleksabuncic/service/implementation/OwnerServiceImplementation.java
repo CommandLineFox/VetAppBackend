@@ -3,12 +3,15 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Owner;
 import raf.aleksabuncic.dto.OwnerDto;
 import raf.aleksabuncic.dto.OwnerCreateDto;
 import raf.aleksabuncic.dto.OwnerUpdateDto;
+import raf.aleksabuncic.dto.PaginationDto;
+import raf.aleksabuncic.exception.BadRequestException;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.exception.UsedResourceException;
@@ -17,7 +20,6 @@ import raf.aleksabuncic.repository.OwnerRepository;
 import raf.aleksabuncic.service.OwnerService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,15 +40,37 @@ public class OwnerServiceImplementation implements OwnerService {
         return ownerMapper.ownerToOwnerDto(owner);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<OwnerDto> findAllOwners() {
-        log.info("Finding all owners");
-
+    private List<OwnerDto> findAllOwners() {
         return ownerRepository.findAll()
                 .stream()
                 .map(ownerMapper::ownerToOwnerDto)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Iterable<OwnerDto> findAllOwners(PaginationDto paginationDto) {
+        if (paginationDto == null) {
+            return findAllOwners();
+        }
+
+        Integer page = paginationDto.getPage();
+        Integer size = paginationDto.getSize();
+
+        if (page == null && size == null) {
+            return findAllOwners();
+        }
+
+        if (page == null || size == null) {
+            throw new BadRequestException("Page and size must be provided together");
+        }
+
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+
+        log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
+
+        return ownerRepository.findAll(pageable)
+                .map(ownerMapper::ownerToOwnerDto);
     }
 
     @Override
@@ -78,28 +102,18 @@ public class OwnerServiceImplementation implements OwnerService {
         Owner owner = ownerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Owner not found for this id: " + id));
 
-        if (ownerUpdateDto.getFirstName() != null) {
-            if (owner.getFirstName().equals(ownerUpdateDto.getFirstName())) {
-                throw new DuplicateResourceException("Owner first name cannot be the same as the old one");
-            }
-
-            owner.setFirstName(ownerUpdateDto.getFirstName());
+        if (ownerUpdateDto.getFirstName() != null && owner.getFirstName().equals(ownerUpdateDto.getFirstName())) {
+            throw new DuplicateResourceException("Owner first name cannot be the same as the old one");
         }
 
-        if (ownerUpdateDto.getLastName() != null) {
-            if (owner.getLastName().equals(ownerUpdateDto.getLastName())) {
-                throw new DuplicateResourceException("Owner last name cannot be the same as the old one");
-            }
 
-            owner.setLastName(ownerUpdateDto.getLastName());
+        if (ownerUpdateDto.getLastName() != null && owner.getLastName().equals(ownerUpdateDto.getLastName())) {
+            throw new DuplicateResourceException("Owner last name cannot be the same as the old one");
         }
 
-        if (ownerUpdateDto.getAddress() != null) {
-            if (owner.getAddress().equals(ownerUpdateDto.getAddress())) {
-                throw new DuplicateResourceException("Owner address cannot be the same as the old one");
-            }
 
-            owner.setAddress(ownerUpdateDto.getAddress());
+        if (ownerUpdateDto.getAddress() != null && owner.getAddress().equals(ownerUpdateDto.getAddress())) {
+            throw new DuplicateResourceException("Owner address cannot be the same as the old one");
         }
 
         if (ownerUpdateDto.getPhoneNumber() != null) {
@@ -110,8 +124,6 @@ public class OwnerServiceImplementation implements OwnerService {
             if (existingOwner) {
                 throw new DuplicateResourceException("Owner already exists with this phone number: " + ownerUpdateDto.getPhoneNumber());
             }
-
-            owner.setPhoneNumber(ownerUpdateDto.getPhoneNumber());
         }
 
         if (ownerUpdateDto.getEmail() != null) {
@@ -122,8 +134,6 @@ public class OwnerServiceImplementation implements OwnerService {
             if (existingOwner) {
                 throw new DuplicateResourceException("Owner already exists with this email: " + ownerUpdateDto.getEmail());
             }
-
-            owner.setEmail(ownerUpdateDto.getEmail());
         }
 
         if (ownerUpdateDto.getJmbg() != null) {
@@ -134,16 +144,16 @@ public class OwnerServiceImplementation implements OwnerService {
             if (existingOwner) {
                 throw new DuplicateResourceException("Owner already exists with this JMBG: " + ownerUpdateDto.getJmbg());
             }
-
-            owner.setJmbg(ownerUpdateDto.getJmbg());
         }
+
+        ownerMapper.ownerUpdateDtoToOwner(ownerUpdateDto, owner);
 
         try {
             ownerRepository.save(owner);
             log.info("Owner updated: {}", owner);
             return ownerMapper.ownerToOwnerDto(owner);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateResourceException("Owner already exists with this JMBG: " + ownerUpdateDto.getJmbg());
+            throw new DuplicateResourceException("There was a problem updating the owner");
         }
     }
 

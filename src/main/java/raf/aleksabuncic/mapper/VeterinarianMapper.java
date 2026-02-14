@@ -1,35 +1,21 @@
 package raf.aleksabuncic.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.*;
 import raf.aleksabuncic.domain.Veterinarian;
 import raf.aleksabuncic.dto.VeterinarianCreateDto;
 import raf.aleksabuncic.dto.VeterinarianDto;
+import raf.aleksabuncic.dto.VeterinarianUpdateDto;
 
-@Component
-public class VeterinarianMapper {
-    public VeterinarianDto veterinarianToVeterinarianDto(Veterinarian veterinarian) {
-        VeterinarianDto veterinarianDto = new VeterinarianDto();
+@Mapper(componentModel = "spring")
+public interface VeterinarianMapper {
+    VeterinarianDto veterinarianToVeterinarianDto(Veterinarian veterinarian);
 
-        veterinarianDto.setId(veterinarian.getId());
-        veterinarianDto.setFirstName(veterinarian.getFirstName());
-        veterinarianDto.setLastName(veterinarian.getLastName());
-        veterinarianDto.setLicenseNumber(veterinarian.getLicenseNumber());
-        veterinarianDto.setEmail(veterinarian.getEmail());
-        veterinarianDto.setPassword(veterinarian.getPassword());
-        veterinarianDto.setPermissions(veterinarian.getPermissions());
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    Veterinarian veterinarianCreateDtoToVeterinarian(VeterinarianCreateDto veterinarianCreateDto);
 
-        return veterinarianDto;
-    }
-
-    public Veterinarian veterinarianCreateDtoToVeterinarian(VeterinarianCreateDto veterinarianCreateDto) {
-        Veterinarian veterinarian = new Veterinarian();
-
-        veterinarian.setFirstName(veterinarianCreateDto.getFirstName());
-        veterinarian.setLastName(veterinarianCreateDto.getLastName());
-        veterinarian.setLicenseNumber(veterinarianCreateDto.getLicenseNumber());
-        veterinarian.setEmail(veterinarianCreateDto.getEmail());
-        veterinarian.setPermissions(veterinarianCreateDto.getPermissions());
-
-        return veterinarian;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void veterinarianUpdateDtoToVeterinarian(VeterinarianUpdateDto veterinarianUpdateDto, @MappingTarget Veterinarian veterinarian);
 }

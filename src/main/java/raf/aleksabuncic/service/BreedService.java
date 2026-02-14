@@ -1,8 +1,10 @@
 package raf.aleksabuncic.service;
 
+import org.springframework.data.domain.Slice;
 import raf.aleksabuncic.dto.BreedDto;
 import raf.aleksabuncic.dto.BreedCreateDto;
 import raf.aleksabuncic.dto.BreedUpdateDto;
+import raf.aleksabuncic.dto.PaginationDto;
 
 import java.util.List;
 
@@ -16,11 +18,12 @@ public interface BreedService {
     BreedDto findBreedById(Long id);
 
     /**
-     * Find all breeds
+     * Find all breeds with pagination
      *
-     * @return List of BreedDto
+     * @param paginationDto Pagination object
+     * @return Slice of BreedDto
      */
-    List<BreedDto> findAllBreeds();
+    Iterable<BreedDto> findAllBreeds(PaginationDto paginationDto);
 
     /**
      * Create new breed

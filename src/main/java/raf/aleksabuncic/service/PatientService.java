@@ -1,5 +1,7 @@
 package raf.aleksabuncic.service;
 
+import org.springframework.data.domain.Slice;
+import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.dto.PatientDto;
 import raf.aleksabuncic.dto.PatientCreateDto;
 import raf.aleksabuncic.dto.PatientUpdateDto;
@@ -17,11 +19,12 @@ public interface PatientService {
     PatientDto findPatientById(Long id);
 
     /**
-     * Find all patients
+     * Find all patients with pagination
      *
-     * @return List of PatientDto
+     * @param paginationDto Pagination object
+     * @return Slice of PatientDto
      */
-    List<PatientDto> findAllPatients();
+    Iterable<PatientDto> findAllPatients(PaginationDto paginationDto);
 
     /**
      * Create new patient

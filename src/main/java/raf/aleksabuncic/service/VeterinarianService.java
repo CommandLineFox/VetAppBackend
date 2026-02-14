@@ -1,5 +1,7 @@
 package raf.aleksabuncic.service;
 
+import org.springframework.data.domain.Slice;
+import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.dto.VeterinarianDto;
 import raf.aleksabuncic.dto.VeterinarianCreateDto;
 import raf.aleksabuncic.dto.VeterinarianUpdateDto;
@@ -16,11 +18,12 @@ public interface VeterinarianService {
     VeterinarianDto findVeterinarianById(Long id);
 
     /**
-     * Find all veterinarians
+     * Find all veterinarians with pagination
      *
-     * @return List of VeterinarianDto
+     * @param paginationDto Pagination object
+     * @return Slice of VeterinarianDto
      */
-    List<VeterinarianDto> findAllVeterinarians();
+    Iterable<VeterinarianDto> findAllVeterinarians(PaginationDto paginationDto);
 
     /**
      * Create new veterinarian

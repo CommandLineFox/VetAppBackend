@@ -3,13 +3,12 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Breed;
 import raf.aleksabuncic.domain.Species;
-import raf.aleksabuncic.dto.BreedDto;
-import raf.aleksabuncic.dto.BreedCreateDto;
-import raf.aleksabuncic.dto.BreedUpdateDto;
+import raf.aleksabuncic.dto.*;
 import raf.aleksabuncic.exception.BadRequestException;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
@@ -20,7 +19,6 @@ import raf.aleksabuncic.repository.SpeciesRepository;
 import raf.aleksabuncic.service.BreedService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,15 +40,37 @@ public class BreedServiceImplementation implements BreedService {
         return breedMapper.breedToBreedDto(breed);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<BreedDto> findAllBreeds() {
-        log.info("Finding all breeds");
-
+    private List<BreedDto> findAllBreeds() {
         return breedRepository.findAll()
                 .stream()
                 .map(breedMapper::breedToBreedDto)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Iterable<BreedDto> findAllBreeds(PaginationDto paginationDto) {
+        if (paginationDto == null) {
+            return findAllBreeds();
+        }
+
+        Integer page = paginationDto.getPage();
+        Integer size = paginationDto.getSize();
+
+        if (page == null && size == null) {
+            return findAllBreeds();
+        }
+
+        if (page == null || size == null) {
+            throw new BadRequestException("Page and size must be provided together");
+        }
+
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+
+        log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
+
+        return breedRepository.findAll(pageable)
+                .map(breedMapper::breedToBreedDto);
     }
 
     @Override
@@ -94,8 +114,6 @@ public class BreedServiceImplementation implements BreedService {
             if (existingBreed) {
                 throw new DuplicateResourceException("Breed already exists with this name: " + breedUpdateDto.getName());
             }
-
-            breed.setName(breedUpdateDto.getName());
         }
 
         if (breedUpdateDto.getSpeciesId() != null) {
@@ -103,6 +121,8 @@ public class BreedServiceImplementation implements BreedService {
                     .orElseThrow(() -> new ResourceNotFoundException("Species not found for this id: " + breedUpdateDto.getSpeciesId()));
             breed.setSpecies(species);
         }
+
+        breedMapper.breedUpdateDtoToBreed(breedUpdateDto, breed);
 
         try {
             breedRepository.save(breed);

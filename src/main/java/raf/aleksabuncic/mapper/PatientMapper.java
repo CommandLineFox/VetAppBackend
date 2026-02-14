@@ -1,38 +1,25 @@
 package raf.aleksabuncic.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.*;
 import raf.aleksabuncic.domain.Patient;
 import raf.aleksabuncic.dto.PatientCreateDto;
 import raf.aleksabuncic.dto.PatientDto;
+import raf.aleksabuncic.dto.PatientUpdateDto;
 
-@Component
-public class PatientMapper {
-    public PatientDto patientToPatientDto(Patient patient) {
-        PatientDto patientDto = new PatientDto();
+@Mapper(componentModel = "spring")
+public interface PatientMapper {
+    @Mapping(source = "owner.id", target = "ownerId")
+    @Mapping(source = "breed.id", target = "breedId")
+    PatientDto patientToPatientDto(Patient patient);
 
-        patientDto.setId(patient.getId());
-        patientDto.setBirthDate(patient.getBirthDate());
-        patientDto.setName(patient.getName());
-        patientDto.setGender(patient.getGender());
-        patientDto.setPassportNumber(patient.getPassportNumber());
-        patientDto.setMicrochipNumber(patient.getMicrochipNumber());
-        patientDto.setCartonNumber(patient.getCartonNumber());
-        patientDto.setBreedId(patient.getBreed().getId());
-        patientDto.setOwnerId(patient.getOwner().getId());
+    @Mapping(target = "id", ignore = true)
+    @Mapping(source = "ownerId", target = "owner.id")
+    @Mapping(source = "breedId", target = "breed.id")
+    Patient patientCreateDtoToPatient(PatientCreateDto patientCreateDto);
 
-        return patientDto;
-    }
-
-    public Patient patientCreateDtoToPatient(PatientCreateDto patientCreateDto) {
-        Patient patient = new Patient();
-
-        patient.setBirthDate(patientCreateDto.getBirthDate());
-        patient.setName(patientCreateDto.getName());
-        patient.setGender(patientCreateDto.getGender());
-        patient.setPassportNumber(patientCreateDto.getPassportNumber());
-        patient.setMicrochipNumber(patientCreateDto.getMicrochipNumber());
-        patient.setCartonNumber(patientCreateDto.getCartonNumber());
-
-        return patient;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "breed", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void patientUpdateDtoToPatient(PatientUpdateDto patientUpdateDto, @MappingTarget Patient patient);
 }
