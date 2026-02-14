@@ -10,6 +10,7 @@ import raf.aleksabuncic.dto.SpeciesUpdateDto;
 public interface SpeciesMapper {
     SpeciesDto speciesToSpeciesDto(Species species);
 
+    @Mapping(target = "id", ignore = true)
     Species speciesCreateDtoToSpecies(SpeciesCreateDto speciesCreateDto);
 
     @Mapping(target = "id", ignore = true)

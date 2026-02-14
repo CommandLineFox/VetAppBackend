@@ -11,6 +11,7 @@ public interface BreedMapper {
     @Mapping(source = "species.id", target = "speciesId")
     BreedDto breedToBreedDto(Breed breed);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "speciesId", target = "species.id")
     Breed breedCreateDtoToBreed(BreedCreateDto breedCreateDto);
 

@@ -12,6 +12,7 @@ public interface PatientMapper {
     @Mapping(source = "breed.id", target = "breedId")
     PatientDto patientToPatientDto(Patient patient);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "ownerId", target = "owner.id")
     @Mapping(source = "breedId", target = "breed.id")
     Patient patientCreateDtoToPatient(PatientCreateDto patientCreateDto);

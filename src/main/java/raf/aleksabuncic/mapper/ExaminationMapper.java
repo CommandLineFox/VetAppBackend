@@ -12,6 +12,7 @@ public interface ExaminationMapper {
     @Mapping(source = "veterinarian.id", target = "veterinarianId")
     ExaminationDto examinationToExaminationDto(Examination examination);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "patientId", target = "patient.id")
     @Mapping(source = "veterinarianId", target = "veterinarian.id")
     Examination examinationCreateDtoToExamination(ExaminationCreateDto examinationCreateDto);

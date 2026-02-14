@@ -12,6 +12,7 @@ public interface AppointmentMapper {
     @Mapping(source = "veterinarian.id", target = "veterinarianId")
     AppointmentDto appointmentToAppointmentDto(Appointment appointment);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "patientId", target = "patient.id")
     @Mapping(source = "veterinarianId", target = "veterinarian.id")
     Appointment appointmentCreateDtoToAppointment(AppointmentCreateDto appointmentCreateDto);

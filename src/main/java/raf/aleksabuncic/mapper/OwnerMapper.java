@@ -10,6 +10,7 @@ import raf.aleksabuncic.dto.OwnerUpdateDto;
 public interface OwnerMapper {
     OwnerDto ownerToOwnerDto(Owner owner);
 
+    @Mapping(target = "id", ignore = true)
     Owner ownerCreateDtoToOwner(OwnerCreateDto ownerCreateDto);
 
     @Mapping(target = "id", ignore = true)

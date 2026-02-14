@@ -10,6 +10,7 @@ import raf.aleksabuncic.dto.VeterinarianUpdateDto;
 public interface VeterinarianMapper {
     VeterinarianDto veterinarianToVeterinarianDto(Veterinarian veterinarian);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     Veterinarian veterinarianCreateDtoToVeterinarian(VeterinarianCreateDto veterinarianCreateDto);
 
