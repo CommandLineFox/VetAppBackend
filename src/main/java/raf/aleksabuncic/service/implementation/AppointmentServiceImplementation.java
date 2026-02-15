@@ -90,7 +90,7 @@ public class AppointmentServiceImplementation implements AppointmentService {
 
         log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
 
-        return appointmentRepository.findBy(pageable)
+        return appointmentRepository.findAll(pageable)
                 .map(appointmentMapper::appointmentToAppointmentDto);
     }
 

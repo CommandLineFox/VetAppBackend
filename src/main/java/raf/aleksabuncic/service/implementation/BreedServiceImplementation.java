@@ -85,7 +85,7 @@ public class BreedServiceImplementation implements BreedService {
 
         log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
 
-        return breedRepository.findBy(pageable)
+        return breedRepository.findAll(pageable)
                 .map(breedMapper::breedToBreedDto);
     }
 

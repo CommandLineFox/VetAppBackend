@@ -86,7 +86,7 @@ public class SpeciesServiceImplementation implements SpeciesService {
 
         log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
 
-        return speciesRepository.findBy(pageable)
+        return speciesRepository.findAll(pageable)
                 .map(speciesMapper::speciesToSpeciesDto);
 
     }

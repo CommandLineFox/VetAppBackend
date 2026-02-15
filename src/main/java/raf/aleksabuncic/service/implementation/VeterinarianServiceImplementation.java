@@ -88,7 +88,7 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
 
         log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
 
-        return veterinarianRepository.findBy(pageable)
+        return veterinarianRepository.findAll(pageable)
                 .map(veterinarianMapper::veterinarianToVeterinarianDto);
     }
 
