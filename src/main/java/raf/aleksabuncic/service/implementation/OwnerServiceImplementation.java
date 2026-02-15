@@ -3,7 +3,8 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Owner;
@@ -18,6 +19,7 @@ import raf.aleksabuncic.exception.UsedResourceException;
 import raf.aleksabuncic.mapper.OwnerMapper;
 import raf.aleksabuncic.repository.OwnerRepository;
 import raf.aleksabuncic.service.OwnerService;
+import raf.aleksabuncic.utils.SortUtils;
 
 import java.util.List;
 
@@ -56,6 +58,8 @@ public class OwnerServiceImplementation implements OwnerService {
 
         Integer page = paginationDto.getPage();
         Integer size = paginationDto.getSize();
+        String sortBy = paginationDto.getSortBy();
+        String direction = paginationDto.getDirection();
 
         if (page == null && size == null) {
             return findAllOwners();
@@ -65,11 +69,23 @@ public class OwnerServiceImplementation implements OwnerService {
             throw new BadRequestException("Page and size must be provided together");
         }
 
-        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        if (direction == null) {
+            direction = Sort.Direction.ASC.name();
+        }
+
+        if (sortBy == null) {
+            sortBy = "id";
+        }
+
+        if (!SortUtils.isValidField(Owner.class, sortBy)) {
+            throw new BadRequestException("Invalid sort field");
+        }
+
+        PageRequest pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
 
         log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
 
-        return ownerRepository.findAll(pageable)
+        return ownerRepository.findBy(pageable)
                 .map(ownerMapper::ownerToOwnerDto);
     }
 

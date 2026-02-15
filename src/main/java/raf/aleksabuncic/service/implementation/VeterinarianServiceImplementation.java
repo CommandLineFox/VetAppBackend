@@ -3,7 +3,9 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import raf.aleksabuncic.exception.UsedResourceException;
 import raf.aleksabuncic.mapper.VeterinarianMapper;
 import raf.aleksabuncic.repository.VeterinarianRepository;
 import raf.aleksabuncic.service.VeterinarianService;
+import raf.aleksabuncic.utils.SortUtils;
 
 import java.util.List;
 
@@ -49,6 +52,7 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Iterable<VeterinarianDto> findAllVeterinarians(PaginationDto paginationDto) {
         if (paginationDto == null) {
@@ -57,6 +61,8 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
 
         Integer page = paginationDto.getPage();
         Integer size = paginationDto.getSize();
+        String sortBy = paginationDto.getSortBy();
+        String direction = paginationDto.getDirection();
 
         if (page == null && size == null) {
             return findAllVeterinarians();
@@ -66,11 +72,23 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
             throw new BadRequestException("Page and size must be provided together");
         }
 
-        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        if (direction == null) {
+            direction = Sort.Direction.ASC.name();
+        }
+
+        if (sortBy == null) {
+            sortBy = "id";
+        }
+
+        if (!SortUtils.isValidField(Veterinarian.class, sortBy)) {
+            throw new BadRequestException("Invalid sort field");
+        }
+
+        PageRequest pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
 
         log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
 
-        return veterinarianRepository.findAll(pageable)
+        return veterinarianRepository.findBy(pageable)
                 .map(veterinarianMapper::veterinarianToVeterinarianDto);
     }
 
