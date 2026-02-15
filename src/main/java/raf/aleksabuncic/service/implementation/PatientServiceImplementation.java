@@ -91,7 +91,7 @@ public class PatientServiceImplementation implements PatientService {
 
         log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
 
-        return patientRepository.findBy(pageable)
+        return patientRepository.findAll(pageable)
                 .map(patientMapper::patientToPatientDto);
     }
 

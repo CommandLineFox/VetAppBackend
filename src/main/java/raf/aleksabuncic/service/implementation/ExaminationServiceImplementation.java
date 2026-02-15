@@ -88,7 +88,7 @@ public class ExaminationServiceImplementation implements ExaminationService {
 
         log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
 
-        return examinationRepository.findBy(pageable)
+        return examinationRepository.findAll(pageable)
                 .map(examinationMapper::examinationToExaminationDto);
     }
 

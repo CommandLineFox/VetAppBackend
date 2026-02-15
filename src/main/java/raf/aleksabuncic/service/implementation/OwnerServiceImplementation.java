@@ -85,7 +85,7 @@ public class OwnerServiceImplementation implements OwnerService {
 
         log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
 
-        return ownerRepository.findBy(pageable)
+        return ownerRepository.findAll(pageable)
                 .map(ownerMapper::ownerToOwnerDto);
     }
 
