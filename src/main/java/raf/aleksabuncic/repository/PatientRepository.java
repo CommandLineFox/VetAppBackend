@@ -1,8 +1,9 @@
 package raf.aleksabuncic.repository;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import raf.aleksabuncic.domain.Owner;
 import raf.aleksabuncic.domain.Patient;
 
 import java.util.Optional;
@@ -10,6 +11,8 @@ import java.util.Optional;
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long> {
     Optional<Patient> findByName(String name);
+
+    Slice<Patient> findBy(Pageable pageable);
 
     boolean existsByPassportNumberOrMicrochipNumberOrCartonNumber(String passportNumber, String microchipNumber, Integer cartonNumber);
 }

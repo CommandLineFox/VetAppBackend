@@ -3,9 +3,7 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Appointment;
@@ -24,6 +22,7 @@ import raf.aleksabuncic.repository.AppointmentRepository;
 import raf.aleksabuncic.repository.PatientRepository;
 import raf.aleksabuncic.repository.VeterinarianRepository;
 import raf.aleksabuncic.service.AppointmentService;
+import raf.aleksabuncic.utils.SortUtils;
 
 import java.util.List;
 
@@ -64,6 +63,8 @@ public class AppointmentServiceImplementation implements AppointmentService {
 
         Integer page = paginationDto.getPage();
         Integer size = paginationDto.getSize();
+        String sortBy = paginationDto.getSortBy();
+        String direction = paginationDto.getDirection();
 
         if (page == null && size == null) {
             return findAllAppointments();
@@ -73,11 +74,23 @@ public class AppointmentServiceImplementation implements AppointmentService {
             throw new BadRequestException("Page and size must be provided together");
         }
 
-        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        if (direction == null) {
+            direction = Sort.Direction.ASC.name();
+        }
+
+        if (sortBy == null) {
+            sortBy = "id";
+        }
+
+        if (!SortUtils.isValidField(Appointment.class, sortBy)) {
+            throw new BadRequestException("Invalid sort field");
+        }
+
+        PageRequest pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
 
         log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
 
-        return appointmentRepository.findAll(pageable)
+        return appointmentRepository.findBy(pageable)
                 .map(appointmentMapper::appointmentToAppointmentDto);
     }
 

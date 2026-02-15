@@ -1,5 +1,6 @@
 package raf.aleksabuncic.dto;
 
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
@@ -15,4 +16,10 @@ public class PaginationDto {
 
     @Positive
     private Integer size;
+
+    @Pattern(regexp = ".*\\S.*")
+    private String sortBy;
+
+    @Pattern(regexp = "(?i)asc|desc")
+    private String direction;
 }

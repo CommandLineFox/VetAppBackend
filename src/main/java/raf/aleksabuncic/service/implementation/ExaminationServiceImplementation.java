@@ -3,7 +3,8 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Examination;
@@ -19,6 +20,7 @@ import raf.aleksabuncic.repository.ExaminationRepository;
 import raf.aleksabuncic.repository.PatientRepository;
 import raf.aleksabuncic.repository.VeterinarianRepository;
 import raf.aleksabuncic.service.ExaminationService;
+import raf.aleksabuncic.utils.SortUtils;
 
 import java.util.List;
 
@@ -59,6 +61,8 @@ public class ExaminationServiceImplementation implements ExaminationService {
 
         Integer page = paginationDto.getPage();
         Integer size = paginationDto.getSize();
+        String sortBy = paginationDto.getSortBy();
+        String direction = paginationDto.getDirection();
 
         if (page == null && size == null) {
             return findAllExaminations();
@@ -68,11 +72,23 @@ public class ExaminationServiceImplementation implements ExaminationService {
             throw new BadRequestException("Page and size must be provided together");
         }
 
-        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        if (direction == null) {
+            direction = Sort.Direction.ASC.name();
+        }
+
+        if (sortBy == null) {
+            sortBy = "id";
+        }
+
+        if (!SortUtils.isValidField(Examination.class, sortBy)) {
+            throw new BadRequestException("Invalid sort field");
+        }
+
+        PageRequest pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
 
         log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
 
-        return examinationRepository.findAll(pageable)
+        return examinationRepository.findBy(pageable)
                 .map(examinationMapper::examinationToExaminationDto);
     }
 
