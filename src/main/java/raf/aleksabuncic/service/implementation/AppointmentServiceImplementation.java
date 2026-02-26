@@ -82,7 +82,7 @@ public class AppointmentServiceImplementation implements AppointmentService {
             sortBy = "id";
         }
 
-        if (!SortUtils.isValidField(Appointment.class, sortBy)) {
+        if (SortUtils.isInvalidField(Appointment.class, sortBy)) {
             throw new BadRequestException("Invalid sort field");
         }
 

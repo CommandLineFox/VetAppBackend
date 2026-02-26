@@ -77,7 +77,7 @@ public class BreedServiceImplementation implements BreedService {
             sortBy = "id";
         }
 
-        if (!SortUtils.isValidField(Breed.class, sortBy)) {
+        if (SortUtils.isInvalidField(Breed.class, sortBy)) {
             throw new BadRequestException("Invalid sort field");
         }
 

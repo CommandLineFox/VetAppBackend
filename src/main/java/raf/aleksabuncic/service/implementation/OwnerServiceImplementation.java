@@ -77,7 +77,7 @@ public class OwnerServiceImplementation implements OwnerService {
             sortBy = "id";
         }
 
-        if (!SortUtils.isValidField(Owner.class, sortBy)) {
+        if (SortUtils.isInvalidField(Owner.class, sortBy)) {
             throw new BadRequestException("Invalid sort field");
         }
 

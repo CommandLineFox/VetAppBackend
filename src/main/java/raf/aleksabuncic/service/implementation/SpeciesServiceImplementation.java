@@ -78,7 +78,7 @@ public class SpeciesServiceImplementation implements SpeciesService {
             sortBy = "id";
         }
 
-        if (!SortUtils.isValidField(Species.class, sortBy)) {
+        if (SortUtils.isInvalidField(Species.class, sortBy)) {
             throw new BadRequestException("Invalid sort field");
         }
 

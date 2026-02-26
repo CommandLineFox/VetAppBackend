@@ -83,7 +83,7 @@ public class PatientServiceImplementation implements PatientService {
             sortBy = "id";
         }
 
-        if (!SortUtils.isValidField(Patient.class, sortBy)) {
+        if (SortUtils.isInvalidField(Patient.class, sortBy)) {
             throw new BadRequestException("Invalid sort field");
         }
 

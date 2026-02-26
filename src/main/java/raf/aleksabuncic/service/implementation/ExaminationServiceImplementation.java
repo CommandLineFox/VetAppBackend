@@ -80,7 +80,7 @@ public class ExaminationServiceImplementation implements ExaminationService {
             sortBy = "id";
         }
 
-        if (!SortUtils.isValidField(Examination.class, sortBy)) {
+        if (SortUtils.isInvalidField(Examination.class, sortBy)) {
             throw new BadRequestException("Invalid sort field");
         }
 
