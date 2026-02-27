@@ -8,5 +8,5 @@ import lombok.ToString;
 @Setter
 @ToString
 public class SpeciesSearchDto {
-    String name;
+    private String name;
 }

@@ -3,22 +3,21 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Breed;
 import raf.aleksabuncic.domain.Species;
 import raf.aleksabuncic.dto.*;
-import raf.aleksabuncic.exception.BadRequestException;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.exception.UsedResourceException;
 import raf.aleksabuncic.mapper.BreedMapper;
 import raf.aleksabuncic.repository.BreedRepository;
 import raf.aleksabuncic.repository.SpeciesRepository;
+import raf.aleksabuncic.repository.specification.BreedSpecifications;
 import raf.aleksabuncic.service.BreedService;
-import raf.aleksabuncic.utils.SortUtils;
 
 import java.util.List;
 
@@ -51,41 +50,12 @@ public class BreedServiceImplementation implements BreedService {
 
     @Transactional(readOnly = true)
     @Override
-    public Iterable<BreedDto> findAllBreeds(PaginationDto paginationDto) {
-        if (paginationDto == null) {
-            return findAllBreeds();
-        }
+    public Iterable<BreedDto> findAllBreeds(BreedSearchDto breedSearchDto, Pageable pageable) {
+        log.info("Finding all breeds with filters: {} and pagination: {}", breedSearchDto, pageable);
 
-        Integer page = paginationDto.getPage();
-        Integer size = paginationDto.getSize();
-        String sortBy = paginationDto.getSortBy();
-        String direction = paginationDto.getDirection();
+        Specification<Breed> specification = BreedSpecifications.build(breedSearchDto);
 
-        if (page == null && size == null) {
-            return findAllBreeds();
-        }
-
-        if (page == null || size == null) {
-            throw new BadRequestException("Page and size must be provided together");
-        }
-
-        if (direction == null) {
-            direction = Sort.Direction.ASC.name();
-        }
-
-        if (sortBy == null) {
-            sortBy = "id";
-        }
-
-        if (SortUtils.isInvalidField(Breed.class, sortBy)) {
-            throw new BadRequestException("Invalid sort field");
-        }
-
-        PageRequest pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
-
-        log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
-
-        return breedRepository.findAll(pageable)
+        return breedRepository.findAll(specification, pageable)
                 .map(breedMapper::breedToBreedDto);
     }
 

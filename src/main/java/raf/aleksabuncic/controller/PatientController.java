@@ -3,13 +3,14 @@ package raf.aleksabuncic.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.dto.PatientCreateDto;
 import raf.aleksabuncic.dto.PatientDto;
+import raf.aleksabuncic.dto.PatientSearchDto;
 import raf.aleksabuncic.dto.PatientUpdateDto;
 import raf.aleksabuncic.service.PatientService;
 
@@ -29,8 +30,8 @@ public class PatientController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('PATIENT_LIST')")
-    public ResponseEntity<Iterable<PatientDto>> findAllPatients(@Valid @ModelAttribute PaginationDto paginationDto) {
-        return new ResponseEntity<>(patientService.findAllPatients(paginationDto), HttpStatus.OK);
+    public ResponseEntity<Iterable<PatientDto>> findAllPatients(PatientSearchDto patientSearchDto, Pageable pageable) {
+        return new ResponseEntity<>(patientService.findAllPatients(patientSearchDto, pageable), HttpStatus.OK);
     }
 
     @PostMapping

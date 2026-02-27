@@ -3,23 +3,22 @@ package raf.aleksabuncic.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Owner;
 import raf.aleksabuncic.dto.OwnerDto;
 import raf.aleksabuncic.dto.OwnerCreateDto;
+import raf.aleksabuncic.dto.OwnerSearchDto;
 import raf.aleksabuncic.dto.OwnerUpdateDto;
-import raf.aleksabuncic.dto.PaginationDto;
-import raf.aleksabuncic.exception.BadRequestException;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.exception.UsedResourceException;
 import raf.aleksabuncic.mapper.OwnerMapper;
 import raf.aleksabuncic.repository.OwnerRepository;
+import raf.aleksabuncic.repository.specification.OwnerSpecifications;
 import raf.aleksabuncic.service.OwnerService;
-import raf.aleksabuncic.utils.SortUtils;
 
 import java.util.List;
 
@@ -51,41 +50,12 @@ public class OwnerServiceImplementation implements OwnerService {
 
     @Transactional(readOnly = true)
     @Override
-    public Iterable<OwnerDto> findAllOwners(PaginationDto paginationDto) {
-        if (paginationDto == null) {
-            return findAllOwners();
-        }
+    public Iterable<OwnerDto> findAllOwners(OwnerSearchDto ownerSearchDto, Pageable pageable) {
+        log.info("Finding all owners with filters: {} and pagination: {}", ownerSearchDto, pageable);
 
-        Integer page = paginationDto.getPage();
-        Integer size = paginationDto.getSize();
-        String sortBy = paginationDto.getSortBy();
-        String direction = paginationDto.getDirection();
+        Specification<Owner> specification = OwnerSpecifications.build(ownerSearchDto);
 
-        if (page == null && size == null) {
-            return findAllOwners();
-        }
-
-        if (page == null || size == null) {
-            throw new BadRequestException("Page and size must be provided together");
-        }
-
-        if (direction == null) {
-            direction = Sort.Direction.ASC.name();
-        }
-
-        if (sortBy == null) {
-            sortBy = "id";
-        }
-
-        if (SortUtils.isInvalidField(Owner.class, sortBy)) {
-            throw new BadRequestException("Invalid sort field");
-        }
-
-        PageRequest pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
-
-        log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
-
-        return ownerRepository.findAll(pageable)
+        return ownerRepository.findAll(specification, pageable)
                 .map(ownerMapper::ownerToOwnerDto);
     }
 

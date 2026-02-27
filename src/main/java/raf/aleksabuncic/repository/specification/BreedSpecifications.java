@@ -20,14 +20,16 @@ public class BreedSpecifications {
     public static Specification<Breed> build(BreedSearchDto breedSearchDto) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
+            if (breedSearchDto == null) {
+                return cb.conjunction();
+            }
 
-            if (breedSearchDto != null) {
-                if (breedSearchDto.getName() != null && !breedSearchDto.getName().isBlank()) {
-                    predicates.add(cb.like(cb.lower(root.get("name")), "%" + breedSearchDto.getName().toLowerCase() + "%"));
-                }
-                if (breedSearchDto.getSpeciesId() != null) {
-                    predicates.add(cb.equal(root.get("species").get("id"), breedSearchDto.getSpeciesId()));
-                }
+            if (breedSearchDto.getName() != null && !breedSearchDto.getName().isBlank()) {
+                predicates.add(nameLike(breedSearchDto.getName()).toPredicate(root, query, cb));
+            }
+
+            if (breedSearchDto.getSpeciesId() != null) {
+                predicates.add(speciesId(breedSearchDto.getSpeciesId()).toPredicate(root, query, cb));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

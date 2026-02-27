@@ -16,9 +16,12 @@ public class SpeciesSpecifications {
     public static Specification<Species> build(SpeciesSearchDto speciesSearchDto) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
+            if (speciesSearchDto == null) {
+                return cb.conjunction();
+            }
 
-            if (speciesSearchDto != null && speciesSearchDto.getName() != null && !speciesSearchDto.getName().isBlank()) {
-                predicates.add(cb.like(cb.lower(root.get("name")), "%" + speciesSearchDto.getName().toLowerCase() + "%"));
+            if (speciesSearchDto.getName() != null && !speciesSearchDto.getName().isBlank()) {
+                predicates.add(nameLike(speciesSearchDto.getName()).toPredicate(root, query, cb));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

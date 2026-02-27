@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Appointment;
@@ -11,9 +12,8 @@ import raf.aleksabuncic.domain.Patient;
 import raf.aleksabuncic.domain.Veterinarian;
 import raf.aleksabuncic.dto.AppointmentCreateDto;
 import raf.aleksabuncic.dto.AppointmentDto;
+import raf.aleksabuncic.dto.AppointmentSearchDto;
 import raf.aleksabuncic.dto.AppointmentUpdateDto;
-import raf.aleksabuncic.dto.PaginationDto;
-import raf.aleksabuncic.exception.BadRequestException;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.exception.UsedResourceException;
@@ -21,8 +21,8 @@ import raf.aleksabuncic.mapper.AppointmentMapper;
 import raf.aleksabuncic.repository.AppointmentRepository;
 import raf.aleksabuncic.repository.PatientRepository;
 import raf.aleksabuncic.repository.VeterinarianRepository;
+import raf.aleksabuncic.repository.specification.AppointmentSpecifications;
 import raf.aleksabuncic.service.AppointmentService;
-import raf.aleksabuncic.utils.SortUtils;
 
 import java.util.List;
 
@@ -56,41 +56,12 @@ public class AppointmentServiceImplementation implements AppointmentService {
 
     @Transactional(readOnly = true)
     @Override
-    public Iterable<AppointmentDto> findAllAppointments(PaginationDto paginationDto) {
-        if (paginationDto == null) {
-            return findAllAppointments();
-        }
+    public Iterable<AppointmentDto> findAllAppointments(AppointmentSearchDto appointmentSearchDto, Pageable pageable) {
+        log.info("Finding all appointments with filters: {} and pagination: {}", appointmentSearchDto, pageable);
 
-        Integer page = paginationDto.getPage();
-        Integer size = paginationDto.getSize();
-        String sortBy = paginationDto.getSortBy();
-        String direction = paginationDto.getDirection();
+        Specification<Appointment> specification = AppointmentSpecifications.build(appointmentSearchDto);
 
-        if (page == null && size == null) {
-            return findAllAppointments();
-        }
-
-        if (page == null || size == null) {
-            throw new BadRequestException("Page and size must be provided together");
-        }
-
-        if (direction == null) {
-            direction = Sort.Direction.ASC.name();
-        }
-
-        if (sortBy == null) {
-            sortBy = "id";
-        }
-
-        if (SortUtils.isInvalidField(Appointment.class, sortBy)) {
-            throw new BadRequestException("Invalid sort field");
-        }
-
-        PageRequest pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
-
-        log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
-
-        return appointmentRepository.findAll(pageable)
+        return appointmentRepository.findAll(specification, pageable)
                 .map(appointmentMapper::appointmentToAppointmentDto);
     }
 

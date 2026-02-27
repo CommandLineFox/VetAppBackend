@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Species;
 import raf.aleksabuncic.dto.*;
-import raf.aleksabuncic.exception.BadRequestException;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.exception.UsedResourceException;
@@ -17,7 +16,6 @@ import raf.aleksabuncic.mapper.SpeciesMapper;
 import raf.aleksabuncic.repository.SpeciesRepository;
 import raf.aleksabuncic.repository.specification.SpeciesSpecifications;
 import raf.aleksabuncic.service.SpeciesService;
-import raf.aleksabuncic.utils.SortUtils;
 
 import java.util.List;
 

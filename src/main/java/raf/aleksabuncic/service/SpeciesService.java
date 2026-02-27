@@ -1,10 +1,7 @@
 package raf.aleksabuncic.service;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import raf.aleksabuncic.dto.*;
-
-import java.util.List;
 
 public interface SpeciesService {
     /**
