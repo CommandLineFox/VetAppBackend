@@ -3,14 +3,12 @@ package raf.aleksabuncic.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import raf.aleksabuncic.dto.PaginationDto;
-import raf.aleksabuncic.dto.SpeciesDto;
-import raf.aleksabuncic.dto.SpeciesCreateDto;
-import raf.aleksabuncic.dto.SpeciesUpdateDto;
+import raf.aleksabuncic.dto.*;
 import raf.aleksabuncic.service.SpeciesService;
 
 @RestController
@@ -29,8 +27,8 @@ public class SpeciesController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('SPECIES_LIST')")
-    public ResponseEntity<Iterable<SpeciesDto>> findAllSpecies(@Valid @ModelAttribute PaginationDto paginationDto) {
-        return new ResponseEntity<>(speciesService.findAllSpecies(paginationDto), HttpStatus.OK);
+    public ResponseEntity<Iterable<SpeciesDto>> findAllSpecies(SpeciesSearchDto speciesSearchDto, Pageable pageable) {
+        return new ResponseEntity<>(speciesService.findAllSpecies(speciesSearchDto, pageable), HttpStatus.OK);
     }
 
     @PostMapping

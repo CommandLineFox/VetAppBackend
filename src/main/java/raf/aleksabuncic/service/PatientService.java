@@ -1,12 +1,10 @@
 package raf.aleksabuncic.service;
 
-import org.springframework.data.domain.Slice;
-import raf.aleksabuncic.dto.PaginationDto;
+import org.springframework.data.domain.Pageable;
 import raf.aleksabuncic.dto.PatientDto;
 import raf.aleksabuncic.dto.PatientCreateDto;
+import raf.aleksabuncic.dto.PatientSearchDto;
 import raf.aleksabuncic.dto.PatientUpdateDto;
-
-import java.util.List;
 
 public interface PatientService {
     /**
@@ -24,7 +22,7 @@ public interface PatientService {
      * @param paginationDto Pagination object
      * @return Slice of PatientDto
      */
-    Iterable<PatientDto> findAllPatients(PaginationDto paginationDto);
+    Iterable<PatientDto> findAllPatients(PatientSearchDto patientSearchDto, Pageable pageable);
 
     /**
      * Create new patient

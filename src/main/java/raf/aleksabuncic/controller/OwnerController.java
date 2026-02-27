@@ -3,14 +3,15 @@ package raf.aleksabuncic.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import raf.aleksabuncic.dto.OwnerCreateDto;
 import raf.aleksabuncic.dto.OwnerDto;
+import raf.aleksabuncic.dto.OwnerSearchDto;
 import raf.aleksabuncic.dto.OwnerUpdateDto;
-import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.service.OwnerService;
 
 @RestController
@@ -29,8 +30,8 @@ public class OwnerController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('OWNER_LIST')")
-    public ResponseEntity<Iterable<OwnerDto>> findAllOwners(@Valid @ModelAttribute PaginationDto paginationDto) {
-        return new ResponseEntity<>(ownerService.findAllOwners(paginationDto), HttpStatus.OK);
+    public ResponseEntity<Iterable<OwnerDto>> findAllOwners(OwnerSearchDto ownerSearchDto, Pageable pageable) {
+        return new ResponseEntity<>(ownerService.findAllOwners(ownerSearchDto, pageable), HttpStatus.OK);
     }
 
     @PostMapping

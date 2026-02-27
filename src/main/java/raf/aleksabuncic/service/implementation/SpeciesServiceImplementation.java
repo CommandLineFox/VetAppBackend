@@ -4,21 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Species;
-import raf.aleksabuncic.dto.PaginationDto;
-import raf.aleksabuncic.dto.SpeciesDto;
-import raf.aleksabuncic.dto.SpeciesCreateDto;
-import raf.aleksabuncic.dto.SpeciesUpdateDto;
-import raf.aleksabuncic.exception.BadRequestException;
+import raf.aleksabuncic.dto.*;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.exception.UsedResourceException;
 import raf.aleksabuncic.mapper.SpeciesMapper;
 import raf.aleksabuncic.repository.SpeciesRepository;
+import raf.aleksabuncic.repository.specification.SpeciesSpecifications;
 import raf.aleksabuncic.service.SpeciesService;
-import raf.aleksabuncic.utils.SortUtils;
 
 import java.util.List;
 
@@ -52,41 +49,12 @@ public class SpeciesServiceImplementation implements SpeciesService {
 
     @Transactional(readOnly = true)
     @Override
-    public Iterable<SpeciesDto> findAllSpecies(PaginationDto paginationDto) {
-        if (paginationDto == null) {
-            return findAllSpecies();
-        }
+    public Iterable<SpeciesDto> findAllSpecies(SpeciesSearchDto speciesSearchDto, Pageable pageable) {
+        log.info("Finding all species with filters: {} and pagination: {}", speciesSearchDto, pageable);
 
-        Integer page = paginationDto.getPage();
-        Integer size = paginationDto.getSize();
-        String sortBy = paginationDto.getSortBy();
-        String direction = paginationDto.getDirection();
+        Specification<Species> specification = SpeciesSpecifications.build(speciesSearchDto);
 
-        if (page == null && size == null) {
-            return findAllSpecies();
-        }
-
-        if (page == null || size == null) {
-            throw new BadRequestException("Page and size must be provided together");
-        }
-
-        if (direction == null) {
-            direction = Sort.Direction.ASC.name();
-        }
-
-        if (sortBy == null) {
-            sortBy = "id";
-        }
-
-        if (!SortUtils.isValidField(Species.class, sortBy)) {
-            throw new BadRequestException("Invalid sort field");
-        }
-
-        PageRequest pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
-
-        log.info("Finding all appointments with pagination: Page {} of size {}", page, size);
-
-        return speciesRepository.findAll(pageable)
+        return speciesRepository.findAll(specification, pageable)
                 .map(speciesMapper::speciesToSpeciesDto);
 
     }

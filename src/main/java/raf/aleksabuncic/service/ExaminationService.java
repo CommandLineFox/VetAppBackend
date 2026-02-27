@@ -1,12 +1,10 @@
 package raf.aleksabuncic.service;
 
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Pageable;
 import raf.aleksabuncic.dto.ExaminationDto;
 import raf.aleksabuncic.dto.ExaminationCreateDto;
+import raf.aleksabuncic.dto.ExaminationSearchDto;
 import raf.aleksabuncic.dto.ExaminationUpdateDto;
-import raf.aleksabuncic.dto.PaginationDto;
-
-import java.util.List;
 
 public interface ExaminationService {
     /**
@@ -23,7 +21,7 @@ public interface ExaminationService {
      * @param paginationDto Pagination object
      * @return Slice of ExaminationDto
      */
-    Iterable<ExaminationDto> findAllExaminations(PaginationDto paginationDto);
+    Iterable<ExaminationDto> findAllExaminations(ExaminationSearchDto examinationSearchDto, Pageable pageable);
 
     /**
      * Create new examination

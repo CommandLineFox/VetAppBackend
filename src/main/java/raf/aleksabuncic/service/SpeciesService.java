@@ -1,12 +1,7 @@
 package raf.aleksabuncic.service;
 
-import org.springframework.data.domain.Slice;
-import raf.aleksabuncic.dto.PaginationDto;
-import raf.aleksabuncic.dto.SpeciesDto;
-import raf.aleksabuncic.dto.SpeciesCreateDto;
-import raf.aleksabuncic.dto.SpeciesUpdateDto;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
+import raf.aleksabuncic.dto.*;
 
 public interface SpeciesService {
     /**
@@ -23,7 +18,7 @@ public interface SpeciesService {
      * @param paginationDto Pagination object
      * @return Slice of SpeciesDto
      */
-    Iterable<SpeciesDto> findAllSpecies(PaginationDto paginationDto);
+    Iterable<SpeciesDto> findAllSpecies(SpeciesSearchDto speciesSearchDto, Pageable pageable);
 
     /**
      * Create new species

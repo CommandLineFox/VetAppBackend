@@ -1,10 +1,9 @@
 package raf.aleksabuncic.service;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import raf.aleksabuncic.dto.BreedDto;
-import raf.aleksabuncic.dto.BreedCreateDto;
-import raf.aleksabuncic.dto.BreedUpdateDto;
-import raf.aleksabuncic.dto.PaginationDto;
+import raf.aleksabuncic.dto.*;
+import raf.aleksabuncic.repository.specification.BreedSpecifications;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public interface BreedService {
      * @param paginationDto Pagination object
      * @return Slice of BreedDto
      */
-    Iterable<BreedDto> findAllBreeds(PaginationDto paginationDto);
+    Iterable<BreedDto> findAllBreeds(BreedSearchDto breedSearchDto, Pageable pageable);
 
     /**
      * Create new breed

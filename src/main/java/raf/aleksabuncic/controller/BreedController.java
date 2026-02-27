@@ -3,14 +3,12 @@ package raf.aleksabuncic.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import raf.aleksabuncic.dto.BreedCreateDto;
-import raf.aleksabuncic.dto.BreedDto;
-import raf.aleksabuncic.dto.BreedUpdateDto;
-import raf.aleksabuncic.dto.PaginationDto;
+import raf.aleksabuncic.dto.*;
 import raf.aleksabuncic.service.BreedService;
 
 @RestController
@@ -29,8 +27,8 @@ public class BreedController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('BREED_LIST')")
-    public ResponseEntity<Iterable<BreedDto>> findAllBreeds(@Valid @ModelAttribute PaginationDto paginationDto) {
-        return new ResponseEntity<>(breedService.findAllBreeds(paginationDto), HttpStatus.OK);
+    public ResponseEntity<Iterable<BreedDto>> findAllBreeds(BreedSearchDto breedSearchDto, Pageable pageable) {
+        return new ResponseEntity<>(breedService.findAllBreeds(breedSearchDto, pageable), HttpStatus.OK);
     }
 
     @PostMapping

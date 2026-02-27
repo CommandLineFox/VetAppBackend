@@ -1,12 +1,10 @@
 package raf.aleksabuncic.service;
 
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Pageable;
 import raf.aleksabuncic.dto.OwnerDto;
 import raf.aleksabuncic.dto.OwnerCreateDto;
+import raf.aleksabuncic.dto.OwnerSearchDto;
 import raf.aleksabuncic.dto.OwnerUpdateDto;
-import raf.aleksabuncic.dto.PaginationDto;
-
-import java.util.List;
 
 public interface OwnerService {
     /**
@@ -23,7 +21,7 @@ public interface OwnerService {
      * @param paginationDto Pagination object
      * @return Slice of owners
      */
-    Iterable<OwnerDto> findAllOwners(PaginationDto paginationDto);
+    Iterable<OwnerDto> findAllOwners(OwnerSearchDto ownerSearchDto, Pageable pageable);
 
     /**
      * Create new owner

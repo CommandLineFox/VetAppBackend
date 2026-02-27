@@ -3,14 +3,15 @@ package raf.aleksabuncic.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import raf.aleksabuncic.dto.ExaminationCreateDto;
 import raf.aleksabuncic.dto.ExaminationDto;
+import raf.aleksabuncic.dto.ExaminationSearchDto;
 import raf.aleksabuncic.dto.ExaminationUpdateDto;
-import raf.aleksabuncic.dto.PaginationDto;
 import raf.aleksabuncic.service.ExaminationService;
 
 @RestController
@@ -29,8 +30,8 @@ public class ExaminationController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('EXAMINATION_LIST')")
-    public ResponseEntity<Iterable<ExaminationDto>> findAllExaminations(@Valid @ModelAttribute PaginationDto paginationDto) {
-        return new ResponseEntity<>(examinationService.findAllExaminations(paginationDto), HttpStatus.OK);
+    public ResponseEntity<Iterable<ExaminationDto>> findAllExaminations(ExaminationSearchDto examinationSearchDto, Pageable pageable) {
+        return new ResponseEntity<>(examinationService.findAllExaminations(examinationSearchDto, pageable), HttpStatus.OK);
     }
 
     @PostMapping

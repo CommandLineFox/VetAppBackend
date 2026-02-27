@@ -1,12 +1,10 @@
 package raf.aleksabuncic.service;
 
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Pageable;
 import raf.aleksabuncic.dto.AppointmentCreateDto;
 import raf.aleksabuncic.dto.AppointmentDto;
+import raf.aleksabuncic.dto.AppointmentSearchDto;
 import raf.aleksabuncic.dto.AppointmentUpdateDto;
-import raf.aleksabuncic.dto.PaginationDto;
-
-import java.util.List;
 
 public interface AppointmentService {
     /**
@@ -23,7 +21,7 @@ public interface AppointmentService {
      * @param paginationDto Pagination object
      * @return Slice of AppointmentDto
      */
-    Iterable<AppointmentDto> findAllAppointments(PaginationDto paginationDto);
+    Iterable<AppointmentDto> findAllAppointments(AppointmentSearchDto appointmentSearchDto, Pageable pageable);
 
     /**
      * Create new appointment
