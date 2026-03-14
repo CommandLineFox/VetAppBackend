@@ -40,8 +40,6 @@ public class AppointmentSpecifications {
         return (root, query, cb) -> cb.equal(root.get("patient").get("id"), patientId);
     }
 
-    // --- Build metoda ---
-
     public static Specification<Appointment> build(AppointmentSearchDto appointmentSearchDto) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -61,14 +59,17 @@ public class AppointmentSpecifications {
                 }
             }
 
-            if (appointmentSearchDto.getDescription() != null && !appointmentSearchDto.getDescription().isBlank())
+            if (appointmentSearchDto.getDescription() != null && !appointmentSearchDto.getDescription().isBlank()) {
                 predicates.add(descriptionLike(appointmentSearchDto.getDescription()).toPredicate(root, query, cb));
+            }
 
-            if (appointmentSearchDto.getPatientId() != null)
+            if (appointmentSearchDto.getPatientId() != null) {
                 predicates.add(patientIdEqual(appointmentSearchDto.getPatientId()).toPredicate(root, query, cb));
+            }
 
-            if (appointmentSearchDto.getVeterinarianId() != null)
+            if (appointmentSearchDto.getVeterinarianId() != null) {
                 predicates.add(veterinarianIdEqual(appointmentSearchDto.getVeterinarianId()).toPredicate(root, query, cb));
+            }
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };

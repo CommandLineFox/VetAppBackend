@@ -7,8 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class BreedDto {
+public class BreedDisplayDto {
     private Long id;
     private String name;
-    private SpeciesDisplayDto species;
 }

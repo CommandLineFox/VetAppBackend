@@ -146,8 +146,8 @@ public class AppointmentServiceIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(appointmentCreateDto)))
                 .andExpect(status().isCreated())
-                .andExpect((jsonPath("$.patientId").value(appointmentCreateDto.getPatientId().toString())))
-                .andExpect((jsonPath("$.veterinarianId").value(appointmentCreateDto.getVeterinarianId().toString())));
+                .andExpect((jsonPath("$.patient.id").value(appointmentCreateDto.getPatientId().toString())))
+                .andExpect((jsonPath("$.veterinarian.id").value(appointmentCreateDto.getVeterinarianId().toString())));
 
         Optional<Appointment> appointment = appointmentRepository.findByDateAndPatientAndVeterinarian(date, patient.get(), veterinarian.get());
         assertTrue(appointment.isPresent());
@@ -230,8 +230,8 @@ public class AppointmentServiceIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(appointmentUpdateDto)))
                 .andExpect(status().isOk())
-                .andExpect((jsonPath("$.patientId").value(appointmentUpdateDto.getPatientId().toString())))
-                .andExpect((jsonPath("$.veterinarianId").value(appointmentUpdateDto.getVeterinarianId().toString())));
+                .andExpect((jsonPath("$.patient.id").value(appointmentUpdateDto.getPatientId().toString())))
+                .andExpect((jsonPath("$.veterinarian.id").value(appointmentUpdateDto.getVeterinarianId().toString())));
 
         Optional<Appointment> updatedAppointment = appointmentRepository.findByDateAndPatientAndVeterinarian(updatedDate, updatedPatient, updatedVeterinarian);
         assertTrue(updatedAppointment.isPresent());

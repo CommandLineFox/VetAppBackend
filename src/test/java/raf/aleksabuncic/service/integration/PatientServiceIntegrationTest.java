@@ -137,8 +137,8 @@ public class PatientServiceIntegrationTest {
                 .andExpect(jsonPath("$.passportNumber").value(patientCreateDto.getPassportNumber()))
                 .andExpect(jsonPath("$.microchipNumber").value(patientCreateDto.getMicrochipNumber()))
                 .andExpect(jsonPath("$.cartonNumber").value(patientCreateDto.getCartonNumber()))
-                .andExpect(jsonPath("$.breedId").value(patientCreateDto.getBreedId().toString()))
-                .andExpect(jsonPath("$.ownerId").value(patientCreateDto.getOwnerId().toString()));
+                .andExpect(jsonPath("$.breed.id").value(patientCreateDto.getBreedId().toString()))
+                .andExpect(jsonPath("$.owner.id").value(patientCreateDto.getOwnerId().toString()));
 
         Optional<Patient> patient = patientRepository.findByName(patientCreateDto.getName());
         assertTrue(patient.isPresent());
@@ -258,8 +258,8 @@ public class PatientServiceIntegrationTest {
                 .andExpect(jsonPath("$.passportNumber").value(patientUpdateDto.getPassportNumber()))
                 .andExpect(jsonPath("$.microchipNumber").value(patientUpdateDto.getMicrochipNumber()))
                 .andExpect(jsonPath("$.cartonNumber").value(patientUpdateDto.getCartonNumber()))
-                .andExpect(jsonPath("$.breedId").value(patientUpdateDto.getBreedId().toString()))
-                .andExpect(jsonPath("$.ownerId").value(patientUpdateDto.getOwnerId().toString()));
+                .andExpect(jsonPath("$.breed.id").value(patientUpdateDto.getBreedId().toString()))
+                .andExpect(jsonPath("$.owner.id").value(patientUpdateDto.getOwnerId().toString()));
 
         Optional<Patient> updatedPatient = patientRepository.findByName(patientUpdateDto.getName());
         assertTrue(updatedPatient.isPresent());
