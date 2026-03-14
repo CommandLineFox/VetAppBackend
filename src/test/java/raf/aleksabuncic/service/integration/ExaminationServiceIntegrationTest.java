@@ -160,8 +160,8 @@ public class ExaminationServiceIntegrationTest {
                 .andExpect(jsonPath("$.anamnesis").value(examinationCreateDto.getAnamnesis()))
                 .andExpect(jsonPath("$.clinicalPresentation").value(examinationCreateDto.getClinicalPresentation()))
                 .andExpect(jsonPath("$.remarks").value(examinationCreateDto.getRemarks()))
-                .andExpect(jsonPath("$.patientId").value(patient.get().getId().toString()))
-                .andExpect(jsonPath("$.veterinarianId").value(veterinarian.get().getId().toString()));
+                .andExpect(jsonPath("$.patient.id").value(patient.get().getId().toString()))
+                .andExpect(jsonPath("$.veterinarian.id").value(veterinarian.get().getId().toString()));
 
         Optional<Examination> examination = examinationRepository.findByDateAndPatientAndVeterinarian(date, patient.get(), veterinarian.get());
         assertTrue(examination.isPresent());
@@ -240,8 +240,8 @@ public class ExaminationServiceIntegrationTest {
                 .andExpect(jsonPath("$.anamnesis").value(examinationUpdateDto.getAnamnesis()))
                 .andExpect(jsonPath("$.clinicalPresentation").value(examinationUpdateDto.getClinicalPresentation()))
                 .andExpect(jsonPath("$.remarks").value(examinationUpdateDto.getRemarks()))
-                .andExpect(jsonPath("$.patientId").value(updatedPatient.getId().toString()))
-                .andExpect(jsonPath("$.veterinarianId").value(updatedVeterinarian.getId().toString()));
+                .andExpect(jsonPath("$.patient.id").value(updatedPatient.getId().toString()))
+                .andExpect(jsonPath("$.veterinarian.id").value(updatedVeterinarian.getId().toString()));
 
         Optional<Examination> updatedExamination = examinationRepository.findByDateAndPatientAndVeterinarian(updatedDate, updatedPatient, updatedVeterinarian);
         assertTrue(updatedExamination.isPresent());
