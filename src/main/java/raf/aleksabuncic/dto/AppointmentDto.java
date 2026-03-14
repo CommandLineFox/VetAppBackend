@@ -18,7 +18,7 @@ public class AppointmentDto {
 
     private String description;
 
-    private Long patientId;
+    private PatientDisplayDto patient;
 
-    private Long veterinarianId;
+    private VeterinarianDisplayDto veterinarian;
 }

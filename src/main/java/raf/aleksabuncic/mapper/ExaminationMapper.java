@@ -8,8 +8,6 @@ import raf.aleksabuncic.dto.ExaminationUpdateDto;
 
 @Mapper(componentModel = "spring")
 public interface ExaminationMapper {
-    @Mapping(source = "patient.id", target = "patientId")
-    @Mapping(source = "veterinarian.id", target = "veterinarianId")
     ExaminationDto examinationToExaminationDto(Examination examination);
 
     @Mapping(target = "id", ignore = true)

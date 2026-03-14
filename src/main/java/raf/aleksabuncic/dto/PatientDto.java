@@ -26,7 +26,7 @@ public class PatientDto {
 
     private Integer cartonNumber;
 
-    private Long ownerId;
+    private OwnerDisplayDto owner;
 
-    private Long breedId;
+    private BreedDisplayDto breed;
 }

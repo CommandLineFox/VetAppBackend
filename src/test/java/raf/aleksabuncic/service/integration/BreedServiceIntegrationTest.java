@@ -169,7 +169,7 @@ public class BreedServiceIntegrationTest {
                         .content(objectMapper.writeValueAsString(breedUpdateDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(breedUpdateDto.getName()))
-                .andExpect(jsonPath("$.speciesId").value(breedUpdateDto.getSpeciesId().toString()));
+                .andExpect(jsonPath("$.species.id").value(breedUpdateDto.getSpeciesId().toString()));
 
         Optional<Breed> updatedBreed = breedRepository.findByName("Updated Test breed");
         assertTrue(updatedBreed.isPresent());

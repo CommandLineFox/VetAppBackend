@@ -8,8 +8,6 @@ import raf.aleksabuncic.dto.AppointmentUpdateDto;
 
 @Mapper(componentModel = "spring")
 public interface AppointmentMapper {
-    @Mapping(source = "patient.id", target = "patientId")
-    @Mapping(source = "veterinarian.id", target = "veterinarianId")
     AppointmentDto appointmentToAppointmentDto(Appointment appointment);
 
     @Mapping(target = "id", ignore = true)

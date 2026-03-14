@@ -7,8 +7,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class BreedDto {
+public class OwnerDisplayDto {
     private Long id;
-    private String name;
-    private SpeciesDisplayDto species;
+
+    private String firstName;
+
+    private String lastName;
 }

@@ -19,8 +19,6 @@ import raf.aleksabuncic.repository.SpeciesRepository;
 import raf.aleksabuncic.repository.specification.BreedSpecifications;
 import raf.aleksabuncic.service.BreedService;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -39,13 +37,6 @@ public class BreedServiceImplementation implements BreedService {
                 .orElseThrow(() -> new ResourceNotFoundException("Breed not found for this id: " + id));
 
         return breedMapper.breedToBreedDto(breed);
-    }
-
-    private List<BreedDto> findAllBreeds() {
-        return breedRepository.findAll()
-                .stream()
-                .map(breedMapper::breedToBreedDto)
-                .toList();
     }
 
     @Transactional(readOnly = true)

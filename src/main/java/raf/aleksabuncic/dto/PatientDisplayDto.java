@@ -7,8 +7,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class BreedDto {
+public class PatientDisplayDto {
     private Long id;
+
     private String name;
-    private SpeciesDisplayDto species;
 }

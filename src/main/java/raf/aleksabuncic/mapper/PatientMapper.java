@@ -3,14 +3,15 @@ package raf.aleksabuncic.mapper;
 import org.mapstruct.*;
 import raf.aleksabuncic.domain.Patient;
 import raf.aleksabuncic.dto.PatientCreateDto;
+import raf.aleksabuncic.dto.PatientDisplayDto;
 import raf.aleksabuncic.dto.PatientDto;
 import raf.aleksabuncic.dto.PatientUpdateDto;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {OwnerMapper.class, BreedMapper.class})
 public interface PatientMapper {
-    @Mapping(source = "owner.id", target = "ownerId")
-    @Mapping(source = "breed.id", target = "breedId")
     PatientDto patientToPatientDto(Patient patient);
+
+    PatientDisplayDto patientToPatientDisplayDto(Patient patient);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "ownerId", target = "owner.id")

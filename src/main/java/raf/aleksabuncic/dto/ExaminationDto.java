@@ -37,7 +37,7 @@ public class ExaminationDto {
     @ToString.Exclude
     private String remarks;
 
-    private Long patientId;
+    private PatientDisplayDto patient;
 
-    private Long veterinarianId;
+    private VeterinarianDisplayDto veterinarian;
 }
