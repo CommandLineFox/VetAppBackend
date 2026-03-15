@@ -1,6 +1,7 @@
 package raf.aleksabuncic.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.ServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,14 @@ public class OwnerController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('OWNER_LIST')")
-    public ResponseEntity<Iterable<OwnerDto>> findAllOwners(OwnerSearchDto ownerSearchDto, Pageable pageable) {
+    public ResponseEntity<Iterable<OwnerDto>> findAllOwners(OwnerSearchDto ownerSearchDto, Pageable pageable, ServletRequest request) {
+        boolean hasPaginationParams = request.getParameterMap().containsKey("page") ||
+                request.getParameterMap().containsKey("size");
+
+        if (!hasPaginationParams) {
+            return new ResponseEntity<>(ownerService.findAllOwners(ownerSearchDto), HttpStatus.OK);
+        }
+
         return new ResponseEntity<>(ownerService.findAllOwners(ownerSearchDto, pageable), HttpStatus.OK);
     }
 

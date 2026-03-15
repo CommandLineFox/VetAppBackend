@@ -6,6 +6,8 @@ import raf.aleksabuncic.dto.AppointmentDto;
 import raf.aleksabuncic.dto.AppointmentSearchDto;
 import raf.aleksabuncic.dto.AppointmentUpdateDto;
 
+import java.util.List;
+
 public interface AppointmentService {
     /**
      * Find appointment by id
@@ -16,9 +18,18 @@ public interface AppointmentService {
     AppointmentDto findAppointmentById(Long id);
 
     /**
+     * Find all appointments
+     *
+     * @param appointmentSearchDto Appointment search object
+     * @return List of AppointmentDto
+     */
+    List<AppointmentDto> findAllAppointments(AppointmentSearchDto appointmentSearchDto);
+
+    /**
      * Find all appointments with pagination
      *
-     * @param paginationDto Pagination object
+     * @param appointmentSearchDto Appointment search object
+     * @param pageable             Pagination object
      * @return Slice of AppointmentDto
      */
     Iterable<AppointmentDto> findAllAppointments(AppointmentSearchDto appointmentSearchDto, Pageable pageable);

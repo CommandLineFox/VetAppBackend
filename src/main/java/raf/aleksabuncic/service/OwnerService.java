@@ -6,6 +6,8 @@ import raf.aleksabuncic.dto.OwnerCreateDto;
 import raf.aleksabuncic.dto.OwnerSearchDto;
 import raf.aleksabuncic.dto.OwnerUpdateDto;
 
+import java.util.List;
+
 public interface OwnerService {
     /**
      * Find owner by id
@@ -16,9 +18,18 @@ public interface OwnerService {
     OwnerDto findOwnerById(Long id);
 
     /**
+     * Find all owners
+     *
+     * @param ownerSearchDto Owner search object
+     * @return List of owners
+     */
+    List<OwnerDto> findAllOwners(OwnerSearchDto ownerSearchDto);
+
+    /**
      * Find all owners with pagination
      *
-     * @param paginationDto Pagination object
+     * @param ownerSearchDto Owner search object
+     * @param pageable       Pagination object
      * @return Slice of owners
      */
     Iterable<OwnerDto> findAllOwners(OwnerSearchDto ownerSearchDto, Pageable pageable);

@@ -1,6 +1,7 @@
 package raf.aleksabuncic.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.ServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,14 @@ public class SpeciesController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('SPECIES_LIST')")
-    public ResponseEntity<Iterable<SpeciesDto>> findAllSpecies(SpeciesSearchDto speciesSearchDto, Pageable pageable) {
+    public ResponseEntity<Iterable<SpeciesDto>> findAllSpecies(SpeciesSearchDto speciesSearchDto, Pageable pageable, ServletRequest request) {
+        boolean hasPaginationParams = request.getParameterMap().containsKey("page") ||
+                request.getParameterMap().containsKey("size");
+
+        if (!hasPaginationParams) {
+            return new ResponseEntity<>(speciesService.findAllSpecies(speciesSearchDto), HttpStatus.OK);
+        }
+
         return new ResponseEntity<>(speciesService.findAllSpecies(speciesSearchDto, pageable), HttpStatus.OK);
     }
 

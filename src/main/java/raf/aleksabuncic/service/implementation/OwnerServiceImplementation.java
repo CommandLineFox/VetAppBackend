@@ -41,8 +41,14 @@ public class OwnerServiceImplementation implements OwnerService {
         return ownerMapper.ownerToOwnerDto(owner);
     }
 
-    private List<OwnerDto> findAllOwners() {
-        return ownerRepository.findAll()
+    @Transactional(readOnly = true)
+    @Override
+    public List<OwnerDto> findAllOwners(OwnerSearchDto ownerSearchDto) {
+        log.info("Finding all owners with filters: {}", ownerSearchDto);
+
+        Specification<Owner> specification = OwnerSpecifications.build(ownerSearchDto);
+
+        return ownerRepository.findAll(specification)
                 .stream()
                 .map(ownerMapper::ownerToOwnerDto)
                 .toList();

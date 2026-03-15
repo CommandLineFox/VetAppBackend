@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raf.aleksabuncic.domain.Breed;
 import raf.aleksabuncic.domain.Species;
-import raf.aleksabuncic.dto.*;
+import raf.aleksabuncic.dto.BreedCreateDto;
+import raf.aleksabuncic.dto.BreedDto;
+import raf.aleksabuncic.dto.BreedSearchDto;
+import raf.aleksabuncic.dto.BreedUpdateDto;
 import raf.aleksabuncic.exception.DuplicateResourceException;
 import raf.aleksabuncic.exception.ResourceNotFoundException;
 import raf.aleksabuncic.exception.UsedResourceException;
@@ -18,6 +21,8 @@ import raf.aleksabuncic.repository.BreedRepository;
 import raf.aleksabuncic.repository.SpeciesRepository;
 import raf.aleksabuncic.repository.specification.BreedSpecifications;
 import raf.aleksabuncic.service.BreedService;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +42,19 @@ public class BreedServiceImplementation implements BreedService {
                 .orElseThrow(() -> new ResourceNotFoundException("Breed not found for this id: " + id));
 
         return breedMapper.breedToBreedDto(breed);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<BreedDto> findAllBreeds(BreedSearchDto breedSearchDto) {
+        log.info("Finding all breeds with filters: {}", breedSearchDto);
+
+        Specification<Breed> specification = BreedSpecifications.build(breedSearchDto);
+
+        return breedRepository.findAll(specification)
+                .stream()
+                .map(breedMapper::breedToBreedDto)
+                .toList();
     }
 
     @Transactional(readOnly = true)

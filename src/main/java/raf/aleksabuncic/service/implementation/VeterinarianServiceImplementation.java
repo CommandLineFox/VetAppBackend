@@ -43,8 +43,14 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
         return veterinarianMapper.veterinarianToVeterinarianDto(veterinarian);
     }
 
-    private List<VeterinarianDto> findAllVeterinarians() {
-        return veterinarianRepository.findAll()
+    @Transactional(readOnly = true)
+    @Override
+    public List<VeterinarianDto> findAllVeterinarians(VeterinarianSearchDto veterinarianSearchDto) {
+        log.info("Finding all veterinarians with filters: {}", veterinarianSearchDto);
+
+        Specification<Veterinarian> specification = VeterinarianSpecifications.build(veterinarianSearchDto);
+
+        return veterinarianRepository.findAll(specification)
                 .stream()
                 .map(veterinarianMapper::veterinarianToVeterinarianDto)
                 .toList();

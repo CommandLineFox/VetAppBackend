@@ -47,8 +47,14 @@ public class PatientServiceImplementation implements PatientService {
         return patientMapper.patientToPatientDto(patient);
     }
 
-    private List<PatientDto> findAllPatients() {
-        return patientRepository.findAll()
+    @Transactional(readOnly = true)
+    @Override
+    public List<PatientDto> findAllPatients(PatientSearchDto patientSearchDto) {
+        log.info("Finding all patients with filters: {}", patientSearchDto);
+
+        Specification<Patient> specification = PatientSpecifications.build(patientSearchDto);
+
+        return patientRepository.findAll(specification)
                 .stream()
                 .map(patientMapper::patientToPatientDto)
                 .toList();

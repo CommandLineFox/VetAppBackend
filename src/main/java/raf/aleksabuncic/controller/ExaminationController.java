@@ -1,6 +1,7 @@
 package raf.aleksabuncic.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.ServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,14 @@ public class ExaminationController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('EXAMINATION_LIST')")
-    public ResponseEntity<Iterable<ExaminationDto>> findAllExaminations(ExaminationSearchDto examinationSearchDto, Pageable pageable) {
+    public ResponseEntity<Iterable<ExaminationDto>> findAllExaminations(ExaminationSearchDto examinationSearchDto, Pageable pageable, ServletRequest request) {
+        boolean hasPaginationParams = request.getParameterMap().containsKey("page") ||
+                request.getParameterMap().containsKey("size");
+
+        if (!hasPaginationParams) {
+            return new ResponseEntity<>(examinationService.findAllExaminations(examinationSearchDto), HttpStatus.OK);
+        }
+
         return new ResponseEntity<>(examinationService.findAllExaminations(examinationSearchDto, pageable), HttpStatus.OK);
     }
 

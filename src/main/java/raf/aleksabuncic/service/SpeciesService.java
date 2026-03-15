@@ -3,6 +3,8 @@ package raf.aleksabuncic.service;
 import org.springframework.data.domain.Pageable;
 import raf.aleksabuncic.dto.*;
 
+import java.util.List;
+
 public interface SpeciesService {
     /**
      * Find species by id
@@ -13,9 +15,18 @@ public interface SpeciesService {
     SpeciesDto findSpeciesById(Long id);
 
     /**
+     * Find all species
+     *
+     * @param speciesSearchDto Species search object
+     * @return List of SpeciesDto
+     */
+    List<SpeciesDto> findAllSpecies(SpeciesSearchDto speciesSearchDto);
+
+    /**
      * Find all species with pagination
      *
-     * @param paginationDto Pagination object
+     * @param speciesSearchDto Species search object
+     * @param pageable         Pagination object
      * @return Slice of SpeciesDto
      */
     Iterable<SpeciesDto> findAllSpecies(SpeciesSearchDto speciesSearchDto, Pageable pageable);

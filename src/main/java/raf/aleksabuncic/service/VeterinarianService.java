@@ -6,6 +6,8 @@ import raf.aleksabuncic.dto.VeterinarianCreateDto;
 import raf.aleksabuncic.dto.VeterinarianSearchDto;
 import raf.aleksabuncic.dto.VeterinarianUpdateDto;
 
+import java.util.List;
+
 public interface VeterinarianService {
     /**
      * Find veterinarian by id
@@ -16,9 +18,18 @@ public interface VeterinarianService {
     VeterinarianDto findVeterinarianById(Long id);
 
     /**
+     * Find all veterinarians
+     *
+     * @param veterinarianSearchDto Veterinarian search object
+     * @return List of VeterinarianDto
+     */
+    List<VeterinarianDto> findAllVeterinarians(VeterinarianSearchDto veterinarianSearchDto);
+
+    /**
      * Find all veterinarians with pagination
      *
-     * @param paginationDto Pagination object
+     * @param veterinarianSearchDto Veterinarian search object
+     * @param pageable              Pagination object
      * @return Slice of VeterinarianDto
      */
     Iterable<VeterinarianDto> findAllVeterinarians(VeterinarianSearchDto veterinarianSearchDto, Pageable pageable);
