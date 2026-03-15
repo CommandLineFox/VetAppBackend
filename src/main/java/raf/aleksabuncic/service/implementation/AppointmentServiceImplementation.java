@@ -47,8 +47,14 @@ public class AppointmentServiceImplementation implements AppointmentService {
         return appointmentMapper.appointmentToAppointmentDto(appointment);
     }
 
-    private List<AppointmentDto> findAllAppointments() {
-        return appointmentRepository.findAll()
+    @Transactional(readOnly = true)
+    @Override
+    public List<AppointmentDto> findAllAppointments(AppointmentSearchDto appointmentSearchDto) {
+        log.info("Finding all appointments with filters: {}", appointmentSearchDto);
+
+        Specification<Appointment> specification = AppointmentSpecifications.build(appointmentSearchDto);
+
+        return appointmentRepository.findAll(specification)
                 .stream()
                 .map(appointmentMapper::appointmentToAppointmentDto)
                 .toList();

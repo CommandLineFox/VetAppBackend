@@ -6,6 +6,8 @@ import raf.aleksabuncic.dto.PatientCreateDto;
 import raf.aleksabuncic.dto.PatientSearchDto;
 import raf.aleksabuncic.dto.PatientUpdateDto;
 
+import java.util.List;
+
 public interface PatientService {
     /**
      * \
@@ -17,9 +19,18 @@ public interface PatientService {
     PatientDto findPatientById(Long id);
 
     /**
+     * Find all patients
+     *
+     * @param patientSearchDto Patient search object
+     * @return List of PatientDto
+     */
+    List<PatientDto> findAllPatients(PatientSearchDto patientSearchDto);
+
+    /**
      * Find all patients with pagination
      *
-     * @param paginationDto Pagination object
+     * @param patientSearchDto Patient search object
+     * @param pageable         Pagination object
      * @return Slice of PatientDto
      */
     Iterable<PatientDto> findAllPatients(PatientSearchDto patientSearchDto, Pageable pageable);

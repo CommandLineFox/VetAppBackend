@@ -48,8 +48,14 @@ public class ExaminationServiceImplementation implements ExaminationService {
         return examinationMapper.examinationToExaminationDto(examination);
     }
 
-    private List<ExaminationDto> findAllExaminations() {
-        return examinationRepository.findAll()
+    @Transactional(readOnly = true)
+    @Override
+    public List<ExaminationDto> findAllExaminations(ExaminationSearchDto examinationSearchDto) {
+        log.info("Finding all examinations with filters: {}", examinationSearchDto);
+
+        Specification<Examination> specification = ExaminationSpecifications.build(examinationSearchDto);
+
+        return examinationRepository.findAll(specification)
                 .stream()
                 .map(examinationMapper::examinationToExaminationDto)
                 .toList();

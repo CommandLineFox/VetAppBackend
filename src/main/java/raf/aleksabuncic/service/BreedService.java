@@ -17,9 +17,18 @@ public interface BreedService {
     BreedDto findBreedById(Long id);
 
     /**
+     * Find all breeds
+     *
+     * @param breedSearchDto Breed search object
+     * @return List of BreedDto
+     */
+    List<BreedDto> findAllBreeds(BreedSearchDto breedSearchDto);
+
+    /**
      * Find all breeds with pagination
      *
-     * @param paginationDto Pagination object
+     * @param breedSearchDto Breed search object
+     * @param pageable       Pagination object
      * @return Slice of BreedDto
      */
     Iterable<BreedDto> findAllBreeds(BreedSearchDto breedSearchDto, Pageable pageable);

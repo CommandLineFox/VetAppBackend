@@ -6,6 +6,8 @@ import raf.aleksabuncic.dto.ExaminationCreateDto;
 import raf.aleksabuncic.dto.ExaminationSearchDto;
 import raf.aleksabuncic.dto.ExaminationUpdateDto;
 
+import java.util.List;
+
 public interface ExaminationService {
     /**
      * Find examination by id
@@ -16,9 +18,18 @@ public interface ExaminationService {
     ExaminationDto findExaminationById(Long id);
 
     /**
+     * Find all examinations
+     *
+     * @param examinationSearchDto Examination search object
+     * @return List of ExaminationDto
+     */
+    List<ExaminationDto> findAllExaminations(ExaminationSearchDto examinationSearchDto);
+
+    /**
      * Find all examinations with pagination
      *
-     * @param paginationDto Pagination object
+     * @param examinationSearchDto Examination search object
+     * @param pageable             Pagination object
      * @return Slice of ExaminationDto
      */
     Iterable<ExaminationDto> findAllExaminations(ExaminationSearchDto examinationSearchDto, Pageable pageable);

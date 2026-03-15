@@ -38,10 +38,14 @@ public class SpeciesServiceImplementation implements SpeciesService {
         return speciesMapper.speciesToSpeciesDto(species);
     }
 
-    private List<SpeciesDto> findAllSpecies() {
-        log.info("Finding all species");
+    @Transactional(readOnly = true)
+    @Override
+    public List<SpeciesDto> findAllSpecies(SpeciesSearchDto speciesSearchDto) {
+        log.info("Finding all species with filters: {}", speciesSearchDto);
 
-        return speciesRepository.findAll()
+        Specification<Species> specification = SpeciesSpecifications.build(speciesSearchDto);
+
+        return speciesRepository.findAll(specification)
                 .stream()
                 .map(speciesMapper::speciesToSpeciesDto)
                 .toList();
