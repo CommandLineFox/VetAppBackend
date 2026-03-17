@@ -5,6 +5,10 @@ import raf.aleksabuncic.domain.Veterinarian;
 import raf.aleksabuncic.dto.VeterinarianCreateDto;
 import raf.aleksabuncic.dto.VeterinarianDto;
 import raf.aleksabuncic.dto.VeterinarianUpdateDto;
+import raf.aleksabuncic.security.Permission;
+import raf.aleksabuncic.security.PermissionUtils;
+
+import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface VeterinarianMapper {
@@ -18,4 +22,20 @@ public interface VeterinarianMapper {
     @Mapping(target = "password", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void veterinarianUpdateDtoToVeterinarian(VeterinarianUpdateDto veterinarianUpdateDto, @MappingTarget Veterinarian veterinarian);
+
+    default Set<Permission> mapLongToPermissions(Long permissionsMask) {
+        if (permissionsMask == null) {
+            return null;
+        }
+
+        return PermissionUtils.toEnumSet(permissionsMask);
+    }
+
+    default Long mapPermissionsToLong(Set<Permission> permissions) {
+        if (permissions == null) {
+            return 0L;
+        }
+
+        return PermissionUtils.toBitmask(permissions);
+    }
 }

@@ -4,6 +4,9 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import raf.aleksabuncic.security.Permission;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -27,7 +30,6 @@ public class VeterinarianUpdateDto {
     @ToString.Exclude
     private String password;
 
-    @PositiveOrZero
     @ToString.Exclude
-    private Long permissions;
+    private Set<Permission> permissions;
 }
