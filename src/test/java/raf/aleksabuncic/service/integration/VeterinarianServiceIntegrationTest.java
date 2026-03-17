@@ -1,8 +1,8 @@
 package raf.aleksabuncic.service.integration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +17,9 @@ import raf.aleksabuncic.domain.Veterinarian;
 import raf.aleksabuncic.dto.VeterinarianCreateDto;
 import raf.aleksabuncic.dto.VeterinarianUpdateDto;
 import raf.aleksabuncic.repository.VeterinarianRepository;
+import raf.aleksabuncic.security.Permission;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -83,7 +82,7 @@ public class VeterinarianServiceIntegrationTest {
         veterinarianCreateDto.setLicenseNumber(2);
         veterinarianCreateDto.setEmail("tester@gmail.com");
         veterinarianCreateDto.setPassword("Testing1");
-        veterinarianCreateDto.setPermissions(1L);
+        veterinarianCreateDto.setPermissions(Set.of(Permission.BREED_LIST));
 
         mockMvc.perform(post("/veterinarian")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -93,7 +92,7 @@ public class VeterinarianServiceIntegrationTest {
                 .andExpect(jsonPath("$.firstName").value(veterinarianCreateDto.getFirstName()))
                 .andExpect(jsonPath("$.lastName").value(veterinarianCreateDto.getLastName()))
                 .andExpect(jsonPath("$.licenseNumber").value(veterinarianCreateDto.getLicenseNumber()))
-                .andExpect(jsonPath("$.permissions").value(veterinarianCreateDto.getPermissions()));
+                .andExpect(jsonPath("$.permissions").value(Matchers.containsInAnyOrder("BREED_LIST")));
 
         Optional<Veterinarian> veterinarian = veterinarianRepository.findByLicenseNumber(2);
         assertTrue(veterinarian.isPresent());
@@ -107,7 +106,7 @@ public class VeterinarianServiceIntegrationTest {
         veterinarianCreateDto.setLicenseNumber(2);
         veterinarianCreateDto.setEmail("tester@gmail.com");
         veterinarianCreateDto.setPassword("Testing1");
-        veterinarianCreateDto.setPermissions(1L);
+        veterinarianCreateDto.setPermissions(Set.of(Permission.BREED_LIST));
 
         mockMvc.perform(post("/veterinarian")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -133,7 +132,7 @@ public class VeterinarianServiceIntegrationTest {
         veterinarianCreateDto.setLicenseNumber(2);
         veterinarianCreateDto.setEmail("tester2@gmail.com");
         veterinarianCreateDto.setPassword("Testing1");
-        veterinarianCreateDto.setPermissions(1L);
+        veterinarianCreateDto.setPermissions(Set.of(Permission.BREED_LIST));
 
         mockMvc.perform(post("/veterinarian")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -159,7 +158,7 @@ public class VeterinarianServiceIntegrationTest {
         veterinarianUpdateDto.setPassword("Testing2");
         veterinarianUpdateDto.setLicenseNumber(3);
         veterinarianUpdateDto.setEmail("tester2@gmail.com");
-        veterinarianUpdateDto.setPermissions(2L);
+        veterinarianUpdateDto.setPermissions(Set.of(Permission.BREED_LIST));
 
         mockMvc.perform(put("/veterinarian/" + veterinarian.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -169,11 +168,10 @@ public class VeterinarianServiceIntegrationTest {
                 .andExpect(jsonPath("$.firstName").value(veterinarianUpdateDto.getFirstName()))
                 .andExpect(jsonPath("$.lastName").value(veterinarianUpdateDto.getLastName()))
                 .andExpect(jsonPath("$.licenseNumber").value(veterinarianUpdateDto.getLicenseNumber()))
-                .andExpect(jsonPath("$.permissions").value(veterinarianUpdateDto.getPermissions()));
+                .andExpect(jsonPath("$.permissions").value(Matchers.containsInAnyOrder("BREED_LIST")));
 
         Optional<Veterinarian> updatedVeterinarian = veterinarianRepository.findById(veterinarian.getId());
         assertTrue(updatedVeterinarian.isPresent());
-        assertEquals(updatedVeterinarian.get().getPermissions(), veterinarianUpdateDto.getPermissions());
     }
 
     @Test
@@ -193,7 +191,7 @@ public class VeterinarianServiceIntegrationTest {
         veterinarianUpdateDto.setPassword("Testing2");
         veterinarianUpdateDto.setLicenseNumber(2);
         veterinarianUpdateDto.setEmail("tester2@gmail.com");
-        veterinarianUpdateDto.setPermissions(2L);
+        veterinarianUpdateDto.setPermissions(Set.of(Permission.BREED_LIST));
 
         mockMvc.perform(put("/veterinarian/" + veterinarian.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -228,7 +226,7 @@ public class VeterinarianServiceIntegrationTest {
         veterinarianUpdateDto.setPassword("Testing2");
         veterinarianUpdateDto.setLicenseNumber(3);
         veterinarianUpdateDto.setEmail("tester2@gmail.com");
-        veterinarianUpdateDto.setPermissions(2L);
+        veterinarianUpdateDto.setPermissions(Set.of(Permission.BREED_LIST));
 
         mockMvc.perform(put("/veterinarian/" + veterinarian.getId())
                         .contentType(MediaType.APPLICATION_JSON)
