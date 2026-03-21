@@ -94,45 +94,19 @@ public class OwnerServiceImplementation implements OwnerService {
         Owner owner = ownerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Owner not found for this id: " + id));
 
-        if (ownerUpdateDto.getFirstName() != null && owner.getFirstName().equals(ownerUpdateDto.getFirstName())) {
-            throw new DuplicateResourceException("Owner first name cannot be the same as the old one");
-        }
-
-
-        if (ownerUpdateDto.getLastName() != null && owner.getLastName().equals(ownerUpdateDto.getLastName())) {
-            throw new DuplicateResourceException("Owner last name cannot be the same as the old one");
-        }
-
-
-        if (ownerUpdateDto.getAddress() != null && owner.getAddress().equals(ownerUpdateDto.getAddress())) {
-            throw new DuplicateResourceException("Owner address cannot be the same as the old one");
-        }
-
         if (ownerUpdateDto.getPhoneNumber() != null) {
-            if (owner.getPhoneNumber().equals(ownerUpdateDto.getPhoneNumber())) {
-                throw new DuplicateResourceException("Owner phone number cannot be the same as the old one");
-            }
-
             if (existingOwner) {
                 throw new DuplicateResourceException("Owner already exists with this phone number: " + ownerUpdateDto.getPhoneNumber());
             }
         }
 
         if (ownerUpdateDto.getEmail() != null) {
-            if (owner.getEmail().equals(ownerUpdateDto.getEmail())) {
-                throw new DuplicateResourceException("Owner email cannot be the same as the old one");
-            }
-
             if (existingOwner) {
                 throw new DuplicateResourceException("Owner already exists with this email: " + ownerUpdateDto.getEmail());
             }
         }
 
         if (ownerUpdateDto.getJmbg() != null) {
-            if (owner.getJmbg().equals(ownerUpdateDto.getJmbg())) {
-                throw new DuplicateResourceException("Owner JMBG cannot be the same as the old one");
-            }
-
             if (existingOwner) {
                 throw new DuplicateResourceException("Owner already exists with this JMBG: " + ownerUpdateDto.getJmbg());
             }

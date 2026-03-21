@@ -101,29 +101,13 @@ public class AppointmentServiceImplementation implements AppointmentService {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found for this id: " + id));
 
-        if (appointmentUpdateDto.getDate() != null && appointment.getDate().equals(appointmentUpdateDto.getDate())) {
-            throw new DuplicateResourceException("Appointment date cannot be the same as the existing one");
-        }
-
-        if (appointmentUpdateDto.getDescription() != null && appointment.getDescription().equals(appointmentUpdateDto.getDescription())) {
-            throw new DuplicateResourceException("Appointment description cannot be the same as the existing one");
-        }
-
         if (appointmentUpdateDto.getPatientId() != null) {
-            if (appointment.getPatient().getId().equals(appointmentUpdateDto.getPatientId())) {
-                throw new DuplicateResourceException("Appointment patient cannot be the same as the existing one");
-            }
-
             Patient patient = patientRepository.findById(appointmentUpdateDto.getPatientId())
                     .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + appointmentUpdateDto.getPatientId()));
             appointment.setPatient(patient);
         }
 
         if (appointmentUpdateDto.getVeterinarianId() != null) {
-            if (appointment.getVeterinarian().getId().equals(appointmentUpdateDto.getVeterinarianId())) {
-                throw new DuplicateResourceException("Appointment veterinarian cannot be the same as the existing one");
-            }
-
             Veterinarian veterinarian = veterinarianRepository.findById(appointmentUpdateDto.getVeterinarianId())
                     .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + appointmentUpdateDto.getVeterinarianId()));
             appointment.setVeterinarian(veterinarian);

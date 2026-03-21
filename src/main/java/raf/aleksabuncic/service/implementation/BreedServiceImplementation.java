@@ -102,10 +102,6 @@ public class BreedServiceImplementation implements BreedService {
                 .orElseThrow(() -> new ResourceNotFoundException("Breed not found for this id: " + id));
 
         if (breedUpdateDto.getName() != null) {
-            if (breed.getName().equals(breedUpdateDto.getName())) {
-                throw new DuplicateResourceException("Breed name cannot be the same as the old one");
-            }
-
             if (existingBreed) {
                 throw new DuplicateResourceException("Breed already exists with this name: " + breedUpdateDto.getName());
             }

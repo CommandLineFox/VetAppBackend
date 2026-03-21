@@ -98,26 +98,10 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
         Veterinarian veterinarian = veterinarianRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + id));
 
-        if (veterinarianUpdateDto.getFirstName() != null && veterinarian.getFirstName().equals(veterinarianUpdateDto.getFirstName())) {
-            throw new DuplicateResourceException("Veterinarian first name cannot be the same as the old one");
-        }
-
-        if (veterinarianUpdateDto.getLastName() != null && veterinarian.getLastName().equals(veterinarianUpdateDto.getLastName())) {
-            throw new DuplicateResourceException("Veterinarian last name cannot be the same as the old one");
-        }
-
         if (veterinarianUpdateDto.getLicenseNumber() != null) {
             if (existingVeterinarian) {
                 throw new DuplicateResourceException("Veterinarian already exists with this license number");
             }
-
-            if (veterinarian.getLicenseNumber().equals(veterinarianUpdateDto.getLicenseNumber())) {
-                throw new DuplicateResourceException("Veterinarian license number cannot be the same as the old one");
-            }
-        }
-
-        if (veterinarianUpdateDto.getPermissions() != null && veterinarian.getPermissions().equals(veterinarianUpdateDto.getPermissions())) {
-            throw new DuplicateResourceException("Veterinarian permissions cannot be the same as the old one");
         }
 
         if (veterinarianUpdateDto.getPassword() != null) {

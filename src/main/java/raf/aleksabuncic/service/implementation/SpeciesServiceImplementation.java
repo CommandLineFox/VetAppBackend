@@ -93,10 +93,6 @@ public class SpeciesServiceImplementation implements SpeciesService {
                 .orElseThrow(() -> new ResourceNotFoundException("Species not found for this id: " + id));
 
         if (speciesUpdateDto.getName() != null) {
-            if (species.getName().equals(speciesUpdateDto.getName())) {
-                throw new DuplicateResourceException("Species name cannot be the same as the old one");
-            }
-
             if (existingSpecies) {
                 throw new DuplicateResourceException("Species already exists for this name: " + speciesUpdateDto.getName());
             }
