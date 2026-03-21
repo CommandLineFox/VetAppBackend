@@ -107,26 +107,9 @@ public class PatientServiceImplementation implements PatientService {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + id));
 
-        if (patientUpdateDto.getBirthDate() != null && patient.getBirthDate().equals(patientUpdateDto.getBirthDate())) {
-            throw new DuplicateResourceException("Patient birth date cannot be the same as the existing one");
-        }
-
-        if (patientUpdateDto.getName() != null && patient.getName().equals(patientUpdateDto.getName())) {
-            throw new DuplicateResourceException("Patient name cannot be the same as the existing one");
-        }
-
-        if (patientUpdateDto.getGender() != null && patient.getGender().equals(patientUpdateDto.getGender())) {
-            throw new DuplicateResourceException("Patient gender cannot be the same as the existing one");
-
-        }
-
         if (patientUpdateDto.getPassportNumber() != null) {
             if (existingPatient) {
                 throw new DuplicateResourceException("Patient with this passport number already exists");
-            }
-
-            if (patient.getPassportNumber().equals(patientUpdateDto.getPassportNumber())) {
-                throw new DuplicateResourceException("Patient passport number cannot be the same as the existing one");
             }
         }
 
@@ -134,31 +117,15 @@ public class PatientServiceImplementation implements PatientService {
             if (existingPatient) {
                 throw new DuplicateResourceException("Patient with this microchip number already exists");
             }
-
-            if (patient.getMicrochipNumber().equals(patientUpdateDto.getMicrochipNumber())) {
-                throw new DuplicateResourceException("Patient microchip number cannot be the same as the existing one");
-            }
-        }
-
-        if (patientUpdateDto.getCartonNumber() != null && patient.getCartonNumber().equals(patientUpdateDto.getCartonNumber())) {
-            throw new DuplicateResourceException("Patient carton number cannot be the same as the existing one");
         }
 
         if (patientUpdateDto.getBreedId() != null) {
-            if (patient.getBreed().getId().equals(patientUpdateDto.getBreedId())) {
-                throw new DuplicateResourceException("Patient breed cannot be the same as the existing one");
-            }
-
             Breed breed = breedRepository.findById(patientUpdateDto.getBreedId())
                     .orElseThrow(() -> new ResourceNotFoundException("Breed not found for this id: " + patientUpdateDto.getBreedId()));
             patient.setBreed(breed);
         }
 
         if (patientUpdateDto.getOwnerId() != null) {
-            if (patient.getOwner().getId().equals(patientUpdateDto.getOwnerId())) {
-                throw new DuplicateResourceException("Patient owner cannot be the same as the existing one");
-            }
-
             Owner owner = ownerRepository.findById(patientUpdateDto.getOwnerId())
                     .orElseThrow(() -> new ResourceNotFoundException("Owner not found for this id: " + patientUpdateDto.getOwnerId()));
             patient.setOwner(owner);
