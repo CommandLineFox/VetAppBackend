@@ -1,6 +1,6 @@
 package raf.aleksabuncic.dto;
 
-import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class AppointmentUpdateDto {
-    @PastOrPresent
+    @FutureOrPresent
     private LocalDateTime date;
 
     @Pattern(regexp = ".*\\S.*")
