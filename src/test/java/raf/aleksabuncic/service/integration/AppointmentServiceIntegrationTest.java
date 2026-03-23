@@ -133,7 +133,7 @@ public class AppointmentServiceIntegrationTest {
         Optional<Veterinarian> veterinarian = veterinarianRepository.findByLicenseNumber(1);
         assertTrue(veterinarian.isPresent());
 
-        LocalDateTime date = LocalDateTime.now().withNano(0);
+        LocalDateTime date = LocalDateTime.now().withNano(0).plusDays(1);
 
         AppointmentCreateDto appointmentCreateDto = new AppointmentCreateDto();
         appointmentCreateDto.setDate(date);
@@ -211,13 +211,13 @@ public class AppointmentServiceIntegrationTest {
         veterinarianRepository.save(updatedVeterinarian);
 
         Appointment appointment = new Appointment();
-        appointment.setDate(LocalDateTime.now().withNano(0));
+        appointment.setDate(LocalDateTime.now().withNano(0).plusDays(1));
         appointment.setDescription("Test Appointment");
         appointment.setPatient(patient.get());
         appointment.setVeterinarian(veterinarian.get());
         appointmentRepository.save(appointment);
 
-        LocalDateTime updatedDate = LocalDateTime.now().withNano(0).plusDays(1);
+        LocalDateTime updatedDate = LocalDateTime.now().withNano(0).plusDays(2);
 
         AppointmentUpdateDto appointmentUpdateDto = new AppointmentUpdateDto();
         appointmentUpdateDto.setDate(updatedDate);
@@ -246,7 +246,7 @@ public class AppointmentServiceIntegrationTest {
         assertTrue(veterinarian.isPresent());
 
         Appointment appointment = new Appointment();
-        appointment.setDate(LocalDateTime.now().withNano(0));
+        appointment.setDate(LocalDateTime.now().withNano(0).plusDays(1));
         appointment.setDescription("Test Appointment");
         appointment.setPatient(patient.get());
         appointment.setVeterinarian(veterinarian.get());

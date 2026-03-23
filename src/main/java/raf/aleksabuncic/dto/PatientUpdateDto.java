@@ -1,6 +1,5 @@
 package raf.aleksabuncic.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
@@ -20,7 +19,6 @@ public class PatientUpdateDto {
     private String name;
 
     @PastOrPresent
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
     @Pattern(regexp = "^([MF])$")

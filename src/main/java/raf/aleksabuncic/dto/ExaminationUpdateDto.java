@@ -1,6 +1,5 @@
 package raf.aleksabuncic.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +11,6 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class ExaminationUpdateDto {
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime date;
 
     @Pattern(regexp = ".*\\S.*")
