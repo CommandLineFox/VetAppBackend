@@ -20,7 +20,6 @@ public class PatientUpdateDto {
     private String name;
 
     @PastOrPresent
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
     @Pattern(regexp = "^([MF])$")

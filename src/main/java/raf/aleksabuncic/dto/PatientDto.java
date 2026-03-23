@@ -15,7 +15,6 @@ public class PatientDto {
 
     private String name;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
     private String gender;

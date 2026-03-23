@@ -2,6 +2,7 @@ package raf.aleksabuncic.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 public class AppointmentCreateDto {
     @NotNull
+    @PastOrPresent
     private LocalDateTime date;
 
     @NotBlank
