@@ -12,4 +12,10 @@ public interface PatientRepository extends JpaRepository<Patient, Long>, JpaSpec
     Optional<Patient> findByName(String name);
 
     boolean existsByPassportNumberOrMicrochipNumberOrCartonNumber(String passportNumber, String microchipNumber, Integer cartonNumber);
+
+    boolean existsByPassportNumberAndIdNot(String passportNumber, Long id);
+
+    boolean existsByMicrochipNumberAndIdNot(String microchipNumber, Long id);
+
+    boolean existsByCartonNumberAndIdNot(Integer cartonNumber, Long id);
 }

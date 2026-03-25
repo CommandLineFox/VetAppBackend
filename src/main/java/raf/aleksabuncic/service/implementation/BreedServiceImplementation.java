@@ -96,12 +96,12 @@ public class BreedServiceImplementation implements BreedService {
     public BreedDto updateBreed(Long id, BreedUpdateDto breedUpdateDto) {
         log.info("Updating breed: {}", breedUpdateDto);
 
-        boolean existingBreed = breedRepository.existsByName(breedUpdateDto.getName());
-
         Breed breed = breedRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Breed not found for this id: " + id));
 
         if (breedUpdateDto.getName() != null) {
+            boolean existingBreed = breedRepository.existsByNameAndIdNot(breedUpdateDto.getName(), id);
+
             if (existingBreed) {
                 throw new DuplicateResourceException("Breed already exists with this name: " + breedUpdateDto.getName());
             }

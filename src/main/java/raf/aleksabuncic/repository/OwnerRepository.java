@@ -12,4 +12,10 @@ public interface OwnerRepository extends JpaRepository<Owner, Long>, JpaSpecific
     Optional<Owner> findByJmbg(String jmbg);
 
     boolean existsByJmbgOrEmailOrPhoneNumber(String jmbg, String email, String phoneNumber);
+
+    boolean existsByJmbgAndIdNot(String jmbg, Long id);
+
+    boolean existsByEmailAndIdNot(String email, Long id);
+
+    boolean existsByPhoneNumberAndIdNot(String phoneNumber, Long id);
 }
