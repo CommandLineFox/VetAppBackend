@@ -89,24 +89,28 @@ public class OwnerServiceImplementation implements OwnerService {
     public OwnerDto updateOwner(Long id, OwnerUpdateDto ownerUpdateDto) {
         log.info("Updating owner: {}", ownerUpdateDto);
 
-        boolean existingOwner = ownerRepository.existsByJmbgOrEmailOrPhoneNumber(ownerUpdateDto.getJmbg(), ownerUpdateDto.getEmail(), ownerUpdateDto.getPhoneNumber());
-
         Owner owner = ownerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Owner not found for this id: " + id));
 
         if (ownerUpdateDto.getPhoneNumber() != null) {
+            boolean existingOwner = ownerRepository.existsByPhoneNumberAndIdNot(ownerUpdateDto.getPhoneNumber(), id);
+
             if (existingOwner) {
                 throw new DuplicateResourceException("Owner already exists with this phone number: " + ownerUpdateDto.getPhoneNumber());
             }
         }
 
         if (ownerUpdateDto.getEmail() != null) {
+            boolean existingOwner = ownerRepository.existsByEmailAndIdNot(ownerUpdateDto.getEmail(), id);
+
             if (existingOwner) {
                 throw new DuplicateResourceException("Owner already exists with this email: " + ownerUpdateDto.getEmail());
             }
         }
 
         if (ownerUpdateDto.getJmbg() != null) {
+            boolean existingOwner = ownerRepository.existsByJmbgAndIdNot(ownerUpdateDto.getJmbg(), id);
+
             if (existingOwner) {
                 throw new DuplicateResourceException("Owner already exists with this JMBG: " + ownerUpdateDto.getJmbg());
             }

@@ -14,4 +14,6 @@ public interface VeterinarianRepository extends JpaRepository<Veterinarian, Long
     Optional<Veterinarian> findByEmail(String email);
 
     boolean existsByLicenseNumber(Integer licenseNumber);
+
+    boolean existsByLicenseNumberAndIdNot(Integer licenseNumber, Long id);
 }

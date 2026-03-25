@@ -12,4 +12,6 @@ public interface BreedRepository extends JpaRepository<Breed, Long>, JpaSpecific
     Optional<Breed> findByName(String name);
 
     boolean existsByName(String name);
+
+    boolean existsByNameAndIdNot(String name, Long id);
 }

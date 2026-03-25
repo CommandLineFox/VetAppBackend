@@ -102,20 +102,30 @@ public class PatientServiceImplementation implements PatientService {
     public PatientDto updatePatient(Long id, PatientUpdateDto patientUpdateDto) {
         log.info("Updating patient: {}", patientUpdateDto);
 
-        boolean existingPatient = patientRepository.existsByPassportNumberOrMicrochipNumberOrCartonNumber(patientUpdateDto.getPassportNumber(), patientUpdateDto.getMicrochipNumber(), patientUpdateDto.getCartonNumber());
-
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found for this id: " + id));
 
         if (patientUpdateDto.getPassportNumber() != null) {
+            boolean existingPatient = patientRepository.existsByPassportNumberAndIdNot(patientUpdateDto.getPassportNumber(), id);
+
             if (existingPatient) {
                 throw new DuplicateResourceException("Patient with this passport number already exists");
             }
         }
 
         if (patientUpdateDto.getMicrochipNumber() != null) {
+            boolean existingPatient = patientRepository.existsByMicrochipNumberAndIdNot(patientUpdateDto.getMicrochipNumber(), id);
+
             if (existingPatient) {
                 throw new DuplicateResourceException("Patient with this microchip number already exists");
+            }
+        }
+
+        if (patientUpdateDto.getCartonNumber() != null) {
+            boolean existingPatient = patientRepository.existsByCartonNumberAndIdNot(patientUpdateDto.getCartonNumber(), id);
+
+            if (existingPatient) {
+                throw new DuplicateResourceException("Patient with this carton number already exists");
             }
         }
 

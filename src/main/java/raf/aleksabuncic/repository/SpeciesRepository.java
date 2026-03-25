@@ -12,4 +12,6 @@ public interface SpeciesRepository extends JpaRepository<Species, Long>, JpaSpec
     Optional<Species> findByName(String name);
 
     boolean existsByName(String name);
+
+    boolean existsByNameAndIdNot(String name, Long id);
 }

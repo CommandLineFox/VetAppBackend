@@ -93,12 +93,12 @@ public class VeterinarianServiceImplementation implements VeterinarianService {
     public VeterinarianDto updateVeterinarian(Long id, VeterinarianUpdateDto veterinarianUpdateDto) {
         log.info("Updating veterinarian: {}", veterinarianUpdateDto);
 
-        boolean existingVeterinarian = veterinarianRepository.existsByLicenseNumber(veterinarianUpdateDto.getLicenseNumber());
-
         Veterinarian veterinarian = veterinarianRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found for this id: " + id));
 
         if (veterinarianUpdateDto.getLicenseNumber() != null) {
+            boolean existingVeterinarian = veterinarianRepository.existsByLicenseNumberAndIdNot(veterinarianUpdateDto.getLicenseNumber(), id);
+
             if (existingVeterinarian) {
                 throw new DuplicateResourceException("Veterinarian already exists with this license number");
             }
