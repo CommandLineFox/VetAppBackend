@@ -65,19 +65,17 @@ jobs:
 
       - name: Build and Start Stack
         run: |
-          # Podižemo prvo backend (baza + app)
           cd backend
           docker compose build --build-arg BUILDKIT_INLINE_CACHE=1
           docker compose up -d
           
-          # Podižemo frontend (Nginx)
           cd ../frontend
           docker compose build --build-arg BUILDKIT_INLINE_CACHE=1
           docker compose up -d
 
       - name: Wait for Health
         run: |
-          timeout 120s bash -c 'until curl -f http://localhost:8085/api/health; do echo "Wait BE..."; sleep 5; done'
+          timeout 120s bash -c 'until curl -f http://localhost:8080/api/health; do echo "Wait BE..."; sleep 5; done'
           timeout 60s bash -c 'until curl -f http://localhost:3000; do echo "Wait FE..."; sleep 5; done'
 
       - name: Run Cypress
