@@ -41,6 +41,7 @@ public class Seeder implements CommandLineRunner {
             Owner owner = seedOwners();
             Patient patient = seedPatients(owner, breed);
             seedExaminations(patient, admin);
+            seedAppointments(admin, patient);
 
             log.info("Database seeding completed successfully.");
         }
@@ -60,7 +61,7 @@ public class Seeder implements CommandLineRunner {
 
     private void seedAppointments(Veterinarian vet, Patient patient) {
         Appointment appointment = new Appointment();
-        appointment.setDate(LocalDateTime.now().withNano(0));
+        appointment.setDate(LocalDateTime.now().withNano(0).plusDays(1));
         appointment.setDescription("Test Appointment");
         appointment.setPatient(patient);
         appointment.setVeterinarian(vet);

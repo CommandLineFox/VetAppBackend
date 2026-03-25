@@ -23,4 +23,4 @@ COPY --from=extractor /app/application/ ./
 
 ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
 
-EXPOSE 8080
+EXPOSE 8085
