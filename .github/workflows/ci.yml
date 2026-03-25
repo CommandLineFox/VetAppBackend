@@ -75,7 +75,7 @@ jobs:
 
       - name: Wait for Health
         run: |
-          timeout 120s bash -c 'until curl -f http://localhost:8080/api/health; do echo "Wait BE..."; sleep 5; done'
+          timeout 120s bash -c 'until curl -f http://localhost:${SERVER_PORT}/api/health; do echo "Wait BE..."; sleep 5; done'
           timeout 60s bash -c 'until curl -f http://localhost:3000; do echo "Wait FE..."; sleep 5; done'
 
       - name: Run Cypress
