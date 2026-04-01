@@ -17,7 +17,10 @@ jobs:
           path: backend
 
       - name: Install SOPS
-        run: sudo apt-get install sops
+        run: |
+          curl -Lo sops https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.linux.amd64
+          chmod +x sops
+          sudo mv sops /usr/local/bin
 
       - name: Decrypt Secrets
         run: |
