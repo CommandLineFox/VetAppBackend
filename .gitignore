@@ -43,3 +43,4 @@ build/
 
 ### Configs
 .env
+*.txt
