@@ -87,7 +87,9 @@ jobs:
 
       - name: Wait for Health
         run: |
-          export $(grep SERVER_PORT backend/.env | xargs)
+          SERVER_PORT=$(grep SERVER_PORT backend/.env | cut -d '=' -f2 | tr -d '\r')
+          echo "Checking on port: $SERVER_PORT"
+          
           timeout 120s bash -c "until curl -f http://localhost:${SERVER_PORT}/api/health; do echo 'Wait BE...'; sleep 5; done"
           timeout 60s bash -c "until curl -f http://localhost:3000; do echo 'Wait FE...'; sleep 5; done"
 
