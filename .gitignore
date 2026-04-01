@@ -43,4 +43,6 @@ build/
 
 ### Configs
 .env
+
+### Secrets
 *.txt
