@@ -46,14 +46,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: backend-tests
     env:
-      SERVER_PORT: ${{ secrets.SERVER_PORT }}
-      CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_URL: ${{ secrets.DB_URL }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
-      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       VITE_APP_API_URL: ${{ secrets.API_URL }}
       VITE_APP_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
     steps:
@@ -69,23 +61,35 @@ jobs:
           repository: CommandLineFox/VetAppBackend
           path: backend
 
-      - name: Set up Docker Buildx
+      - name: Install SOPS
+        run: |
+          curl -Lo sops https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.linux.amd64
+          chmod +x sops
+          sudo mv sops /usr/local/bin
+
+      - name: Decrypt Backend Secrets
+        run: |
+          cd backend
+          sops --decrypt --output-type dotenv secrets.enc.yaml > .env
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+
+      - name: Set up Docker Builds
         uses: docker/setup-buildx-action@v3
 
       - name: Build and Start Stack
         run: |
           cd backend
-          docker compose build --build-arg BUILDKIT_INLINE_CACHE=1
-          docker compose up -d
+          docker compose up --build -d
           
           cd ../frontend
-          docker compose build --build-arg BUILDKIT_INLINE_CACHE=1
-          docker compose up -d
+          docker compose up --build -d
 
       - name: Wait for Health
         run: |
-          timeout 120s bash -c 'until curl -f http://localhost:${SERVER_PORT}/api/health; do echo "Wait BE..."; sleep 5; done'
-          timeout 60s bash -c 'until curl -f http://localhost:3000; do echo "Wait FE..."; sleep 5; done'
+          export $(grep SERVER_PORT backend/.env | xargs)
+          timeout 120s bash -c "until curl -f http://localhost:${SERVER_PORT}/api/health; do echo 'Wait BE...'; sleep 5; done"
+          timeout 60s bash -c "until curl -f http://localhost:3000; do echo 'Wait FE...'; sleep 5; done"
 
       - name: Run Cypress
         uses: cypress-io/github-action@v6
