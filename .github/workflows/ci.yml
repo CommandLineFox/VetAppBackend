@@ -25,7 +25,7 @@ jobs:
       - name: Decrypt Secrets
         run: |
           cd backend
-          sops --decrypt --input-type dotenv --output-type dotenv .enc.env > .env
+          sops --decrypt --output-type dotenv secrets.enc.yaml > .env
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
 
