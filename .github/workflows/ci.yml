@@ -45,9 +45,6 @@ jobs:
   cypress-e2e-tests:
     runs-on: ubuntu-latest
     needs: backend-tests
-    env:
-      VITE_APP_API_URL: ${{ secrets.API_URL }}
-      VITE_APP_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
     steps:
       - name: Checkout Frontend
         uses: actions/checkout@v4
