@@ -71,6 +71,13 @@ jobs:
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
 
+      - name: Decrypt Frontend Secrets
+        run: |
+          cd frontend
+          sops --decrypt --output-type dotenv secrets.enc.yaml > .env
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+
       - name: Set up Docker Builds
         uses: docker/setup-buildx-action@v3
 
@@ -87,8 +94,8 @@ jobs:
           SERVER_PORT=$(grep SERVER_PORT backend/.env | cut -d '=' -f2 | tr -d '\r')
           echo "Checking on port: $SERVER_PORT"
           
-          timeout 120s bash -c "until curl -f http://localhost:${SERVER_PORT}/api/health; do echo 'Wait BE...'; sleep 5; done"
-          timeout 60s bash -c "until curl -f http://localhost:3000; do echo 'Wait FE...'; sleep 5; done"
+          timeout 120s bash -c "until curl -f http://localhost:3000; do echo 'Wait FE...'; sleep 5; done"
+          timeout 120s bash -c "until curl -f http://localhost:3000/api/health; do echo 'Wait API via Nginx...'; sleep 5; done"
 
       - name: Run Cypress
         uses: cypress-io/github-action@v6
